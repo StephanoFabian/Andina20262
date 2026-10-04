@@ -1,21 +1,8 @@
-package org.example.andina2026.dtos;
-
-import jakarta.validation.constraints.NotNull;
+package pe.edu.upc.demosm2.dtos;
 
 public class MaterialCursoDTO {
-    @NotNull(message = "idMaterial es obligatorio")
     private Long idMaterial;
-
-    @NotNull(message = "idCurso es obligatorio")
     private Long idCurso;
-
-    public MaterialCursoDTO() {
-    }
-
-    public MaterialCursoDTO(Long idMaterial, Long idCurso) {
-        this.idMaterial = idMaterial;
-        this.idCurso = idCurso;
-    }
 
     public Long getIdMaterial() {
         return idMaterial;

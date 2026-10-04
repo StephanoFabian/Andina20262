@@ -1,49 +1,15 @@
-package pe.edu.upc.demosm2.entities;
-
-import jakarta.persistence.*;
+package pe.edu.upc.demosm2.dtos;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "material")
-public class Material {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_material")
+public class MaterialDTO {
     private Long idMaterial;
-
-    @Column(name = "titulo", length = 200, nullable = false)
     private String titulo;
-
-    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
-
-    @Column(name = "tipo", length = 50)
     private String tipo;
-
-    @Column(name = "url_archivo", length = 500)
     private String urlArchivo;
-
-    @Column(name = "fecha_publicacion")
     private LocalDate fechaPublicacion;
-
-    @ManyToOne
-    @JoinColumn(name = "id_persona", nullable = false)
-    private Persona persona;
-
-    public Material() {
-    }
-
-    public Material(Long idMaterial, String titulo, String descripcion, String tipo, String urlArchivo,
-                    LocalDate fechaPublicacion, Persona persona) {
-        this.idMaterial = idMaterial;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.tipo = tipo;
-        this.urlArchivo = urlArchivo;
-        this.fechaPublicacion = fechaPublicacion;
-        this.persona = persona;
-    }
+    private Long idPersona;
 
     public Long getIdMaterial() {
         return idMaterial;
@@ -93,11 +59,11 @@ public class Material {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public Persona getPersona() {
-        return persona;
+    public Long getIdPersona() {
+        return idPersona;
     }
 
-    public void setPersona(Persona persona) {
-        this.persona = persona;
+    public void setIdPersona(Long idPersona) {
+        this.idPersona = idPersona;
     }
 }

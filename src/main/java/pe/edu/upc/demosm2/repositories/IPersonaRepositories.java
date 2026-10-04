@@ -1,7 +1,9 @@
-package org.example.andina2026.repositories;
+package pe.edu.upc.demosm2.repositories;
 
-import org.example.andina2026.entities.Persona;
+import pe.edu.upc.demosm2.entities.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
 }

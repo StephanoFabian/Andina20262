@@ -2,19 +2,13 @@ package pe.edu.upc.demosm2.dtos;
 
 import java.time.LocalDate;
 
-public class DetalleMatriculaDTOList {
+public class DetalleMatriculaDTO {
     private Long idDetalleMatricula;
-
     private LocalDate fechaMatricula;
-
     private String estado;
-
     private Long idMatricula;
-
     private Long idCurso;
-
     private Long idPeriodo;
-
     private Long idGrado;
 
     public Long getIdDetalleMatricula() {

@@ -1,156 +1,170 @@
 package pe.edu.upc.demosm2.controllers;
 
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pe.edu.upc.demosm2.dtos.*;
+import pe.edu.upc.demosm2.dtos.AulasPorGradoDTO;
+import pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO;
+import pe.edu.upc.demosm2.dtos.RetiroPorCursoDTO;
 import pe.edu.upc.demosm2.entities.*;
-import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
-import pe.edu.upc.demosm2.serviceinterfaces.DetalleMatriculaServiceInterface;
-import pe.edu.upc.demosm2.serviceinterfaces.GradoServiceInterface;
-import pe.edu.upc.demosm2.serviceinterfaces.MatriculaServiceInterface;
-import pe.edu.upc.demosm2.serviceinterfaces.PeriodoAcademicoServiceInterface;
-import pe.edu.upc.demosm2.servicesinterfaces.ICursoService;
+import pe.edu.upc.demosm2.servicesinterfaces.IDetalleMatriculaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/detalles-matricula")
+@RequestMapping("/detalles-matricula")
 public class DetalleMatriculaController {
-    private final DetalleMatriculaServiceInterface service;
-    private final MatriculaServiceInterface matriculaService;
-    private final ICursoService cursoService;
-    private final PeriodoAcademicoServiceInterface periodoService;
-    private final GradoServiceInterface gradoService;
 
-    public DetalleMatriculaController(DetalleMatriculaServiceInterface service, MatriculaServiceInterface matriculaService, ICursoService cursoService, PeriodoAcademicoServiceInterface periodoService, GradoServiceInterface gradoService) {
-        this.service = service;
-        this.matriculaService = matriculaService;
-        this.cursoService = cursoService;
-        this.periodoService = periodoService;
-        this.gradoService = gradoService;
-    }
+    @Autowired
+    private IDetalleMatriculaService dmS;
 
     @GetMapping
-    public ResponseEntity<List<DetalleMatriculaDTOList>> listar() {
-        List<DetalleMatriculaDTOList> lista = service.list()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    public ResponseEntity<List<DetalleMatriculaDTO>> listar() {
+        List<DetalleMatriculaDTO> lista = dmS.list().stream()
+                .map(this::aDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
+    }
+
+    @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<?> registrar(@RequestBody DetalleMatriculaDTO dto) {
+        try {
+            DetalleMatricula d = aEntidad(dto);
+            d.setIdDetalleMatricula(null);
+            DetalleMatricula srv = dmS.insert(d);
+            return ResponseEntity.status(HttpStatus.CREATED).body(aDTO(srv));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: la matrícula, el curso, el periodo o el grado no existe en la base de datos.");
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetalleMatriculaDTOList> buscarId(@PathVariable Long id) {
-        DetalleMatricula detalle = service.listId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el detalle de matrícula: " + id));
-        return ResponseEntity.ok(toDTO(detalle));
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        Optional<DetalleMatricula> d = dmS.listId(id);
+        if (d.isPresent()) {
+            return ResponseEntity.ok(aDTO(d.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Detalle de matrícula no encontrado");
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<DetalleMatriculaDTOList> registrar(@Valid @RequestBody DetalleMatriculaDTOInsert dto) {
-        DetalleMatricula detalle = toEntity(dto);
-        detalle.setIdDetalleMatricula(null);
-        service.insert(detalle);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(detalle.getIdDetalleMatricula())
-                .toUri();
-        return ResponseEntity.created(location).body(toDTO(detalle));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<DetalleMatriculaDTOList> modificar(@PathVariable Long id, @Valid @RequestBody DetalleMatriculaDTOInsert dto) {
-        service.listId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el detalle de matrícula: " + id));
-        DetalleMatricula detalle = toEntity(dto);
-        detalle.setIdDetalleMatricula(id);
-        service.update(detalle);
-        return ResponseEntity.ok(toDTO(detalle));
+    @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<?> actualizar(@RequestBody DetalleMatriculaDTO dto) {
+        if (dto.getIdDetalleMatricula() == null || dmS.listId(dto.getIdDetalleMatricula()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Detalle de matrícula no encontrado");
+        }
+        try {
+            DetalleMatricula d = aEntidad(dto);
+            dmS.update(d);
+            return ResponseEntity.ok(aDTO(d));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: la matrícula, el curso, el periodo o el grado no existe en la base de datos.");
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        DetalleMatricula detalle = service.listId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el detalle de matrícula: " + id));
-        service.delete(detalle.getIdDetalleMatricula());
-        return ResponseEntity.noContent().build();
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
+        Optional<DetalleMatricula> d = dmS.listId(id);
+        if (d.isPresent()) {
+            dmS.delete(id);
+            return ResponseEntity.ok("Detalle de matrícula eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Detalle de matrícula no encontrado");
+        }
     }
 
-    // Reporte 1 (curso + detalles_matricula): cursos que más alumnos pierden (retirados + trasladados).
-    @GetMapping("/reportes/retiro-por-curso")
-    public ResponseEntity<List<RetiroPorCursoDTO>> retiroPorCurso() {
-        List<RetiroPorCursoDTO> lista = service.retiroPorCurso()
-                .stream()
-                .map(fila -> {
-                    RetiroPorCursoDTO dto = new RetiroPorCursoDTO();
-                    dto.setCurso((String) fila[0]);
-                    dto.setArea((String) fila[1]);
-                    dto.setTotalMatriculados(aLong(fila[2]));
-                    dto.setRetirados(aLong(fila[3]));
-                    dto.setTrasladados(aLong(fila[4]));
-                    dto.setPorcentajePerdida(aDouble(fila[5]));
-                    return dto;
-                })
-                .toList();
+    @GetMapping("/alumno/{idPersona}")
+    public ResponseEntity<List<DetalleMatriculaDTO>> listarPorAlumno(@PathVariable Long idPersona) {
+        List<DetalleMatriculaDTO> lista = dmS.listarDetallesPorAlumno(idPersona).stream()
+                .map(this::aDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
 
-    // Reporte 2 (grados + detalles_matricula): alumnos vigentes por grado en un periodo y aulas necesarias (40 por aula).
-    @GetMapping("/reportes/aulas-por-grado/{idPeriodo}")
-    public ResponseEntity<List<AulasPorGradoDTO>> aulasNecesariasPorGrado(@PathVariable Long idPeriodo) {
-        periodoService.listId(idPeriodo)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + idPeriodo));
-        List<AulasPorGradoDTO> lista = service.aulasNecesariasPorGrado(idPeriodo)
-                .stream()
-                .map(fila -> {
-                    AulasPorGradoDTO dto = new AulasPorGradoDTO();
-                    dto.setGrado((String) fila[0]);
-                    dto.setNivel((String) fila[1]);
-                    dto.setVigentes(aLong(fila[2]));
-                    dto.setAulasNecesarias(aLong(fila[3]));
-                    return dto;
-                })
-                .toList();
-        return ResponseEntity.ok(lista);
+    // Reporte (curso + detalles_matricula): cursos que más alumnos pierden (retirados + trasladados)
+    @GetMapping("/reporte-retiro-por-curso")
+    public ResponseEntity<?> reporteRetiroPorCurso() {
+        List<Object[]> lista = dmS.reporteRetiroPorCurso();
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No hay detalles de matrícula para generar el reporte.");
+        }
+        List<RetiroPorCursoDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            RetiroPorCursoDTO dto = new RetiroPorCursoDTO();
+            dto.setCurso((String) fila[0]);
+            dto.setArea((String) fila[1]);
+            dto.setTotalMatriculados(((Number) fila[2]).longValue());
+            dto.setRetirados(((Number) fila[3]).longValue());
+            dto.setTrasladados(((Number) fila[4]).longValue());
+            dto.setPorcentajePerdida(((Number) fila[5]).doubleValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
     }
 
-    private DetalleMatriculaDTOList toDTO(DetalleMatricula detalle) {
-        DetalleMatriculaDTOList dto = new DetalleMatriculaDTOList();
-        dto.setIdDetalleMatricula(detalle.getIdDetalleMatricula());
-        dto.setFechaMatricula(detalle.getFechaMatricula());
-        dto.setEstado(detalle.getEstado());
-        dto.setIdMatricula(detalle.getMatricula().getIdMatricula());
-        dto.setIdCurso(detalle.getCurso().getId_curso());
-        dto.setIdPeriodo(detalle.getPeriodo().getIdPeriodo());
-        dto.setIdGrado(detalle.getGrado().getIdGrado());
+    // Reporte (grados + detalles_matricula): alumnos vigentes por grado en un periodo y aulas necesarias (40 por aula)
+    @GetMapping("/reporte-aulas-por-grado/{idPeriodo}")
+    public ResponseEntity<?> reporteAulasNecesariasPorGrado(@PathVariable Long idPeriodo) {
+        List<Object[]> lista = dmS.reporteAulasNecesariasPorGrado(idPeriodo);
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No hay alumnos vigentes en ese periodo para generar el reporte.");
+        }
+        List<AulasPorGradoDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            AulasPorGradoDTO dto = new AulasPorGradoDTO();
+            dto.setGrado((String) fila[0]);
+            dto.setNivel((String) fila[1]);
+            dto.setVigentes(((Number) fila[2]).longValue());
+            dto.setAulasNecesarias(((Number) fila[3]).longValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
+    }
+
+    // Las relaciones se arman con su id (como Rol en UsuarioController); si alguna no existe salta DataIntegrityViolation
+    private DetalleMatricula aEntidad(DetalleMatriculaDTO dto) {
+        DetalleMatricula d = new DetalleMatricula();
+        d.setIdDetalleMatricula(dto.getIdDetalleMatricula());
+        d.setFechaMatricula(dto.getFechaMatricula() != null ? dto.getFechaMatricula() : LocalDate.now());
+        d.setEstado(dto.getEstado() != null ? dto.getEstado() : "VIGENTE");
+        Matricula matricula = new Matricula();
+        matricula.setIdMatricula(dto.getIdMatricula());
+        d.setMatricula(matricula);
+        Curso curso = new Curso();
+        curso.setId_curso(dto.getIdCurso());
+        d.setCurso(curso);
+        PeriodoAcademico periodo = new PeriodoAcademico();
+        periodo.setIdPeriodo(dto.getIdPeriodo());
+        d.setPeriodo(periodo);
+        Grado grado = new Grado();
+        grado.setIdGrado(dto.getIdGrado());
+        d.setGrado(grado);
+        return d;
+    }
+
+    private DetalleMatriculaDTO aDTO(DetalleMatricula d) {
+        DetalleMatriculaDTO dto = new DetalleMatriculaDTO();
+        dto.setIdDetalleMatricula(d.getIdDetalleMatricula());
+        dto.setFechaMatricula(d.getFechaMatricula());
+        dto.setEstado(d.getEstado());
+        dto.setIdMatricula(d.getMatricula().getIdMatricula());
+        dto.setIdCurso(d.getCurso().getId_curso());
+        dto.setIdPeriodo(d.getPeriodo().getIdPeriodo());
+        dto.setIdGrado(d.getGrado().getIdGrado());
         return dto;
-    }
-
-    private DetalleMatricula toEntity(DetalleMatriculaDTOInsert dto) {
-        DetalleMatricula detalle = new DetalleMatricula();
-        detalle.setFechaMatricula(dto.getFechaMatricula() != null ? dto.getFechaMatricula() : LocalDate.now());
-        detalle.setEstado(dto.getEstado() != null ? dto.getEstado() : "VIGENTE");
-        detalle.setMatricula(matriculaService.listId(dto.getIdMatricula())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe la matrícula: " + dto.getIdMatricula())));
-        detalle.setCurso(cursoService.listId(dto.getIdCurso())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el curso: " + dto.getIdCurso())));
-        detalle.setPeriodo(periodoService.listId(dto.getIdPeriodo())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + dto.getIdPeriodo())));
-        detalle.setGrado(gradoService.listId(dto.getIdGrado())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe el grado: " + dto.getIdGrado())));
-        return detalle;
-    }
-
-    private static Long aLong(Object valor) {
-        return valor == null ? null : ((Number) valor).longValue();
-    }
-
-    private static Double aDouble(Object valor) {
-        return valor == null ? null : ((Number) valor).doubleValue();
     }
 }

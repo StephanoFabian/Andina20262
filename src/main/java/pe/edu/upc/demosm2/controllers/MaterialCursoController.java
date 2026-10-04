@@ -1,71 +1,68 @@
-package org.example.andina2026.controllers;
+package pe.edu.upc.demosm2.controllers;
 
-import jakarta.validation.Valid;
+import pe.edu.upc.demosm2.dtos.MaterialCursoDTO;
+import pe.edu.upc.demosm2.entities.Curso;
+import pe.edu.upc.demosm2.entities.Material;
+import pe.edu.upc.demosm2.entities.MaterialCurso;
+import pe.edu.upc.demosm2.entities.MaterialCursoId;
+import pe.edu.upc.demosm2.servicesinterfaces.IMaterialCursoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.example.andina2026.dtos.MaterialCursoDTO;
-import org.example.andina2026.entities.Curso;
-import org.example.andina2026.entities.Material;
-import org.example.andina2026.entities.MaterialCurso;
-import org.example.andina2026.entities.MaterialCursoId;
-import org.example.andina2026.exceptions.ResourceNotFoundException;
-import org.example.andina2026.serviceinterfaces.CursoServiceInterface;
-import org.example.andina2026.serviceinterfaces.MaterialCursoServiceInterface;
-import org.example.andina2026.serviceinterfaces.MaterialServiceInterface;
 
-import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/materiales-cursos")
+@RequestMapping("/materiales-cursos")
 public class MaterialCursoController {
-    private final MaterialCursoServiceInterface service;
-    private final MaterialServiceInterface materialService;
-    private final CursoServiceInterface cursoService;
 
-    public MaterialCursoController(MaterialCursoServiceInterface service, MaterialServiceInterface materialService,
-                                   CursoServiceInterface cursoService) {
-        this.service = service;
-        this.materialService = materialService;
-        this.cursoService = cursoService;
-    }
+    @Autowired
+    private IMaterialCursoService mcS;
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<MaterialCursoDTO>> listar() {
-        List<MaterialCursoDTO> lista = service.list()
-                .stream()
-                .map(mc -> new MaterialCursoDTO(mc.getId().getIdMaterial(), mc.getId().getIdCurso()))
-                .toList();
+        List<MaterialCursoDTO> lista = mcS.list().stream()
+                .map(x -> {
+                    MaterialCursoDTO dto = new MaterialCursoDTO();
+                    dto.setIdMaterial(x.getId().getIdMaterial());
+                    dto.setIdCurso(x.getId().getIdCurso());
+                    return dto;
+                })
+                .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
 
-    @PostMapping
+    @PostMapping("/nuevo")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
-    public ResponseEntity<MaterialCursoDTO> registrar(@Valid @RequestBody MaterialCursoDTO dto) {
-        Material material = materialService.listId(dto.getIdMaterial())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe Material con id: " + dto.getIdMaterial()));
-        Curso curso = cursoService.listId(dto.getIdCurso())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe Curso con id: " + dto.getIdCurso()));
-        service.insert(new MaterialCurso(material, curso));
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{idMaterial}/{idCurso}")
-                .buildAndExpand(dto.getIdMaterial(), dto.getIdCurso())
-                .toUri();
-        return ResponseEntity.created(location).body(dto);
+    public ResponseEntity<?> registrar(@RequestBody MaterialCursoDTO dto) {
+        try {
+            Material material = new Material();
+            material.setIdMaterial(dto.getIdMaterial());
+            Curso curso = new Curso();
+            curso.setId_curso(dto.getIdCurso());
+            mcS.insert(new MaterialCurso(material, curso));
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: El material (" + dto.getIdMaterial() + ") o el curso (" + dto.getIdCurso() + ") no existe.");
+        }
     }
 
     @DeleteMapping("/{idMaterial}/{idCurso}")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
-    public ResponseEntity<Void> eliminar(@PathVariable Long idMaterial, @PathVariable Long idCurso) {
+    public ResponseEntity<String> eliminar(@PathVariable Long idMaterial, @PathVariable Long idCurso) {
         MaterialCursoId id = new MaterialCursoId(idMaterial, idCurso);
-        service.listId(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "No existe la relación material " + idMaterial + " - curso " + idCurso));
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        Optional<MaterialCurso> x = mcS.listId(id);
+        if (x.isPresent()) {
+            mcS.delete(id);
+            return ResponseEntity.ok("Material quitado del curso correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ese material no está asignado a ese curso");
+        }
     }
 }

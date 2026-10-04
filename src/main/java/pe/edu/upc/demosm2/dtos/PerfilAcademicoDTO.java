@@ -1,28 +1,9 @@
-package pe.edu.upc.demosm2.entities;
+package pe.edu.upc.demosm2.dtos;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "PerfilAcademico")
-public class PerfilAcademico {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PerfilAcademicoDTO {
     private Long idPerfilAcademico;
-
-    @Column(name = "detallePA", length = 100, nullable = false)
     private String detallePA;
-
-    @Column(name = "notasPA", nullable = false)
     private Double notasPA;
-
-    public PerfilAcademico() {
-    }
-
-    public PerfilAcademico(Long idPerfilAcademico, String detallePA, Double notasPA) {
-        this.idPerfilAcademico = idPerfilAcademico;
-        this.detallePA = detallePA;
-        this.notasPA = notasPA;
-    }
 
     public Long getIdPerfilAcademico() {
         return idPerfilAcademico;
