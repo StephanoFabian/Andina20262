@@ -1,91 +1,74 @@
-package org.example.andina2026.entities;
+package com.andina.plataforma.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "materiales")
+@Table(name = "material")
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Material {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_material")
-    private Long idMaterial;
+    @EqualsAndHashCode.Include
+    private Integer idMaterial;
 
-    @Column(name = "titulo", length = 200, nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_persona", nullable = false)
+    @ToString.Exclude
+    private Persona persona;
+
+    @NotBlank(message = "El título es obligatorio")
+    @Size(max = 200, message = "El título no puede exceder 200 caracteres")
+    @Column(name = "titulo", nullable = false, length = 200)
     private String titulo;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
+    @Size(max = 50, message = "El tipo no puede exceder 50 caracteres")
     @Column(name = "tipo", length = 50)
     private String tipo;
 
+    @Size(max = 500, message = "La URL del archivo no puede exceder 500 caracteres")
     @Column(name = "url_archivo", length = 500)
     private String urlArchivo;
 
     @Column(name = "fecha_publicacion")
     private LocalDate fechaPublicacion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_persona", nullable = false)
-    private Persona persona;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "material_curso",
+        joinColumns = @JoinColumn(name = "id_material"),
+        inverseJoinColumns = @JoinColumn(name = "id_curso")
+    )
+    @ToString.Exclude
+    @Builder.Default
+    private Set<Curso> cursos = new HashSet<>();
 
-    public Material() {
-    }
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    public Long getIdMaterial() {
-        return idMaterial;
-    }
-
-    public void setIdMaterial(Long idMaterial) {
-        this.idMaterial = idMaterial;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getUrlArchivo() {
-        return urlArchivo;
-    }
-
-    public void setUrlArchivo(String urlArchivo) {
-        this.urlArchivo = urlArchivo;
-    }
-
-    public LocalDate getFechaPublicacion() {
-        return fechaPublicacion;
-    }
-
-    public void setFechaPublicacion(LocalDate fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
-    }
-
-    public Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Persona persona) {
-        this.persona = persona;
-    }
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }
