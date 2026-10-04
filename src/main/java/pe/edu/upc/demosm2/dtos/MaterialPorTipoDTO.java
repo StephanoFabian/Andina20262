@@ -2,7 +2,7 @@ package pe.edu.upc.demosm2.dtos;
 
 public class MaterialPorTipoDTO {
     private String tipo;
-    private int cantidad;
+    private Long cantidad;
 
     public String getTipo() {
         return tipo;
@@ -12,11 +12,11 @@ public class MaterialPorTipoDTO {
         this.tipo = tipo;
     }
 
-    public int getCantidad() {
+    public Long getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(Long cantidad) {
         this.cantidad = cantidad;
     }
 }

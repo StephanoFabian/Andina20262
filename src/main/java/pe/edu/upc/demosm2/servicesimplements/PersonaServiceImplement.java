@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.servicesimplements;
 
+import pe.edu.upc.demosm2.dtos.CuentasPorRolQuery;
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.repositories.IPersonaRepositories;
 import pe.edu.upc.demosm2.servicesinterfaces.IPersonaService;
@@ -50,5 +51,10 @@ public class PersonaServiceImplement implements IPersonaService {
     @Override
     public void delete(Long id) {
         pR.deleteById(id);
+    }
+
+    @Override
+    public List<CuentasPorRolQuery> reporteCuentasPorRol() {
+        return pR.reporteCuentasPorRol();
     }
 }

@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.repositories;
 
+import pe.edu.upc.demosm2.dtos.MaterialPorTipoQuery;
 import pe.edu.upc.demosm2.entities.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,12 +31,12 @@ public interface IMaterialRepository extends JpaRepository<Material, Long> {
             """, nativeQuery = true)
     List<Material> listarMaterialesPorCurso(@Param("idCurso") Long idCurso);
 
-    // Reporte: cuántos materiales hay de cada tipo
+    // Decisión: qué tipo de material falta (los tipos con menos materiales salen al final).
     @Query(value = """
-            SELECT LOWER(tipo), COUNT(id_material)
+            SELECT LOWER(tipo) AS tipo, COUNT(id_material) AS cantidad
             FROM material
             GROUP BY LOWER(tipo)
-            ORDER BY COUNT(id_material) DESC
+            ORDER BY cantidad DESC
             """, nativeQuery = true)
-    List<Object[]> reporteMaterialesPorTipo();
+    List<MaterialPorTipoQuery> reporteMaterialesPorTipo();
 }

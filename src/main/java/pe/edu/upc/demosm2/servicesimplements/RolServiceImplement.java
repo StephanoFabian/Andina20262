@@ -5,6 +5,7 @@ import pe.edu.upc.demosm2.repositories.IRolRepository;
 import pe.edu.upc.demosm2.servicesinterfaces.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.demosm2.dtos.RolCantidadQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,5 +39,10 @@ public class RolServiceImplement implements IRolService {
     @Override
     public void delete(Long id) {
         rR.deleteById(id);
+    }
+
+    @Override
+    public List<RolCantidadQuery> reporteCantidadPersonasPorRol() {
+        return rR.reporteCantidadPersonasPorRol();
     }
 }

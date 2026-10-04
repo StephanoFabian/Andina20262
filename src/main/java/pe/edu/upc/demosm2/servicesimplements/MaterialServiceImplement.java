@@ -5,6 +5,7 @@ import pe.edu.upc.demosm2.repositories.IMaterialRepository;
 import pe.edu.upc.demosm2.servicesinterfaces.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.demosm2.dtos.MaterialPorTipoQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class MaterialServiceImplement implements IMaterialService {
     }
 
     @Override
-    public List<Object[]> reporteMaterialesPorTipo() {
+    public List<MaterialPorTipoQuery> reporteMaterialesPorTipo() {
         return mR.reporteMaterialesPorTipo();
     }
 }

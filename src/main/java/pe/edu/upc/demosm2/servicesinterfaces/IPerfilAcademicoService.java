@@ -11,4 +11,6 @@ public interface IPerfilAcademicoService {
     public Optional<PerfilAcademico> listId(Long id);
     public void update(PerfilAcademico pa);
     public void delete(Long id);
+
+    public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota);
 }

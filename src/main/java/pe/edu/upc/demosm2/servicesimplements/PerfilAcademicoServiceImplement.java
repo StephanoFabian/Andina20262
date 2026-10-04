@@ -39,4 +39,9 @@ public class PerfilAcademicoServiceImplement implements IPerfilAcademicoService 
     public void delete(Long id) {
         paR.deleteById(id);
     }
+
+    @Override
+    public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota) {
+        return paR.listarPerfilesConNotaMenorA(nota);
+    }
 }

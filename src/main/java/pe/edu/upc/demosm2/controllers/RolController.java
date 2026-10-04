@@ -1,6 +1,7 @@
 package pe.edu.upc.demosm2.controllers;
 
 import pe.edu.upc.demosm2.dtos.RolDTO;
+import pe.edu.upc.demosm2.dtos.RolCantidadDTO;
 import pe.edu.upc.demosm2.entities.Rol;
 import pe.edu.upc.demosm2.servicesinterfaces.IRolService;
 import org.modelmapper.ModelMapper;
@@ -69,5 +70,18 @@ public class RolController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol no encontrado");
         }
+    }
+
+    // Query nativo (rol + persona) para decidir si falta personal de algún tipo
+    @GetMapping("/reporte-cantidad-personas")
+    public ResponseEntity<?> reporteCantidadPersonasPorRol() {
+        ModelMapper m = new ModelMapper();
+        List<RolCantidadDTO> lista = rS.reporteCantidadPersonasPorRol().stream()
+                .map(x -> m.map(x, RolCantidadDTO.class))
+                .collect(Collectors.toList());
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay roles registrados para generar el reporte.");
+        }
+        return ResponseEntity.ok(lista);
     }
 }

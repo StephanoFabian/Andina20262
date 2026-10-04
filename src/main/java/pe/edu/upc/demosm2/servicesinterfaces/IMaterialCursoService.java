@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.servicesinterfaces;
 
+import pe.edu.upc.demosm2.dtos.CursoMaterialesQuery;
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
 
@@ -12,4 +13,6 @@ public interface IMaterialCursoService {
     public Optional<MaterialCurso> listId(MaterialCursoId id);
     public void update(MaterialCurso mc);
     public void delete(MaterialCursoId id);
+
+    public List<CursoMaterialesQuery> reporteMaterialesPorCurso();
 }

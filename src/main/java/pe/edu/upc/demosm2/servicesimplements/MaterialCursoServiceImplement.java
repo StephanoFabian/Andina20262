@@ -1,11 +1,12 @@
 package pe.edu.upc.demosm2.servicesimplements;
 
 import pe.edu.upc.demosm2.entities.MaterialCurso;
-import pe.edu.upc.demosm2.entities.MaterialCursoId;
 import pe.edu.upc.demosm2.repositories.IMaterialCursoRepository;
 import pe.edu.upc.demosm2.servicesinterfaces.IMaterialCursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.demosm2.dtos.CursoMaterialesQuery;
+import pe.edu.upc.demosm2.entities.MaterialCursoId;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,5 +40,10 @@ public class MaterialCursoServiceImplement implements IMaterialCursoService {
     @Override
     public void delete(MaterialCursoId id) {
         mcR.deleteById(id);
+    }
+
+    @Override
+    public List<CursoMaterialesQuery> reporteMaterialesPorCurso() {
+        return mcR.reporteMaterialesPorCurso();
     }
 }

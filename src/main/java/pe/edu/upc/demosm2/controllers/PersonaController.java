@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.controllers;
 
+import pe.edu.upc.demosm2.dtos.CuentasPorRolDTO;
 import pe.edu.upc.demosm2.dtos.PersonaDTO;
 import pe.edu.upc.demosm2.dtos.PersonaRegistroDTO;
 import pe.edu.upc.demosm2.entities.Persona;
@@ -96,5 +97,19 @@ public class PersonaController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Persona no encontrada");
         }
+    }
+
+    // Query nativo (persona + rol) para decidir: a qué roles activar cuentas o ponerles contraseña
+    @GetMapping("/reporte-cuentas-por-rol")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> reporteCuentasPorRol() {
+        ModelMapper m = new ModelMapper();
+        List<CuentasPorRolDTO> lista = pS.reporteCuentasPorRol().stream()
+                .map(x -> m.map(x, CuentasPorRolDTO.class))
+                .collect(Collectors.toList());
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay personas registradas para generar el reporte.");
+        }
+        return ResponseEntity.ok(lista);
     }
 }

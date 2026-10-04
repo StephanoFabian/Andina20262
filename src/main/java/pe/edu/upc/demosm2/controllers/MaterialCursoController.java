@@ -1,11 +1,13 @@
 package pe.edu.upc.demosm2.controllers;
 
+import pe.edu.upc.demosm2.dtos.CursoMaterialesDTO;
 import pe.edu.upc.demosm2.dtos.MaterialCursoDTO;
 import pe.edu.upc.demosm2.entities.Curso;
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
 import pe.edu.upc.demosm2.servicesinterfaces.IMaterialCursoService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -26,14 +28,24 @@ public class MaterialCursoController {
 
     @GetMapping
     public ResponseEntity<List<MaterialCursoDTO>> listar() {
+        ModelMapper m = new ModelMapper();
+        // Se mapea desde la llave compuesta (MaterialCursoId), que tiene justo idMaterial e idCurso
         List<MaterialCursoDTO> lista = mcS.list().stream()
-                .map(x -> {
-                    MaterialCursoDTO dto = new MaterialCursoDTO();
-                    dto.setIdMaterial(x.getId().getIdMaterial());
-                    dto.setIdCurso(x.getId().getIdCurso());
-                    return dto;
-                })
+                .map(x -> m.map(x.getId(), MaterialCursoDTO.class))
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
+    // Query nativo (curso + material_curso) para decidir a qué cursos subir materiales primero
+    @GetMapping("/reporte-materiales-por-curso")
+    public ResponseEntity<?> reporteMaterialesPorCurso() {
+        ModelMapper m = new ModelMapper();
+        List<CursoMaterialesDTO> lista = mcS.reporteMaterialesPorCurso().stream()
+                .map(x -> m.map(x, CursoMaterialesDTO.class))
+                .collect(Collectors.toList());
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay cursos registrados para generar el reporte.");
+        }
         return ResponseEntity.ok(lista);
     }
 

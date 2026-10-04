@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.servicesinterfaces;
 
+import pe.edu.upc.demosm2.dtos.RolCantidadQuery;
 import pe.edu.upc.demosm2.entities.Rol;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface IRolService {
     public Optional<Rol> listId(Long id);
     public void update(Rol r);
     public void delete(Long id);
+
+    public List<RolCantidadQuery> reporteCantidadPersonasPorRol();
 }

@@ -1,5 +1,8 @@
 package pe.edu.upc.demosm2.servicesinterfaces;
 
+import pe.edu.upc.demosm2.dtos.AulasPorGradoQuery;
+import pe.edu.upc.demosm2.dtos.RetencionColegioQuery;
+import pe.edu.upc.demosm2.dtos.RetiroPorCursoQuery;
 import pe.edu.upc.demosm2.entities.DetalleMatricula;
 
 import java.util.List;
@@ -12,7 +15,7 @@ public interface IDetalleMatriculaService {
     public void update(DetalleMatricula dm);
     public void delete(Long id);
 
-    public List<DetalleMatricula> listarDetallesPorAlumno(Long idPersona);
-    public List<Object[]> reporteRetiroPorCurso();
-    public List<Object[]> reporteAulasNecesariasPorGrado(Long idPeriodo);
+    public List<RetiroPorCursoQuery> reporteRetiroPorCurso();
+    public List<AulasPorGradoQuery> reporteAulasNecesariasPorGrado(Long idPeriodo);
+    public List<RetencionColegioQuery> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual);
 }

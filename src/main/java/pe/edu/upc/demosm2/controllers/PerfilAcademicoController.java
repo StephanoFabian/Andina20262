@@ -70,4 +70,14 @@ public class PerfilAcademicoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Perfil académico no encontrado");
         }
     }
+
+    // Query nativo: perfiles con nota menor a la indicada (alumnos a los que apoyar)
+    @GetMapping("/nota-menor/{nota}")
+    public ResponseEntity<List<PerfilAcademicoDTO>> listarPerfilesConNotaMenorA(@PathVariable Double nota) {
+        ModelMapper m = new ModelMapper();
+        List<PerfilAcademicoDTO> lista = paS.listarPerfilesConNotaMenorA(nota).stream()
+                .map(x -> m.map(x, PerfilAcademicoDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
 }

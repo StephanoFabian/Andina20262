@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.servicesinterfaces;
 
+import pe.edu.upc.demosm2.dtos.MaterialPorTipoQuery;
 import pe.edu.upc.demosm2.entities.Material;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface IMaterialService {
 
     public List<Material> buscarPorTitulo(String titulo);
     public List<Material> listarMaterialesPorCurso(Long idCurso);
-    public List<Object[]> reporteMaterialesPorTipo();
+    public List<MaterialPorTipoQuery> reporteMaterialesPorTipo();
 }
