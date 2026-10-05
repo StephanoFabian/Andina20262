@@ -1,8 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
 
-import pe.edu.upc.demosm2.dtos.AulasPorGradoQuery;
-import pe.edu.upc.demosm2.dtos.RetencionColegioQuery;
-import pe.edu.upc.demosm2.dtos.RetiroPorCursoQuery;
 import pe.edu.upc.demosm2.entities.DetalleMatricula;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,7 +24,7 @@ public interface IDetalleMatriculaRepository extends JpaRepository<DetalleMatric
             GROUP BY cu.id_curso, cu.nombre_curso, cu.area
             ORDER BY porcentajePerdida DESC, totalMatriculados DESC
             """, nativeQuery = true)
-    List<RetiroPorCursoQuery> reporteRetiroPorCurso();
+    List<Object[]> reporteRetiroPorCurso();
 
     // Decisión: cuántas secciones abrir por grado en un periodo (máximo 40 alumnos por aula).
     // Tablas: grados + detalles_matricula.
@@ -40,7 +37,7 @@ public interface IDetalleMatriculaRepository extends JpaRepository<DetalleMatric
             GROUP BY g.id_grado, g.nombre, g.nivel
             ORDER BY vigentes DESC
             """, nativeQuery = true)
-    List<AulasPorGradoQuery> reporteAulasNecesariasPorGrado(@Param("idPeriodo") Long idPeriodo);
+    List<Object[]> reporteAulasNecesariasPorGrado(@Param("idPeriodo") Long idPeriodo);
 
     // Decisión: cuánta población gana o pierde cada colegio de un periodo a otro.
     // Por colegio: alumnos del periodo anterior y del actual, cuántos siguieron, cuántos se fueron, cuántos son nuevos.
@@ -69,6 +66,6 @@ public interface IDetalleMatriculaRepository extends JpaRepository<DetalleMatric
             GROUP BY c.id_colegio, c.nombre
             ORDER BY variacion ASC, c.nombre
             """, nativeQuery = true)
-    List<RetencionColegioQuery> reporteRetencionPorColegio(@Param("idPeriodoAnterior") Long idPeriodoAnterior,
+    List<Object[]> reporteRetencionPorColegio(@Param("idPeriodoAnterior") Long idPeriodoAnterior,
                                                            @Param("idPeriodoActual") Long idPeriodoActual);
 }

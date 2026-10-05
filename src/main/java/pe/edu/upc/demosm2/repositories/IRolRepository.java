@@ -1,6 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
 
-import pe.edu.upc.demosm2.dtos.RolCantidadQuery;
 import pe.edu.upc.demosm2.entities.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +21,5 @@ public interface IRolRepository extends JpaRepository<Rol, Long> {
             GROUP BY r.id_tipo_persona, r.detalle_rol
             ORDER BY cantidad DESC
             """, nativeQuery = true)
-    List<RolCantidadQuery> reporteCantidadPersonasPorRol();
+    List<Object[]> reporteCantidadPersonasPorRol();
 }

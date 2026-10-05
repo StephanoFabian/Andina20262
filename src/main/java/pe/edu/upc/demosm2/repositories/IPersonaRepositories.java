@@ -1,6 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
 
-import pe.edu.upc.demosm2.dtos.CuentasPorRolQuery;
 import pe.edu.upc.demosm2.entities.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +23,5 @@ public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
             GROUP BY r.id_tipo_persona, r.detalle_rol
             ORDER BY sinPassword DESC, inactivos DESC, total DESC
             """, nativeQuery = true)
-    List<CuentasPorRolQuery> reporteCuentasPorRol();
+    List<Object[]> reporteCuentasPorRol();
 }

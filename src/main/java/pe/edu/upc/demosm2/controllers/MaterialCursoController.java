@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,14 +40,18 @@ public class MaterialCursoController {
     // Query nativo (curso + material_curso) para decidir a qué cursos subir materiales primero
     @GetMapping("/reporte-materiales-por-curso")
     public ResponseEntity<?> reporteMaterialesPorCurso() {
-        ModelMapper m = new ModelMapper();
-        List<CursoMaterialesDTO> lista = mcS.reporteMaterialesPorCurso().stream()
-                .map(x -> m.map(x, CursoMaterialesDTO.class))
-                .collect(Collectors.toList());
+        List<Object[]> lista = mcS.reporteMaterialesPorCurso();
         if (lista.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay cursos registrados para generar el reporte.");
         }
-        return ResponseEntity.ok(lista);
+        List<CursoMaterialesDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            CursoMaterialesDTO dto = new CursoMaterialesDTO();
+            dto.setCurso((String) fila[0]);
+            dto.setCantidadMateriales(((Number) fila[1]).longValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
     }
 
     @PostMapping("/nuevo")

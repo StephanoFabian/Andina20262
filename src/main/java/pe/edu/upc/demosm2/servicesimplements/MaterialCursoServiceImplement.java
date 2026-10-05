@@ -5,7 +5,6 @@ import pe.edu.upc.demosm2.repositories.IMaterialCursoRepository;
 import pe.edu.upc.demosm2.servicesinterfaces.IMaterialCursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.demosm2.dtos.CursoMaterialesQuery;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public class MaterialCursoServiceImplement implements IMaterialCursoService {
     }
 
     @Override
-    public List<CursoMaterialesQuery> reporteMaterialesPorCurso() {
+    public List<Object[]> reporteMaterialesPorCurso() {
         return mcR.reporteMaterialesPorCurso();
     }
 }

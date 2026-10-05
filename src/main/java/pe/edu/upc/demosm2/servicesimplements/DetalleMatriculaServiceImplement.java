@@ -5,9 +5,6 @@ import pe.edu.upc.demosm2.repositories.IDetalleMatriculaRepository;
 import pe.edu.upc.demosm2.servicesinterfaces.IDetalleMatriculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.demosm2.dtos.AulasPorGradoQuery;
-import pe.edu.upc.demosm2.dtos.RetencionColegioQuery;
-import pe.edu.upc.demosm2.dtos.RetiroPorCursoQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,17 +41,17 @@ public class DetalleMatriculaServiceImplement implements IDetalleMatriculaServic
     }
 
     @Override
-    public List<RetiroPorCursoQuery> reporteRetiroPorCurso() {
+    public List<Object[]> reporteRetiroPorCurso() {
         return dmR.reporteRetiroPorCurso();
     }
 
     @Override
-    public List<AulasPorGradoQuery> reporteAulasNecesariasPorGrado(Long idPeriodo) {
+    public List<Object[]> reporteAulasNecesariasPorGrado(Long idPeriodo) {
         return dmR.reporteAulasNecesariasPorGrado(idPeriodo);
     }
 
     @Override
-    public List<RetencionColegioQuery> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual) {
+    public List<Object[]> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual) {
         return dmR.reporteRetencionPorColegio(idPeriodoAnterior, idPeriodoActual);
     }
 }

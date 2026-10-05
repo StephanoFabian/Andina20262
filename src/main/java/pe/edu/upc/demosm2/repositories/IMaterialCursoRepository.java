@@ -1,6 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
 
-import pe.edu.upc.demosm2.dtos.CursoMaterialesQuery;
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +20,5 @@ public interface IMaterialCursoRepository extends JpaRepository<MaterialCurso, M
             GROUP BY c.id_curso, c.nombre_curso
             ORDER BY cantidadMateriales ASC, c.nombre_curso
             """, nativeQuery = true)
-    List<CursoMaterialesQuery> reporteMaterialesPorCurso();
+    List<Object[]> reporteMaterialesPorCurso();
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,13 +76,18 @@ public class RolController {
     // Query nativo (rol + persona) para decidir si falta personal de algún tipo
     @GetMapping("/reporte-cantidad-personas")
     public ResponseEntity<?> reporteCantidadPersonasPorRol() {
-        ModelMapper m = new ModelMapper();
-        List<RolCantidadDTO> lista = rS.reporteCantidadPersonasPorRol().stream()
-                .map(x -> m.map(x, RolCantidadDTO.class))
-                .collect(Collectors.toList());
+        List<Object[]> lista = rS.reporteCantidadPersonasPorRol();
         if (lista.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay roles registrados para generar el reporte.");
         }
-        return ResponseEntity.ok(lista);
+        List<RolCantidadDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            RolCantidadDTO dto = new RolCantidadDTO();
+            dto.setRol((String) fila[0]);
+            dto.setCantidad(((Number) fila[1]).longValue());
+            dto.setPorcentaje(fila[2] == null ? null : ((Number) fila[2]).doubleValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
     }
 }

@@ -1,6 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
 
-import pe.edu.upc.demosm2.dtos.MaterialPorTipoQuery;
 import pe.edu.upc.demosm2.entities.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,5 +37,5 @@ public interface IMaterialRepository extends JpaRepository<Material, Long> {
             GROUP BY LOWER(tipo)
             ORDER BY cantidad DESC
             """, nativeQuery = true)
-    List<MaterialPorTipoQuery> reporteMaterialesPorTipo();
+    List<Object[]> reporteMaterialesPorTipo();
 }

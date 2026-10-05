@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,14 +112,18 @@ public class MaterialController {
     // Query nativo: cuántos materiales hay de cada tipo
     @GetMapping("/reporte-por-tipo")
     public ResponseEntity<?> reporteMaterialesPorTipo() {
-        ModelMapper m = new ModelMapper();
-        List<MaterialPorTipoDTO> lista = mS.reporteMaterialesPorTipo().stream()
-                .map(x -> m.map(x, MaterialPorTipoDTO.class))
-                .collect(Collectors.toList());
+        List<Object[]> lista = mS.reporteMaterialesPorTipo();
         if (lista.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No hay materiales registrados para generar el reporte.");
         }
-        return ResponseEntity.ok(lista);
+        List<MaterialPorTipoDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            MaterialPorTipoDTO dto = new MaterialPorTipoDTO();
+            dto.setTipo((String) fila[0]);
+            dto.setCantidad(((Number) fila[1]).longValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
     }
 }

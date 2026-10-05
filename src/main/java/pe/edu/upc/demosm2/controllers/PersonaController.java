@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -103,13 +104,20 @@ public class PersonaController {
     @GetMapping("/reporte-cuentas-por-rol")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> reporteCuentasPorRol() {
-        ModelMapper m = new ModelMapper();
-        List<CuentasPorRolDTO> lista = pS.reporteCuentasPorRol().stream()
-                .map(x -> m.map(x, CuentasPorRolDTO.class))
-                .collect(Collectors.toList());
+        List<Object[]> lista = pS.reporteCuentasPorRol();
         if (lista.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay personas registradas para generar el reporte.");
         }
-        return ResponseEntity.ok(lista);
+        List<CuentasPorRolDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : lista) {
+            CuentasPorRolDTO dto = new CuentasPorRolDTO();
+            dto.setRol((String) fila[0]);
+            dto.setTotal(((Number) fila[1]).longValue());
+            dto.setActivos(((Number) fila[2]).longValue());
+            dto.setInactivos(((Number) fila[3]).longValue());
+            dto.setSinPassword(((Number) fila[4]).longValue());
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
     }
 }

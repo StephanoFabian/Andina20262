@@ -1,6 +1,5 @@
 package pe.edu.upc.demosm2.servicesimplements;
 
-import pe.edu.upc.demosm2.dtos.CuentasPorRolQuery;
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.repositories.IPersonaRepositories;
 import pe.edu.upc.demosm2.servicesinterfaces.IPersonaService;
@@ -54,7 +53,7 @@ public class PersonaServiceImplement implements IPersonaService {
     }
 
     @Override
-    public List<CuentasPorRolQuery> reporteCuentasPorRol() {
+    public List<Object[]> reporteCuentasPorRol() {
         return pR.reporteCuentasPorRol();
     }
 }
