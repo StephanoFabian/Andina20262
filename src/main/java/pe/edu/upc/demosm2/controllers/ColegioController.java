@@ -1,11 +1,11 @@
-package org.example.andina2026.controllers;
+package pe.edu.upc.demosm2.controllers;
 
 
 import jakarta.validation.Valid;
-import org.example.andina2026.dtos.ColegioDTOInsert;
-import org.example.andina2026.dtos.ColegioDTOList;
-import org.example.andina2026.entities.Colegio;
-import org.example.andina2026.serviceinterfaces.ColegioServiceInterface;
+import pe.edu.upc.demosm2.dtos.ColegioDTOInsert;
+import pe.edu.upc.demosm2.dtos.ColegioDTOList;
+import pe.edu.upc.demosm2.entities.Colegio;
+import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

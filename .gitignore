@@ -1,0 +1,11 @@
+# Salidas de compilación (se generan solas al compilar; no se suben)
+target/
+out/
+
+# IntelliJ
+.idea/
+*.iml
+
+# Varios
+.DS_Store
+*.log

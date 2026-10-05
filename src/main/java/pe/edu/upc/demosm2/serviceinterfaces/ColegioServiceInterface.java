@@ -1,5 +1,5 @@
-package org.example.andina2026.serviceinterfaces;
-import org.example.andina2026.entities.Colegio;
+package pe.edu.upc.demosm2.serviceinterfaces;
+import pe.edu.upc.demosm2.entities.Colegio;
 
 import java.util.List;
 import java.util.Optional;

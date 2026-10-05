@@ -10,7 +10,7 @@ import pe.edu.upc.demosm2.dtos.CursoDTOInsert;
 import pe.edu.upc.demosm2.dtos.CursoDTOList;
 import pe.edu.upc.demosm2.entities.Curso;
 import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
-import pe.edu.upc.demosm2.servicesinterfaces.ICursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
 
 import java.net.URI;
 import java.util.List;
