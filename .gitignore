@@ -9,3 +9,6 @@ out/
 # Varios
 .DS_Store
 *.log
+.env
+.env.*
+!.env.example
