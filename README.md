@@ -16,15 +16,42 @@ pooler antes de aumentar réplicas. Este valor no constituye una prueba de capac
 
 ## Ejecutar y probar
 
-Con JDK 21 y Maven instalados, y las variables exportadas:
+Con JDK 21 y Maven instalados, y las variables de aplicación exportadas:
 
 ```sh
-mvn clean verify
+mvn -DskipTests package
 java -jar target/demoSM2-0.0.1-SNAPSHOT.jar
 ```
 
-La prueba de contexto valida la conexión y el esquema de la base configurada.
-Para desarrollo y CI, usa una base de pruebas con el esquema previamente creado.
+Las pruebas de integración usan una base PostgreSQL **descartable**, independiente
+de la aplicación. Crean y eliminan su esquema. Configura `ANDINA_TEST_DB_URL`,
+`ANDINA_TEST_DB_USERNAME` y `ANDINA_TEST_DB_PASSWORD`, y ejecuta `mvn clean verify`.
+Por defecto conectan a `jdbc:postgresql://127.0.0.1:55439/andina_test`, usuario
+`andina_test`. Las pruebas no usan `SPRING_DATASOURCE_URL` de producción.
+
+## Colegios y aulas
+
+Ambos recursos permiten GET de colección, GET por ID, POST, PUT por ID y DELETE
+por ID, en `/api/colegios` y `/api/aula`. Crear, actualizar y eliminar requiere
+`ADMIN` o `ADMIN_ESCUELA`. Las consultas requieren autenticación.
+
+Los listados conservan la respuesta como arreglo JSON, pero ahora son paginados:
+`?page=0&size=20`, con un máximo de 100 elementos por página y page de 0 a 10000.
+Las cabeceras `X-Has-Next`, `X-Page` y `X-Page-Size` permiten recorrer la colección.
+El cliente debe avanzar mientras `X-Has-Next` sea `true`; no asumir que la primera
+respuesta contiene todos los registros. El orden es ascendente por ID.
+
+`GET /api/aula?idColegio=1000&page=0&size=20` filtra aulas por colegio en la base
+de datos. Un colegio inexistente devuelve 404. Al crear un aula, `numero` se acepta
+como alias de `nombre`; las respuestas conservan el campo `nombre`.
+
+Los IDs de creación los genera el servidor. Un ID enviado en POST se rechaza con
+400. En PUT, el ID opcional del cuerpo debe coincidir con la ruta. Capacidad debe
+ser positiva, el colegio debe existir y los campos de texto no pueden quedar vacíos
+ni superar sus longitudes. Eliminar un colegio con relaciones existentes devuelve
+409 y conserva sus dependencias.
+
+La [revisión de historias](docs/revision-historias.md) detalla el alcance y los pendientes.
 
 ## Railway
 

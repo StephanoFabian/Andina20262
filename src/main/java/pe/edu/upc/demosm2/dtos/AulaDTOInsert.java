@@ -1,21 +1,29 @@
 package pe.edu.upc.demosm2.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class AulaDTOInsert {
 
     private Long idAula;
 
     @NotBlank(message = "El nombre es obligatorio!!!")
+    @Size(max = 30)
+    @JsonAlias("numero")
     private String nombre;
 
     @NotBlank(message = "La seccion es obligatoria!!!")
+    @Size(max = 30)
     private String seccion;
 
-    @NotBlank(message = "La capacidad es obligatoria!!!")
+    @Positive(message = "La capacidad debe ser mayor que cero")
     private int capacidad;
 
-    @NotBlank(message = "El id del colegio es obligatorio!!!")
+    @NotNull(message = "El colegio es obligatorio")
+    @Positive(message = "El id del colegio debe ser positivo")
     private Long idColegio;
 
     public Long getIdAula() {

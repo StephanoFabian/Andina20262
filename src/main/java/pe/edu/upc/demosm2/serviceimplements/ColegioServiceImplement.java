@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 @Service
 public class ColegioServiceImplement implements ColegioServiceInterface {
@@ -18,7 +20,7 @@ public class ColegioServiceImplement implements ColegioServiceInterface {
     }
 
     @Override
-    public List<Colegio> list(){return ICR.findAll();}
+    public Slice<Colegio> list(Pageable pageable){return ICR.findAllBy(pageable);}
     @Override
     public void insert(Colegio c){ICR.save(c);}
     @Override
