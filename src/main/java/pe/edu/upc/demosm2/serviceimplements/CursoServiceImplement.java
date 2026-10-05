@@ -1,9 +1,9 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.demosm2.entities.Curso;
 import pe.edu.upc.demosm2.repositories.ICursoRepository;
-import pe.edu.upc.demosm2.servicesinterfaces.ICursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
 
 import java.util.List;
 import java.util.Optional;

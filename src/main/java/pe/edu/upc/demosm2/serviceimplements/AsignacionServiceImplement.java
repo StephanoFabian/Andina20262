@@ -1,10 +1,10 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.demosm2.dtos.AsignacionDTOList;
 import pe.edu.upc.demosm2.entities.AsignacionDocente;
 import pe.edu.upc.demosm2.repositories.IAsignacionDocenteRepository;
-import pe.edu.upc.demosm2.servicesinterfaces.IAsignacionDocenteService;
+import pe.edu.upc.demosm2.serviceinterfaces.IAsignacionDocenteService;
 
 import java.util.List;
 import java.util.Optional;

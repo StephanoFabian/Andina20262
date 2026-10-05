@@ -8,13 +8,20 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pe.edu.upc.demosm2.dtos.AsignacionDTOInsert;
 import pe.edu.upc.demosm2.dtos.AsignacionDTOList;
 import pe.edu.upc.demosm2.entities.AsignacionDocente;
+import pe.edu.upc.demosm2.entities.Colegio;
 import pe.edu.upc.demosm2.entities.Curso;
+import pe.edu.upc.demosm2.entities.PeriodoAcademico;
+import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
-import pe.edu.upc.demosm2.servicesinterfaces.IAsignacionDocenteService;
-import pe.edu.upc.demosm2.servicesinterfaces.ICursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IAsignacionDocenteService;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IPersonaService;
+import pe.edu.upc.demosm2.serviceinterfaces.PeriodoAcademicoServiceInterface;
+import pe.edu.upc.demosm2.serviceimplements.ColegioServiceImplement;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/asignacion")
@@ -26,7 +33,8 @@ public class AsignacionControlller {
     public final IPersonaService pS;
     public final ModelMapper modelMapper;
 
-    public AsignacionControlller(IAsignacionDocenteService aS, ICursoService cs, ModelMapper modelMapper) {
+    public AsignacionControlller(IAsignacionDocenteService aS, ICursoService cs, ColegioServiceImplement coS,
+                                 PeriodoAcademicoServiceInterface peS, IPersonaService pS, ModelMapper modelMapper) {
         this.aS = aS;
         this.cs = cs;
         this.coS = coS;
