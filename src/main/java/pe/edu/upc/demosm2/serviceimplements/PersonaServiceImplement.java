@@ -1,8 +1,8 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.repositories.IPersonaRepositories;
-import pe.edu.upc.demosm2.servicesinterfaces.IPersonaService;
+import pe.edu.upc.demosm2.serviceinterfaces.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

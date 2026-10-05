@@ -1,8 +1,8 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import pe.edu.upc.demosm2.entities.Rol;
 import pe.edu.upc.demosm2.repositories.IRolRepository;
-import pe.edu.upc.demosm2.servicesinterfaces.IRolService;
+import pe.edu.upc.demosm2.serviceinterfaces.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

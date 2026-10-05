@@ -1,8 +1,8 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.repositories.IMaterialRepository;
-import pe.edu.upc.demosm2.servicesinterfaces.IMaterialService;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

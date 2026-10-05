@@ -1,8 +1,8 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import pe.edu.upc.demosm2.entities.DetalleMatricula;
 import pe.edu.upc.demosm2.repositories.IDetalleMatriculaRepository;
-import pe.edu.upc.demosm2.servicesinterfaces.IDetalleMatriculaService;
+import pe.edu.upc.demosm2.serviceinterfaces.IDetalleMatriculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

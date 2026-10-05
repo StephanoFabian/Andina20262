@@ -3,7 +3,7 @@ package pe.edu.upc.demosm2.controllers;
 import pe.edu.upc.demosm2.dtos.JwtRequestDTO;
 import pe.edu.upc.demosm2.dtos.JwtResponseDTO;
 import pe.edu.upc.demosm2.securities.JwtTokenService;
-import pe.edu.upc.demosm2.servicesimplements.JwtUserDetailsService;
+import pe.edu.upc.demosm2.serviceimplements.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

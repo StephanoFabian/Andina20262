@@ -3,7 +3,7 @@ package pe.edu.upc.demosm2.controllers;
 import pe.edu.upc.demosm2.dtos.RolDTO;
 import pe.edu.upc.demosm2.dtos.RolCantidadDTO;
 import pe.edu.upc.demosm2.entities.Rol;
-import pe.edu.upc.demosm2.servicesinterfaces.IRolService;
+import pe.edu.upc.demosm2.serviceinterfaces.IRolService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

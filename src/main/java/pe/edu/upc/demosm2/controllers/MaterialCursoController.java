@@ -6,7 +6,7 @@ import pe.edu.upc.demosm2.entities.Curso;
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
-import pe.edu.upc.demosm2.servicesinterfaces.IMaterialCursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialCursoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

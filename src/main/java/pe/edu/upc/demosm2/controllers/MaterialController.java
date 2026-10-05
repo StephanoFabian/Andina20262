@@ -4,7 +4,7 @@ import pe.edu.upc.demosm2.dtos.MaterialDTO;
 import pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO;
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.entities.Persona;
-import pe.edu.upc.demosm2.servicesinterfaces.IMaterialService;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

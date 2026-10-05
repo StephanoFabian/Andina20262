@@ -1,4 +1,4 @@
-package pe.edu.upc.demosm2.servicesimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.repositories.IPersonaRepositories;

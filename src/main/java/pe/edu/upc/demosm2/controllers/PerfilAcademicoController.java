@@ -2,7 +2,7 @@ package pe.edu.upc.demosm2.controllers;
 
 import pe.edu.upc.demosm2.dtos.PerfilAcademicoDTO;
 import pe.edu.upc.demosm2.entities.PerfilAcademico;
-import pe.edu.upc.demosm2.servicesinterfaces.IPerfilAcademicoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IPerfilAcademicoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

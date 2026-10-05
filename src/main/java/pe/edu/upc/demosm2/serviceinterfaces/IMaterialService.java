@@ -1,4 +1,4 @@
-package pe.edu.upc.demosm2.servicesinterfaces;
+package pe.edu.upc.demosm2.serviceinterfaces;
 
 import pe.edu.upc.demosm2.entities.Material;
 

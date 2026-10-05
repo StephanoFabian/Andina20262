@@ -5,7 +5,7 @@ import pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO;
 import pe.edu.upc.demosm2.dtos.RetencionColegioDTO;
 import pe.edu.upc.demosm2.dtos.RetiroPorCursoDTO;
 import pe.edu.upc.demosm2.entities.*;
-import pe.edu.upc.demosm2.servicesinterfaces.IDetalleMatriculaService;
+import pe.edu.upc.demosm2.serviceinterfaces.IDetalleMatriculaService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
