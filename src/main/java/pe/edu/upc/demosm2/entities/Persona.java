@@ -36,6 +36,11 @@ public class Persona {
     @JoinColumn(name = "idTipoPersona", nullable = false)
     private Rol rol;
 
+    // Aula actual (HU30/HU44/HU47). Opcional: docentes y administradores pueden no tener aula.
+    @ManyToOne
+    @JoinColumn(name = "idAula")
+    private Aula aula;
+
     public Persona() {
     }
 
@@ -113,5 +118,13 @@ public class Persona {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public Aula getAula() {
+        return aula;
+    }
+
+    public void setAula(Aula aula) {
+        this.aula = aula;
     }
 }

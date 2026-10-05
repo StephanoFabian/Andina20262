@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+
 import pe.edu.upc.demosm2.entities.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +24,8 @@ public interface IRolRepository extends JpaRepository<Rol, Long> {
             ORDER BY cantidad DESC
             """, nativeQuery = true)
     List<Object[]> reporteCantidadPersonasPorRol();
+
+    // HU37: personas que usan el rol (si hay alguna, el rol no se puede eliminar)
+    @Query(value = "SELECT COUNT(*) FROM persona WHERE id_tipo_persona = :idRol", nativeQuery = true)
+    long contarPersonasDelRol(@Param("idRol") Long idRol);
 }

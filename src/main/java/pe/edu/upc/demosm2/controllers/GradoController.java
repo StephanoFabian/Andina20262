@@ -2,6 +2,7 @@ package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pe.edu.upc.demosm2.dtos.*;
@@ -23,6 +24,7 @@ public class GradoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<GradoDTOList>> listar() {
         List<GradoDTOList> lista = service.list()
                 .stream()
@@ -32,6 +34,7 @@ public class GradoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<GradoDTOList> buscarId(@PathVariable Long id) {
         Grado grado = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el grado: " + id));
@@ -39,6 +42,7 @@ public class GradoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<GradoDTOList> registrar(@Valid @RequestBody GradoDTOInsert dto) {
         Grado grado = toEntity(dto);
         grado.setIdGrado(null);
@@ -52,6 +56,7 @@ public class GradoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<GradoDTOList> modificar(@PathVariable Long id, @Valid @RequestBody GradoDTOInsert dto) {
         service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el grado: " + id));
@@ -62,6 +67,7 @@ public class GradoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Grado grado = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el grado: " + id));

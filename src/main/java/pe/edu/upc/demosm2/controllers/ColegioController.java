@@ -15,6 +15,8 @@ import pe.edu.upc.demosm2.entities.Colegio;
 import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
 import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +31,7 @@ public class ColegioController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     @Operation(summary = "Listar colegios por páginas", description = "Arreglo ordenado por ID. X-Has-Next indica si hay otra página; size admite entre 1 y 100.")
     public ResponseEntity<List<ColegioDTOList>> listar(
             @RequestParam(defaultValue = "0") @Min(0) @Max(10000) int page,
@@ -41,6 +44,7 @@ public class ColegioController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ColegioDTOList buscar(@PathVariable @Positive Long id) {
         return mapper.map(find(id), ColegioDTOList.class);
     }
@@ -79,6 +83,60 @@ public class ColegioController {
     public ResponseEntity<Void> eliminar(@PathVariable @Positive Long id) {
         service.delete(find(id).getIdColegio());
         return ResponseEntity.noContent().build();
+    }
+
+    // HU06: conectividad de la escuela (ancho de banda y tipo de conexión) y si alcanza el mínimo para clases virtuales
+    @GetMapping("/{id}/conectividad")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ConectividadDTO consultarConectividad(@PathVariable @Positive Long id) {
+        return conectividadDTO(find(id));
+    }
+
+    @PutMapping("/{id}/conectividad")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
+    @Operation(summary = "Registrar la medición de conectividad", description = "Las asignaciones no presenciales se bloquean en escuelas sin medición o bajo el mínimo configurado.")
+    public ConectividadDTO registrarConectividad(@PathVariable @Positive Long id, @Valid @RequestBody ConectividadDTO dto) {
+        Colegio colegio = find(id);
+        colegio.setVelocidadBajadaMbps(dto.getVelocidadBajadaMbps());
+        colegio.setVelocidadSubidaMbps(dto.getVelocidadSubidaMbps());
+        colegio.setTipoConexion(dto.getTipoConexion().trim().toUpperCase());
+        colegio.setFechaMedicionConectividad(dto.getFechaMedicion() == null ? LocalDate.now() : dto.getFechaMedicion());
+        service.insert(colegio);
+        return conectividadDTO(colegio);
+    }
+
+    // Query nativo (colegios + matriculas) para decidir a qué escuelas llevar primero mejoras de conectividad
+    @GetMapping("/reportes/conectividad")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public List<ConectividadColegioDTO> reporteConectividad() {
+        List<ConectividadColegioDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : service.reporteConectividad()) {
+            ConectividadColegioDTO dto = new ConectividadColegioDTO();
+            dto.setIdColegio(((Number) fila[0]).longValue());
+            dto.setColegio((String) fila[1]);
+            dto.setDepartamento((String) fila[2]);
+            dto.setTipoZona((String) fila[3]);
+            dto.setTipoConexion((String) fila[4]);
+            dto.setVelocidadBajadaMbps(fila[5] == null ? null : ((Number) fila[5]).doubleValue());
+            dto.setVelocidadSubidaMbps(fila[6] == null ? null : ((Number) fila[6]).doubleValue());
+            dto.setEstudiantes(((Number) fila[7]).longValue());
+            dto.setEstado((String) fila[8]);
+            respuesta.add(dto);
+        }
+        return respuesta;
+    }
+
+    private ConectividadDTO conectividadDTO(Colegio colegio) {
+        ConectividadDTO dto = new ConectividadDTO();
+        dto.setIdColegio(colegio.getIdColegio());
+        dto.setVelocidadBajadaMbps(colegio.getVelocidadBajadaMbps());
+        dto.setVelocidadSubidaMbps(colegio.getVelocidadSubidaMbps());
+        dto.setTipoConexion(colegio.getTipoConexion());
+        dto.setFechaMedicion(colegio.getFechaMedicionConectividad());
+        dto.setCumpleMinimo(service.cumpleConectividadMinima(colegio));
+        dto.setBajadaMinimaMbps(service.getBajadaMinimaMbps());
+        dto.setSubidaMinimaMbps(service.getSubidaMinimaMbps());
+        return dto;
     }
 
     private Colegio find(Long id) {

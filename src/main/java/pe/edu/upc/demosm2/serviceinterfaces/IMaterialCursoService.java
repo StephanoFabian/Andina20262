@@ -14,4 +14,6 @@ public interface IMaterialCursoService {
     public void delete(MaterialCursoId id);
 
     public List<Object[]> reporteMaterialesPorCurso();
+
+    public List<MaterialCurso> listarPorMaterial(Long idMaterial);
 }

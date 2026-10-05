@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.serviceinterfaces;
 
+import java.time.LocalDate;
+
 import pe.edu.upc.demosm2.entities.PeriodoAcademico;
 
 import java.util.List;
@@ -14,4 +16,8 @@ public interface PeriodoAcademicoServiceInterface {
 
     public List<Object[]> evolucionDeMatricula();
     public List<Object[]> matriculaTardiaPorPeriodo();
+
+    public long contarCruces(LocalDate inicio, LocalDate fin, Long excluir);
+
+    public long contarActivos(Long excluir);
 }

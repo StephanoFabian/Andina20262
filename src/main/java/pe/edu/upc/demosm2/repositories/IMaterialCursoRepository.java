@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +23,8 @@ public interface IMaterialCursoRepository extends JpaRepository<MaterialCurso, M
             ORDER BY cantidadMateriales ASC, c.nombre_curso
             """, nativeQuery = true)
     List<Object[]> reporteMaterialesPorCurso();
+
+    // HU50: cursos a los que está asociado un material
+    @Query(value = "SELECT * FROM material_curso WHERE id_material = :idMaterial ORDER BY id_curso", nativeQuery = true)
+    List<MaterialCurso> listarPorMaterial(@Param("idMaterial") Long idMaterial);
 }

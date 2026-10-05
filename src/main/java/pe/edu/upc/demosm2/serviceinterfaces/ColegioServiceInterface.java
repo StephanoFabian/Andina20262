@@ -12,4 +12,13 @@ public interface ColegioServiceInterface {
     public void insert(Colegio c);
     public Optional<Colegio> listId(Long id);
     public void delete(Long id);
+
+    // HU06: true si la conectividad medida alcanza el mínimo para clases virtuales (sin medición = no cumple)
+    public boolean cumpleConectividadMinima(Colegio c);
+
+    public double getBajadaMinimaMbps();
+
+    public double getSubidaMinimaMbps();
+
+    public List<Object[]> reporteConectividad();
 }

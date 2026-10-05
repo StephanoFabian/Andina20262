@@ -44,4 +44,9 @@ public class PerfilAcademicoServiceImplement implements IPerfilAcademicoService 
     public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota) {
         return paR.listarPerfilesConNotaMenorA(nota);
     }
+
+    @Override
+    public Optional<PerfilAcademico> buscarPorPersona(Long idPersona) {
+        return paR.buscarPorPersona(idPersona);
+    }
 }

@@ -68,4 +68,24 @@ public interface IDetalleMatriculaRepository extends JpaRepository<DetalleMatric
             """, nativeQuery = true)
     List<Object[]> reporteRetencionPorColegio(@Param("idPeriodoAnterior") Long idPeriodoAnterior,
                                                            @Param("idPeriodoActual") Long idPeriodoActual);
+
+    // HU34: el curso ya está registrado en ese periodo dentro de la misma matrícula (sin contar el detalle que se edita).
+    @Query(value = """
+            SELECT COUNT(*) FROM detalles_matricula
+            WHERE id_matricula = :idMatricula AND id_periodo = :idPeriodo AND id_curso = :idCurso AND id_d_matricula <> :excluir
+            """, nativeQuery = true)
+    long contarDuplicados(@Param("idMatricula") Long idMatricula, @Param("idPeriodo") Long idPeriodo,
+                          @Param("idCurso") Long idCurso, @Param("excluir") Long excluir);
+
+    // HU43: historial de matrícula de un estudiante, del periodo más antiguo al más reciente.
+    // Tablas: detalles_matricula + matriculas + periodos_academicos.
+    @Query(value = """
+            SELECT d.*
+            FROM detalles_matricula d
+            INNER JOIN matriculas m ON m.id_matricula = d.id_matricula
+            INNER JOIN periodos_academicos p ON p.id_periodo = d.id_periodo
+            WHERE m.id_persona = :idPersona
+            ORDER BY p.fecha_inicio, d.fecha_matricula, d.id_d_matricula
+            """, nativeQuery = true)
+    List<DetalleMatricula> historialPorPersona(@Param("idPersona") Long idPersona);
 }

@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.serviceimplements;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 import pe.edu.upc.demosm2.entities.PeriodoAcademico;
 import pe.edu.upc.demosm2.repositories.IPeriodoAcademicoRepository;
@@ -49,5 +51,15 @@ public class PeriodoAcademicoServiceImplement implements PeriodoAcademicoService
     @Override
     public List<Object[]> matriculaTardiaPorPeriodo() {
         return repository.matriculaTardiaPorPeriodo();
+    }
+
+    @Override
+    public long contarCruces(LocalDate inicio, LocalDate fin, Long excluir) {
+        return repository.contarCruces(inicio, fin, excluir);
+    }
+
+    @Override
+    public long contarActivos(Long excluir) {
+        return repository.contarActivos(excluir);
     }
 }

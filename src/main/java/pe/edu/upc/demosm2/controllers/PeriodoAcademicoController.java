@@ -1,8 +1,11 @@
 package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pe.edu.upc.demosm2.dtos.*;
 import pe.edu.upc.demosm2.entities.*;
@@ -23,6 +26,7 @@ public class PeriodoAcademicoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<PeriodoAcademicoDTOList>> listar() {
         List<PeriodoAcademicoDTOList> lista = service.list()
                 .stream()
@@ -32,6 +36,7 @@ public class PeriodoAcademicoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<PeriodoAcademicoDTOList> buscarId(@PathVariable Long id) {
         PeriodoAcademico periodo = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));
@@ -39,7 +44,9 @@ public class PeriodoAcademicoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<PeriodoAcademicoDTOList> registrar(@Valid @RequestBody PeriodoAcademicoDTOInsert dto) {
+        validarPeriodo(dto, null);
         PeriodoAcademico periodo = toEntity(dto);
         periodo.setIdPeriodo(null);
         service.insert(periodo);
@@ -52,9 +59,11 @@ public class PeriodoAcademicoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<PeriodoAcademicoDTOList> modificar(@PathVariable Long id, @Valid @RequestBody PeriodoAcademicoDTOInsert dto) {
         service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));
+        validarPeriodo(dto, id);
         PeriodoAcademico periodo = toEntity(dto);
         periodo.setIdPeriodo(id);
         service.update(periodo);
@@ -62,6 +71,7 @@ public class PeriodoAcademicoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         PeriodoAcademico periodo = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));
@@ -69,8 +79,34 @@ public class PeriodoAcademicoController {
         return ResponseEntity.noContent().build();
     }
 
+    // HU31: cerrar un periodo (pasa a FINALIZADO); así se puede activar el siguiente
+    @PatchMapping("/{id}/cerrar")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
+    public ResponseEntity<PeriodoAcademicoDTOList> cerrar(@PathVariable Long id) {
+        PeriodoAcademico periodo = service.listId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));
+        periodo.setEstado("FINALIZADO");
+        service.update(periodo);
+        return ResponseEntity.ok(toDTO(periodo));
+    }
+
+    // HU31/HU41: inicio antes que fin, sin cruzarse con otro periodo y con un solo periodo ACTIVO a la vez
+    private void validarPeriodo(PeriodoAcademicoDTOInsert dto, Long idActual) {
+        if (!dto.getFechaInicio().isBefore(dto.getFechaFin())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fechaInicio debe ser anterior a fechaFin");
+        }
+        long excluir = idActual == null ? -1L : idActual;
+        if (service.contarCruces(dto.getFechaInicio(), dto.getFechaFin(), excluir) > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Las fechas se cruzan con otro periodo académico");
+        }
+        if (dto.getEstado() != null && dto.getEstado().trim().equalsIgnoreCase("ACTIVO") && service.contarActivos(excluir) > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya hay un periodo ACTIVO; ciérralo antes de activar otro");
+        }
+    }
+
     // Reporte 1 (periodos_academicos + detalles_matricula): matrícula de cada periodo y su variación frente al anterior.
     @GetMapping("/reportes/evolucion-matricula")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<List<EvolucionPeriodoDTO>> evolucionDeMatricula() {
         List<EvolucionPeriodoDTO> lista = service.evolucionDeMatricula()
                 .stream()
@@ -90,6 +126,7 @@ public class PeriodoAcademicoController {
 
     // Reporte 2 (periodos_academicos + detalles_matricula): matrículas anticipadas, tardías y fuera del periodo.
     @GetMapping("/reportes/matricula-tardia")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<List<MatriculaTardiaDTO>> matriculaTardiaPorPeriodo() {
         List<MatriculaTardiaDTO> lista = service.matriculaTardiaPorPeriodo()
                 .stream()
@@ -123,7 +160,7 @@ public class PeriodoAcademicoController {
         periodo.setNombre(dto.getNombre());
         periodo.setFechaInicio(dto.getFechaInicio());
         periodo.setFechaFin(dto.getFechaFin());
-        periodo.setEstado(dto.getEstado());
+        periodo.setEstado(dto.getEstado() == null ? null : dto.getEstado().trim().toUpperCase());
         return periodo;
     }
 

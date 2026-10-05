@@ -5,15 +5,20 @@ import pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO;
 import pe.edu.upc.demosm2.dtos.RetencionColegioDTO;
 import pe.edu.upc.demosm2.dtos.RetiroPorCursoDTO;
 import pe.edu.upc.demosm2.entities.*;
+import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
+import pe.edu.upc.demosm2.serviceinterfaces.GradoServiceInterface;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
 import pe.edu.upc.demosm2.serviceinterfaces.IDetalleMatriculaService;
+import pe.edu.upc.demosm2.serviceinterfaces.MatriculaServiceInterface;
+import pe.edu.upc.demosm2.serviceinterfaces.PeriodoAcademicoServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +32,18 @@ public class DetalleMatriculaController {
 
     @Autowired
     private IDetalleMatriculaService dmS;
+
+    @Autowired
+    private MatriculaServiceInterface mS;
+
+    @Autowired
+    private ICursoService cS;
+
+    @Autowired
+    private PeriodoAcademicoServiceInterface peS;
+
+    @Autowired
+    private GradoServiceInterface gS;
 
     // ModelMapper en modo STRICT: copia solo los campos con el mismo nombre (idDetalleMatricula, fechaMatricula, estado).
     // DetalleMatricula tiene varios "id..." parecidos (idDetalleMatricula, idMatricula...) y en modo normal los confunde.
@@ -46,27 +63,36 @@ public class DetalleMatriculaController {
         return dto;
     }
 
-    // DTO -> entidad: ModelMapper copia los datos y las relaciones se arman con su id (como Rol en UsuarioController)
-    private DetalleMatricula aEntidad(ModelMapper m, DetalleMatriculaDTO dto) {
+    // DTO -> entidad: ModelMapper copia los datos y las relaciones se buscan por su id.
+    // HU43: la matrícula, el curso, el periodo y el grado deben existir (404 con el dato que falta).
+    // HU34: el mismo curso no se registra dos veces en el mismo periodo de una matrícula (409).
+    private DetalleMatricula aEntidad(ModelMapper m, DetalleMatriculaDTO dto, Long idActual) {
+        if (dto.getIdMatricula() == null || dto.getIdCurso() == null || dto.getIdPeriodo() == null || dto.getIdGrado() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "idMatricula, idCurso, idPeriodo e idGrado son obligatorios");
+        }
         DetalleMatricula d = m.map(dto, DetalleMatricula.class);
         if (d.getFechaMatricula() == null) d.setFechaMatricula(LocalDate.now());
-        if (d.getEstado() == null) d.setEstado("VIGENTE");
-        Matricula matricula = new Matricula();
-        matricula.setIdMatricula(dto.getIdMatricula());
+        d.setEstado(d.getEstado() == null || d.getEstado().isBlank() ? "VIGENTE" : d.getEstado().trim().toUpperCase());
+        Matricula matricula = mS.listId(dto.getIdMatricula())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe la matrícula: " + dto.getIdMatricula()));
+        Curso curso = cS.listId(dto.getIdCurso())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el curso: " + dto.getIdCurso()));
+        PeriodoAcademico periodo = peS.listId(dto.getIdPeriodo())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + dto.getIdPeriodo()));
+        Grado grado = gS.listId(dto.getIdGrado())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el grado: " + dto.getIdGrado()));
+        if (dmS.contarDuplicados(dto.getIdMatricula(), dto.getIdPeriodo(), dto.getIdCurso(), idActual == null ? -1L : idActual) > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ese curso ya está registrado para la matrícula en ese periodo");
+        }
         d.setMatricula(matricula);
-        Curso curso = new Curso();
-        curso.setId_curso(dto.getIdCurso());
         d.setCurso(curso);
-        PeriodoAcademico periodo = new PeriodoAcademico();
-        periodo.setIdPeriodo(dto.getIdPeriodo());
         d.setPeriodo(periodo);
-        Grado grado = new Grado();
-        grado.setIdGrado(dto.getIdGrado());
         d.setGrado(grado);
         return d;
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<List<DetalleMatriculaDTO>> listar() {
         ModelMapper m = mapper();
         List<DetalleMatriculaDTO> lista = dmS.list().stream()
@@ -78,19 +104,15 @@ public class DetalleMatriculaController {
     @PostMapping("/nuevo")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> registrar(@RequestBody DetalleMatriculaDTO dto) {
-        try {
-            ModelMapper m = mapper();
-            DetalleMatricula d = aEntidad(m, dto);
-            d.setIdDetalleMatricula(null);
-            DetalleMatricula srv = dmS.insert(d);
-            return ResponseEntity.status(HttpStatus.CREATED).body(aDTO(m, srv));
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: la matrícula, el curso, el periodo o el grado no existe en la base de datos.");
-        }
+        ModelMapper m = mapper();
+        DetalleMatricula d = aEntidad(m, dto, null);
+        d.setIdDetalleMatricula(null);
+        DetalleMatricula srv = dmS.insert(d);
+        return ResponseEntity.status(HttpStatus.CREATED).body(aDTO(m, srv));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         ModelMapper m = mapper();
         Optional<DetalleMatricula> d = dmS.listId(id);
@@ -107,15 +129,22 @@ public class DetalleMatriculaController {
         if (dto.getIdDetalleMatricula() == null || dmS.listId(dto.getIdDetalleMatricula()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Detalle de matrícula no encontrado");
         }
-        try {
-            ModelMapper m = mapper();
-            DetalleMatricula d = aEntidad(m, dto);
-            dmS.update(d);
-            return ResponseEntity.ok(aDTO(m, d));
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: la matrícula, el curso, el periodo o el grado no existe en la base de datos.");
-        }
+        ModelMapper m = mapper();
+        DetalleMatricula d = aEntidad(m, dto, dto.getIdDetalleMatricula());
+        dmS.update(d);
+        return ResponseEntity.ok(aDTO(m, d));
+    }
+
+    // HU43: historial de matrícula de un estudiante (periodo, grado, curso y estado), del más antiguo al más reciente.
+    // El personal lo ve de cualquiera; el estudiante, solo el suyo.
+    @GetMapping("/historial/{idPersona}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL') or #idPersona.toString() == authentication.name")
+    public ResponseEntity<List<DetalleMatriculaDTO>> historialPorPersona(@PathVariable Long idPersona) {
+        ModelMapper m = mapper();
+        List<DetalleMatriculaDTO> lista = dmS.historialPorPersona(idPersona).stream()
+                .map(x -> aDTO(m, x))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
     }
 
     @DeleteMapping("/{id}")
@@ -132,6 +161,7 @@ public class DetalleMatriculaController {
 
     // Query nativo (curso + detalles_matricula) para decidir en qué cursos reforzar: los que más alumnos pierden
     @GetMapping("/reporte-retiro-por-curso")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteRetiroPorCurso() {
         List<Object[]> lista = dmS.reporteRetiroPorCurso();
         if (lista.isEmpty()) {
@@ -154,6 +184,7 @@ public class DetalleMatriculaController {
 
     // Query nativo (grados + detalles_matricula) para decidir cuántas aulas abrir por grado (40 alumnos por aula)
     @GetMapping("/reporte-aulas-por-grado/{idPeriodo}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteAulasNecesariasPorGrado(@PathVariable Long idPeriodo) {
         List<Object[]> lista = dmS.reporteAulasNecesariasPorGrado(idPeriodo);
         if (lista.isEmpty()) {
@@ -175,6 +206,7 @@ public class DetalleMatriculaController {
     // Query nativo (detalles_matricula + matriculas + colegios) para decidir dónde se pierde o se gana población:
     // por colegio, cuántos alumnos siguieron del periodo anterior al actual, cuántos se fueron y cuántos son nuevos
     @GetMapping("/reporte-retencion-colegio/{idPeriodoAnterior}/{idPeriodoActual}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteRetencionPorColegio(@PathVariable Long idPeriodoAnterior, @PathVariable Long idPeriodoActual) {
         List<Object[]> lista = dmS.reporteRetencionPorColegio(idPeriodoAnterior, idPeriodoActual);
         if (lista.isEmpty()) {

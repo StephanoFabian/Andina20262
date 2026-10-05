@@ -28,6 +28,7 @@ public class AulaController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     @Operation(summary = "Listar aulas, opcionalmente por colegio", description = "Arreglo paginado por ID; X-Has-Next indica si hay más resultados. size: 1 a 100.")
     public ResponseEntity<List<AulaDTOList>> listar(
             @RequestParam(required = false) @Positive Long idColegio,
@@ -42,6 +43,7 @@ public class AulaController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public AulaDTOList buscar(@PathVariable @Positive Long id) { return toDto(find(id)); }
 
     @PostMapping

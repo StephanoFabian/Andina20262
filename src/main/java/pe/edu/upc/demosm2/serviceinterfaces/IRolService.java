@@ -13,4 +13,6 @@ public interface IRolService {
     public void delete(Long id);
 
     public List<Object[]> reporteCantidadPersonasPorRol();
+
+    public long contarPersonasDelRol(Long idRol);
 }

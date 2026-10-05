@@ -45,4 +45,9 @@ public class MaterialCursoServiceImplement implements IMaterialCursoService {
     public List<Object[]> reporteMaterialesPorCurso() {
         return mcR.reporteMaterialesPorCurso();
     }
+
+    @Override
+    public List<MaterialCurso> listarPorMaterial(Long idMaterial) {
+        return mcR.listarPorMaterial(idMaterial);
+    }
 }

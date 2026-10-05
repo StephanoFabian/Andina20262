@@ -1,5 +1,8 @@
 package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+import java.time.LocalDate;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -34,4 +37,15 @@ public interface IPeriodoAcademicoRepository extends JpaRepository<PeriodoAcadem
             " GROUP BY p.id_periodo, p.nombre, p.fecha_inicio " +
             " ORDER BY porcentaje_tardias DESC, p.fecha_inicio DESC", nativeQuery = true)
     List<Object[]> matriculaTardiaPorPeriodo();
+
+    // HU31/HU41: periodos cuyas fechas se cruzan con [inicio, fin], sin contar el que se está editando.
+    @Query(value = """
+            SELECT COUNT(*) FROM periodos_academicos
+            WHERE id_periodo <> :excluir AND fecha_inicio <= :fin AND fecha_fin >= :inicio
+            """, nativeQuery = true)
+    long contarCruces(@Param("inicio") LocalDate inicio, @Param("fin") LocalDate fin, @Param("excluir") Long excluir);
+
+    // HU31: periodos ACTIVO aparte del que se está editando (solo puede haber uno).
+    @Query(value = "SELECT COUNT(*) FROM periodos_academicos WHERE id_periodo <> :excluir AND UPPER(estado) = 'ACTIVO'", nativeQuery = true)
+    long contarActivos(@Param("excluir") Long excluir);
 }

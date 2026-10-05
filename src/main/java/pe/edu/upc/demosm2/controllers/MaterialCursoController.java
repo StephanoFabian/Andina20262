@@ -6,10 +6,11 @@ import pe.edu.upc.demosm2.entities.Curso;
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.entities.MaterialCurso;
 import pe.edu.upc.demosm2.entities.MaterialCursoId;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
 import pe.edu.upc.demosm2.serviceinterfaces.IMaterialCursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,14 @@ public class MaterialCursoController {
     @Autowired
     private IMaterialCursoService mcS;
 
+    @Autowired
+    private IMaterialService mS;
+
+    @Autowired
+    private ICursoService cS;
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<MaterialCursoDTO>> listar() {
         ModelMapper m = new ModelMapper();
         // Se mapea desde la llave compuesta (MaterialCursoId), que tiene justo idMaterial e idCurso
@@ -38,7 +46,19 @@ public class MaterialCursoController {
     }
 
     // Query nativo (curso + material_curso) para decidir a qué cursos subir materiales primero
+    // HU50: IDs de los cursos a los que está asociado un material
+    @GetMapping("/material/{idMaterial}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
+    public ResponseEntity<List<MaterialCursoDTO>> listarPorMaterial(@PathVariable Long idMaterial) {
+        ModelMapper m = new ModelMapper();
+        List<MaterialCursoDTO> lista = mcS.listarPorMaterial(idMaterial).stream()
+                .map(x -> m.map(x.getId(), MaterialCursoDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
     @GetMapping("/reporte-materiales-por-curso")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteMaterialesPorCurso() {
         List<Object[]> lista = mcS.reporteMaterialesPorCurso();
         if (lista.isEmpty()) {
@@ -56,18 +76,24 @@ public class MaterialCursoController {
 
     @PostMapping("/nuevo")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    // HU48: el material y el curso deben existir (404) y la asociación no se repite (409)
     public ResponseEntity<?> registrar(@RequestBody MaterialCursoDTO dto) {
-        try {
-            Material material = new Material();
-            material.setIdMaterial(dto.getIdMaterial());
-            Curso curso = new Curso();
-            curso.setId_curso(dto.getIdCurso());
-            mcS.insert(new MaterialCurso(material, curso));
-            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: El material (" + dto.getIdMaterial() + ") o el curso (" + dto.getIdCurso() + ") no existe.");
+        if (dto.getIdMaterial() == null || dto.getIdCurso() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("idMaterial e idCurso son obligatorios");
         }
+        Optional<Material> material = mS.listId(dto.getIdMaterial());
+        if (material.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El material (" + dto.getIdMaterial() + ") no existe");
+        }
+        Optional<Curso> curso = cS.listId(dto.getIdCurso());
+        if (curso.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El curso (" + dto.getIdCurso() + ") no existe");
+        }
+        if (mcS.listId(new MaterialCursoId(dto.getIdMaterial(), dto.getIdCurso())).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ese material ya está asociado a ese curso");
+        }
+        mcS.insert(new MaterialCurso(material.get(), curso.get()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @DeleteMapping("/{idMaterial}/{idCurso}")

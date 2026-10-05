@@ -15,4 +15,8 @@ public interface IDetalleMatriculaService {
     public List<Object[]> reporteRetiroPorCurso();
     public List<Object[]> reporteAulasNecesariasPorGrado(Long idPeriodo);
     public List<Object[]> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual);
+
+    public long contarDuplicados(Long idMatricula, Long idPeriodo, Long idCurso, Long excluir);
+
+    public List<DetalleMatricula> historialPorPersona(Long idPersona);
 }

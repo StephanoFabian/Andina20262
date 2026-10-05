@@ -14,4 +14,6 @@ public interface MatriculaServiceInterface {
 
     public List<Object[]> matriculasPorColegio();
     public List<Object[]> estudiantesConVariasMatriculas();
+
+    public long contarDuplicadas(Long idPersona, Long idColegio, Long excluir);
 }

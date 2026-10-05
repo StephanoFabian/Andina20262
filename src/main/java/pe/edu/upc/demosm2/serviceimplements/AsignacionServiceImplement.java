@@ -6,6 +6,7 @@ import pe.edu.upc.demosm2.entities.AsignacionDocente;
 import pe.edu.upc.demosm2.repositories.IAsignacionDocenteRepository;
 import pe.edu.upc.demosm2.serviceinterfaces.IAsignacionDocenteService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,14 @@ public class AsignacionServiceImplement implements IAsignacionDocenteService {
 
     @Override
     public List<AsignacionDocente> ObtenerPorRangoHoras(Long hora_min, Long hora_max) {
-        return aR.findByHorassemanalesIsBetween(hora_min,hora_max);
+        return aR.findByHorassemanalesIsBetween(hora_min,hora_max)
+                .stream()
+                .sorted(Comparator.comparing(AsignacionDocente::getId_asignacion))
+                .toList();
+    }
+
+    @Override
+    public long contarConflictos(Long idColegio, Long idCurso, Long idPeriodo, String aula, Long excluir) {
+        return aR.contarConflictos(idColegio, idCurso, idPeriodo, aula, excluir);
     }
 }

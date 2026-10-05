@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -28,4 +30,9 @@ public interface IMatriculaRepository extends JpaRepository<Matricula, Long> {
             " HAVING COUNT(m.id_matricula) > 1 " +
             " ORDER BY colegios DESC, matriculas DESC", nativeQuery = true)
     List<Object[]> estudiantesConVariasMatriculas();
+
+    // HU34/HU42: matrícula repetida del mismo estudiante en el mismo colegio (sin contar la que se edita).
+    @Query(value = "SELECT COUNT(*) FROM matriculas WHERE id_persona = :idPersona AND id_colegio = :idColegio AND id_matricula <> :excluir",
+            nativeQuery = true)
+    long contarDuplicadas(@Param("idPersona") Long idPersona, @Param("idColegio") Long idColegio, @Param("excluir") Long excluir);
 }

@@ -15,6 +15,15 @@ public class PerfilAcademico {
     @Column(name = "notasPA", nullable = false)
     private Double notasPA;
 
+    // HU33/HU39: el perfil pertenece a un estudiante (una persona tiene un solo perfil)
+    @OneToOne
+    @JoinColumn(name = "idPersona", unique = true)
+    private Persona persona;
+
+    // HU39/HU46: dato confidencial; solo lo consultan los roles autorizados
+    @Column(name = "estadoPsicologico", length = 100)
+    private String estadoPsicologico;
+
     public PerfilAcademico() {
     }
 
@@ -46,5 +55,21 @@ public class PerfilAcademico {
 
     public void setNotasPA(Double notasPA) {
         this.notasPA = notasPA;
+    }
+
+    public Persona getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Persona persona) {
+        this.persona = persona;
+    }
+
+    public String getEstadoPsicologico() {
+        return estadoPsicologico;
+    }
+
+    public void setEstadoPsicologico(String estadoPsicologico) {
+        this.estadoPsicologico = estadoPsicologico;
     }
 }

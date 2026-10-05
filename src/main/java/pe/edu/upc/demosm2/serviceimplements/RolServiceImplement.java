@@ -44,4 +44,9 @@ public class RolServiceImplement implements IRolService {
     public List<Object[]> reporteCantidadPersonasPorRol() {
         return rR.reporteCantidadPersonasPorRol();
     }
+
+    @Override
+    public long contarPersonasDelRol(Long idRol) {
+        return rR.contarPersonasDelRol(idRol);
+    }
 }

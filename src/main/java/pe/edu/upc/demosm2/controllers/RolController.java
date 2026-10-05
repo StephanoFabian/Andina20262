@@ -4,6 +4,7 @@ import pe.edu.upc.demosm2.dtos.RolDTO;
 import pe.edu.upc.demosm2.dtos.RolCantidadDTO;
 import pe.edu.upc.demosm2.entities.Rol;
 import pe.edu.upc.demosm2.serviceinterfaces.IRolService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/roles")
 public class RolController {
-
     @Autowired
     private IRolService rS;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<List<RolDTO>> listar() {
         ModelMapper m = new ModelMapper();
         List<RolDTO> lista = rS.list().stream()
@@ -34,14 +35,16 @@ public class RolController {
 
     @PostMapping("/nuevo")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RolDTO> registrar(@RequestBody RolDTO dto) {
+    public ResponseEntity<RolDTO> registrar(@Valid @RequestBody RolDTO dto) {
         ModelMapper m = new ModelMapper();
         Rol x = m.map(dto, Rol.class);
+        x.setIdTipoPersona(null);
         Rol srv = rS.insert(x);
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(srv, RolDTO.class));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         ModelMapper m = new ModelMapper();
         Optional<Rol> x = rS.listId(id);
@@ -54,27 +57,36 @@ public class RolController {
 
     @PutMapping("/actualiza")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> actualizar(@RequestBody RolDTO dto) {
+    public ResponseEntity<?> actualizar(@Valid @RequestBody RolDTO dto) {
+        if (dto.getIdTipoPersona() == null || rS.listId(dto.getIdTipoPersona()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol no encontrado");
+        }
         ModelMapper m = new ModelMapper();
         Rol x = m.map(dto, Rol.class);
         rS.update(x);
         return ResponseEntity.ok(m.map(x, RolDTO.class));
     }
 
+    // HU37: no se elimina un rol que todavía tiene personas asociadas (409)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         Optional<Rol> x = rS.listId(id);
-        if (x.isPresent()) {
-            rS.delete(id);
-            return ResponseEntity.ok("Rol eliminado correctamente");
-        } else {
+        if (x.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol no encontrado");
         }
+        long personas = rS.contarPersonasDelRol(id);
+        if (personas > 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar el rol: tiene " + personas + " persona(s) asociada(s)");
+        }
+        rS.delete(id);
+        return ResponseEntity.ok("Rol eliminado correctamente");
     }
 
     // Query nativo (rol + persona) para decidir si falta personal de algún tipo
     @GetMapping("/reporte-cantidad-personas")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteCantidadPersonasPorRol() {
         List<Object[]> lista = rS.reporteCantidadPersonasPorRol();
         if (lista.isEmpty()) {

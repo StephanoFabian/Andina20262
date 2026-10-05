@@ -1,5 +1,7 @@
 package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+
 import pe.edu.upc.demosm2.entities.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +26,14 @@ public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
             ORDER BY sinPassword DESC, inactivos DESC, total DESC
             """, nativeQuery = true)
     List<Object[]> reporteCuentasPorRol();
+
+    // HU47: personas por aula y/o estado. Un filtro vacío no filtra; si nada coincide, la lista sale vacía.
+    @Query(value = """
+            SELECT *
+            FROM persona
+            WHERE (CAST(:idAula AS BIGINT) IS NULL OR id_aula = CAST(:idAula AS BIGINT))
+              AND (CAST(:estado AS VARCHAR) IS NULL OR UPPER(estado_persona) = UPPER(CAST(:estado AS VARCHAR)))
+            ORDER BY id_persona
+            """, nativeQuery = true)
+    List<Persona> filtrarPorAulaYEstado(@Param("idAula") Long idAula, @Param("estado") String estado);
 }

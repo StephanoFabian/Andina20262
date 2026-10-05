@@ -3,6 +3,7 @@ package pe.edu.upc.demosm2.serviceimplements;
 import pe.edu.upc.demosm2.entities.Colegio;
 import pe.edu.upc.demosm2.repositories.IColegioRepository;
 import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,5 +29,31 @@ public class ColegioServiceImplement implements ColegioServiceInterface {
     @Override
     public void delete(Long id){ICR.deleteById(id);}
 
+    // HU06: mínimos para habilitar clases virtuales; se cambian con ANDINA_CONECTIVIDAD_BAJADA_MIN / _SUBIDA_MIN
+    @Value("${andina.conectividad.bajada-minima-mbps:2.0}")
+    private double bajadaMinimaMbps;
 
+    @Value("${andina.conectividad.subida-minima-mbps:1.0}")
+    private double subidaMinimaMbps;
+
+    @Override
+    public boolean cumpleConectividadMinima(Colegio c) {
+        return c.getVelocidadBajadaMbps() != null && c.getVelocidadSubidaMbps() != null
+                && c.getVelocidadBajadaMbps() >= bajadaMinimaMbps && c.getVelocidadSubidaMbps() >= subidaMinimaMbps;
+    }
+
+    @Override
+    public double getBajadaMinimaMbps() {
+        return bajadaMinimaMbps;
+    }
+
+    @Override
+    public double getSubidaMinimaMbps() {
+        return subidaMinimaMbps;
+    }
+
+    @Override
+    public List<Object[]> reporteConectividad() {
+        return ICR.reporteConectividad(bajadaMinimaMbps, subidaMinimaMbps);
+    }
 }

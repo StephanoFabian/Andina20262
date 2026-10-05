@@ -13,4 +13,6 @@ public interface IPerfilAcademicoService {
     public void delete(Long id);
 
     public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota);
+
+    public Optional<PerfilAcademico> buscarPorPersona(Long idPersona);
 }

@@ -44,6 +44,6 @@ public class CursoServiceImplement implements ICursoService {
 
     @Override
     public List<Curso> buscarporArea(String area) {
-        return qR.findByArea(area);
+        return qR.findByAreaIgnoreCase(area);
     }
 }

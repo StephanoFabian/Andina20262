@@ -4,12 +4,24 @@ import java.time.LocalDate;
 
 public class PersonaDTO {
     private Long idPersona;
+
     private String nombresPersona;
+
     private String apellidosPersona;
+
     private LocalDate fechaNacimientoPersona;
+
     private String emailPersona;
+
     private String estadoPersona;
+
     private Long idRol;
+
+    // Aula actual (vacío si la persona no tiene aula)
+    private Long idAula;
+
+    public PersonaDTO() {
+    }
 
     public Long getIdPersona() {
         return idPersona;
@@ -65,5 +77,13 @@ public class PersonaDTO {
 
     public void setIdRol(Long idRol) {
         this.idRol = idRol;
+    }
+
+    public Long getIdAula() {
+        return idAula;
+    }
+
+    public void setIdAula(Long idAula) {
+        this.idAula = idAula;
     }
 }

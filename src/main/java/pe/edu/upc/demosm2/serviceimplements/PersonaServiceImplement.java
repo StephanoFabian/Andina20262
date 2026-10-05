@@ -56,4 +56,24 @@ public class PersonaServiceImplement implements IPersonaService {
     public List<Object[]> reporteCuentasPorRol() {
         return pR.reporteCuentasPorRol();
     }
+
+    @Override
+    public List<Persona> filtrarPorAulaYEstado(Long idAula, String estado) {
+        return pR.filtrarPorAulaYEstado(idAula, estado);
+    }
+
+    @Override
+    public Persona reasignarAula(Persona p) {
+        return pR.save(p);
+    }
+
+    @Override
+    public boolean tieneAlgunRol(Persona p, String... roles) {
+        if (p == null || p.getRol() == null || p.getRol().getDetalle() == null) return false;
+        String rol = p.getRol().getDetalle().trim();
+        for (String r : roles) {
+            if (r.equalsIgnoreCase(rol)) return true;
+        }
+        return false;
+    }
 }

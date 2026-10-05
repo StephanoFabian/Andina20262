@@ -50,4 +50,9 @@ public class MatriculaServiceImplement implements MatriculaServiceInterface {
     public List<Object[]> estudiantesConVariasMatriculas() {
         return repository.estudiantesConVariasMatriculas();
     }
+
+    @Override
+    public long contarDuplicadas(Long idPersona, Long idColegio, Long excluir) {
+        return repository.contarDuplicadas(idPersona, idColegio, excluir);
+    }
 }

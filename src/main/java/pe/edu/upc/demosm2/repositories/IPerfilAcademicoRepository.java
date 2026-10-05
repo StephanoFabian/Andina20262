@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IPerfilAcademicoRepository extends JpaRepository<PerfilAcademico, Long> {
@@ -19,4 +20,8 @@ public interface IPerfilAcademicoRepository extends JpaRepository<PerfilAcademic
             ORDER BY notaspa ASC
             """, nativeQuery = true)
     List<PerfilAcademico> listarPerfilesConNotaMenorA(@Param("nota") Double nota);
+
+    // HU46: perfil académico de un estudiante
+    @Query(value = "SELECT * FROM perfil_academico WHERE id_persona = :idPersona", nativeQuery = true)
+    Optional<PerfilAcademico> buscarPorPersona(@Param("idPersona") Long idPersona);
 }

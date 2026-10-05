@@ -5,6 +5,7 @@ import pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO;
 import pe.edu.upc.demosm2.entities.Material;
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.serviceinterfaces.IMaterialService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,7 @@ public class MaterialController {
     private IMaterialService mS;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<MaterialDTO>> listar() {
         ModelMapper m = new ModelMapper();
         List<MaterialDTO> lista = mS.list().stream()
@@ -36,10 +38,11 @@ public class MaterialController {
 
     @PostMapping("/nuevo")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
-    public ResponseEntity<?> registrar(@RequestBody MaterialDTO dto) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody MaterialDTO dto) {
         try {
             ModelMapper m = new ModelMapper();
             Material x = m.map(dto, Material.class);
+            x.setIdMaterial(null);
             Persona p = new Persona();
             p.setIdPersona(dto.getIdPersona());
             x.setPersona(p);
@@ -52,6 +55,7 @@ public class MaterialController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         ModelMapper m = new ModelMapper();
         Optional<Material> x = mS.listId(id);
@@ -64,7 +68,10 @@ public class MaterialController {
 
     @PutMapping("/actualiza")
     @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
-    public ResponseEntity<?> actualizar(@RequestBody MaterialDTO dto) {
+    public ResponseEntity<?> actualizar(@Valid @RequestBody MaterialDTO dto) {
+        if (dto.getIdMaterial() == null || mS.listId(dto.getIdMaterial()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Material no encontrado");
+        }
         try {
             ModelMapper m = new ModelMapper();
             Material x = m.map(dto, Material.class);
@@ -92,6 +99,7 @@ public class MaterialController {
     }
 
     @GetMapping("/buscar")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<MaterialDTO>> buscarPorTitulo(@RequestParam String titulo) {
         ModelMapper m = new ModelMapper();
         List<MaterialDTO> lista = mS.buscarPorTitulo(titulo).stream()
@@ -101,6 +109,7 @@ public class MaterialController {
     }
 
     @GetMapping("/curso/{idCurso}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL','DOCENTE','ESTUDIANTE')")
     public ResponseEntity<List<MaterialDTO>> listarPorCurso(@PathVariable Long idCurso) {
         ModelMapper m = new ModelMapper();
         List<MaterialDTO> lista = mS.listarMaterialesPorCurso(idCurso).stream()
@@ -111,6 +120,7 @@ public class MaterialController {
 
     // Query nativo: cuántos materiales hay de cada tipo
     @GetMapping("/reporte-por-tipo")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<?> reporteMaterialesPorTipo() {
         List<Object[]> lista = mS.reporteMaterialesPorTipo();
         if (lista.isEmpty()) {

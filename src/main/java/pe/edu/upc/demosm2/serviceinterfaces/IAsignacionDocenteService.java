@@ -14,4 +14,6 @@ public interface IAsignacionDocenteService {
     public void update(AsignacionDocente aD);
     public void delete(Long id);
     public List<AsignacionDocente> ObtenerPorRangoHoras(Long hora_min, Long hora_max);
+
+    public long contarConflictos(Long idColegio, Long idCurso, Long idPeriodo, String aula, Long excluir);
 }

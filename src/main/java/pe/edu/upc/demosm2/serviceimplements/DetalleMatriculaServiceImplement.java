@@ -54,4 +54,14 @@ public class DetalleMatriculaServiceImplement implements IDetalleMatriculaServic
     public List<Object[]> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual) {
         return dmR.reporteRetencionPorColegio(idPeriodoAnterior, idPeriodoActual);
     }
+
+    @Override
+    public long contarDuplicados(Long idMatricula, Long idPeriodo, Long idCurso, Long excluir) {
+        return dmR.contarDuplicados(idMatricula, idPeriodo, idCurso, excluir);
+    }
+
+    @Override
+    public List<DetalleMatricula> historialPorPersona(Long idPersona) {
+        return dmR.historialPorPersona(idPersona);
+    }
 }

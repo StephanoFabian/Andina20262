@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface ICursoRepository extends JpaRepository<Curso,Long> {
    List<Curso> findByArea(String area);
+
+    // HU60: búsqueda por área sin distinguir mayúsculas
+    List<Curso> findByAreaIgnoreCase(String area);
 }
