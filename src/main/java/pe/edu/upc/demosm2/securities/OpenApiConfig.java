@@ -1,4 +1,4 @@
-package org.example.andina2026.securities;
+package pe.edu.upc.demosm2.securities;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
