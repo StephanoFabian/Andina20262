@@ -1,8 +1,8 @@
-package org.example.andina2026.serviceimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
-import org.example.andina2026.entities.Colegio;
-import org.example.andina2026.repositories.IColegioRepository;
-import org.example.andina2026.serviceinterfaces.ColegioServiceInterface;
+import pe.edu.upc.demosm2.entities.Colegio;
+import pe.edu.upc.demosm2.repositories.IColegioRepository;
+import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,13 +1,13 @@
-package org.example.andina2026.controllers;
+package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
-import org.example.andina2026.dtos.AulaDTOInsert;
-import org.example.andina2026.dtos.AulaDTOList;
-import org.example.andina2026.entities.Aula;
-import org.example.andina2026.entities.Colegio;
-import org.example.andina2026.exceptions.ResourceNotFoundException;
-import org.example.andina2026.serviceinterfaces.AulaServiceInterface;
-import org.example.andina2026.serviceinterfaces.ColegioServiceInterface;
+import pe.edu.upc.demosm2.dtos.AulaDTOInsert;
+import pe.edu.upc.demosm2.dtos.AulaDTOList;
+import pe.edu.upc.demosm2.entities.Aula;
+import pe.edu.upc.demosm2.entities.Colegio;
+import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
+import pe.edu.upc.demosm2.serviceinterfaces.AulaServiceInterface;
+import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
