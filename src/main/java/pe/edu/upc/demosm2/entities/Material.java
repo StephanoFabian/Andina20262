@@ -1,10 +1,11 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "materiales")
+@Table(name = "material")
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,17 @@ public class Material {
     private Persona persona;
 
     public Material() {
+    }
+
+    public Material(Long idMaterial, String titulo, String descripcion, String tipo, String urlArchivo,
+                    LocalDate fechaPublicacion, Persona persona) {
+        this.idMaterial = idMaterial;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.tipo = tipo;
+        this.urlArchivo = urlArchivo;
+        this.fechaPublicacion = fechaPublicacion;
+        this.persona = persona;
     }
 
     public Long getIdMaterial() {

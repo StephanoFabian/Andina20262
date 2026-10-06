@@ -1,43 +1,57 @@
-package org.example.andina2026.serviceimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
+import pe.edu.upc.demosm2.entities.Material;
+import pe.edu.upc.demosm2.repositories.IMaterialRepository;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.example.andina2026.entities.Material;
-import org.example.andina2026.repositories.IMaterialRepository;
-import org.example.andina2026.serviceinterfaces.MaterialServiceInterface;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MaterialServiceImplement implements MaterialServiceInterface {
-    private final IMaterialRepository repository;
+public class MaterialServiceImplement implements IMaterialService {
 
-    public MaterialServiceImplement(IMaterialRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private IMaterialRepository mR;
 
     @Override
     public List<Material> list() {
-        return repository.findAll();
+        return mR.findAll();
     }
 
     @Override
-    public void insert(Material m) {
-        repository.save(m);
+    public Material insert(Material m) {
+        return mR.save(m);
     }
 
     @Override
     public Optional<Material> listId(Long id) {
-        return repository.findById(id);
+        return mR.findById(id);
     }
 
     @Override
     public void update(Material m) {
-        repository.save(m);
+        mR.save(m);
     }
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        mR.deleteById(id);
+    }
+
+    @Override
+    public List<Material> buscarPorTitulo(String titulo) {
+        return mR.buscarPorTitulo(titulo);
+    }
+
+    @Override
+    public List<Material> listarMaterialesPorCurso(Long idCurso) {
+        return mR.listarMaterialesPorCurso(idCurso);
+    }
+
+    @Override
+    public List<Object[]> reporteMaterialesPorTipo() {
+        return mR.reporteMaterialesPorTipo();
     }
 }

@@ -1,4 +1,4 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -6,7 +6,6 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
-/** Clave compuesta de MATERIAL_CURSO (id_material + id_curso), como en el ERD. */
 @Embeddable
 public class MaterialCursoId implements Serializable {
     @Column(name = "id_material")

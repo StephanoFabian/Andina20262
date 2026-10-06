@@ -1,10 +1,9 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.*;
-//ORM
+
 @Entity
 @Table(name = "Rol")
-
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

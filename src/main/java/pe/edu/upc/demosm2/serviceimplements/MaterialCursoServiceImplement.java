@@ -1,39 +1,53 @@
-package org.example.andina2026.serviceimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
+import pe.edu.upc.demosm2.entities.MaterialCurso;
+import pe.edu.upc.demosm2.repositories.IMaterialCursoRepository;
+import pe.edu.upc.demosm2.serviceinterfaces.IMaterialCursoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.example.andina2026.entities.MaterialCurso;
-import org.example.andina2026.entities.MaterialCursoId;
-import org.example.andina2026.repositories.IMaterialCursoRepository;
-import org.example.andina2026.serviceinterfaces.MaterialCursoServiceInterface;
+import pe.edu.upc.demosm2.entities.MaterialCursoId;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MaterialCursoServiceImplement implements MaterialCursoServiceInterface {
-    private final IMaterialCursoRepository repository;
+public class MaterialCursoServiceImplement implements IMaterialCursoService {
 
-    public MaterialCursoServiceImplement(IMaterialCursoRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private IMaterialCursoRepository mcR;
 
     @Override
     public List<MaterialCurso> list() {
-        return repository.findAll();
+        return mcR.findAll();
     }
 
     @Override
-    public void insert(MaterialCurso m) {
-        repository.save(m);
+    public MaterialCurso insert(MaterialCurso mc) {
+        return mcR.save(mc);
     }
 
     @Override
     public Optional<MaterialCurso> listId(MaterialCursoId id) {
-        return repository.findById(id);
+        return mcR.findById(id);
+    }
+
+    @Override
+    public void update(MaterialCurso mc) {
+        mcR.save(mc);
     }
 
     @Override
     public void delete(MaterialCursoId id) {
-        repository.deleteById(id);
+        mcR.deleteById(id);
+    }
+
+    @Override
+    public List<Object[]> reporteMaterialesPorCurso() {
+        return mcR.reporteMaterialesPorCurso();
+    }
+
+    @Override
+    public List<MaterialCurso> listarPorMaterial(Long idMaterial) {
+        return mcR.listarPorMaterial(idMaterial);
     }
 }

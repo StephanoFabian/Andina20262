@@ -1,4 +1,4 @@
-package pe.edu.upc.demosm2.servicesinterfaces;
+package pe.edu.upc.demosm2.serviceinterfaces;
 
 import pe.edu.upc.demosm2.dtos.AsignacionDTOList;
 import pe.edu.upc.demosm2.entities.AsignacionDocente;
@@ -14,4 +14,6 @@ public interface IAsignacionDocenteService {
     public void update(AsignacionDocente aD);
     public void delete(Long id);
     public List<AsignacionDocente> ObtenerPorRangoHoras(Long hora_min, Long hora_max);
+
+    public long contarConflictos(Long idColegio, Long idCurso, Long idPeriodo, String aula, Long excluir);
 }

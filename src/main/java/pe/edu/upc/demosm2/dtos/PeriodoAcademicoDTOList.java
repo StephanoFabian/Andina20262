@@ -1,4 +1,4 @@
-package org.example.andina2026.dtos;
+package pe.edu.upc.demosm2.dtos;
 
 import java.time.LocalDate;
 

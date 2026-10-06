@@ -1,6 +1,7 @@
-package org.example.andina2026.dtos;
+package pe.edu.upc.demosm2.dtos;
 
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 
 public class PeriodoAcademicoDTOInsert {
