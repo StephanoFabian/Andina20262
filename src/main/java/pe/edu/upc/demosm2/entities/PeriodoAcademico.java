@@ -1,6 +1,7 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity

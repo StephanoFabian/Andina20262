@@ -3,6 +3,8 @@ package pe.edu.upc.demosm2.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public class CursoDTOList {
+    private Long id_curso;
+
     private String nombre_curso;
 
     private String descripcion;
@@ -31,5 +33,13 @@ public class CursoDTOList {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public Long getId_curso() {
+        return id_curso;
+    }
+
+    public void setId_curso(Long id_curso) {
+        this.id_curso = id_curso;
     }
 }

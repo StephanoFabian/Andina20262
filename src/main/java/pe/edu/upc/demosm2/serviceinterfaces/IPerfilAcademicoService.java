@@ -1,10 +1,18 @@
-package org.example.andina2026.servicesinterfaces;
+package pe.edu.upc.demosm2.serviceinterfaces;
 
-import org.example.andina2026.entities.PerfilAcademico;
+import pe.edu.upc.demosm2.entities.PerfilAcademico;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPerfilAcademicoService {
-    public void insert(PerfilAcademico pa);
     public List<PerfilAcademico> list();
+    public PerfilAcademico insert(PerfilAcademico pa);
+    public Optional<PerfilAcademico> listId(Long id);
+    public void update(PerfilAcademico pa);
+    public void delete(Long id);
+
+    public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota);
+
+    public Optional<PerfilAcademico> buscarPorPersona(Long idPersona);
 }
