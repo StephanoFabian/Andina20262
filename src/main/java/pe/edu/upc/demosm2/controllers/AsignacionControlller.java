@@ -10,21 +10,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pe.edu.upc.demosm2.dtos.AsignacionDTOInsert;
 import pe.edu.upc.demosm2.dtos.AsignacionDTOList;
-import pe.edu.upc.demosm2.entities.AsignacionDocente;
-import pe.edu.upc.demosm2.entities.Colegio;
-import pe.edu.upc.demosm2.entities.Curso;
-import pe.edu.upc.demosm2.entities.PeriodoAcademico;
-import pe.edu.upc.demosm2.entities.Persona;
+import pe.edu.upc.demosm2.entities.*;
 import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
-import pe.edu.upc.demosm2.serviceinterfaces.IAsignacionDocenteService;
-import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
-import pe.edu.upc.demosm2.serviceinterfaces.IPersonaService;
-import pe.edu.upc.demosm2.serviceinterfaces.PeriodoAcademicoServiceInterface;
+import pe.edu.upc.demosm2.serviceinterfaces.*;
 import pe.edu.upc.demosm2.serviceimplements.ColegioServiceImplement;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/asignacion")
@@ -34,15 +28,17 @@ public class AsignacionControlller {
     public final ColegioServiceImplement coS;
     public final PeriodoAcademicoServiceInterface peS;
     public final IPersonaService pS;
+    public final AulaServiceInterface auS;
     public final ModelMapper modelMapper;
 
     public AsignacionControlller(IAsignacionDocenteService aS, ICursoService cs, ColegioServiceImplement coS,
-                                 PeriodoAcademicoServiceInterface peS, IPersonaService pS, ModelMapper modelMapper) {
+                                 PeriodoAcademicoServiceInterface peS, IPersonaService pS, AulaServiceInterface auS, ModelMapper modelMapper) {
         this.aS = aS;
         this.cs = cs;
         this.coS = coS;
         this.peS = peS;
         this.pS = pS;
+        this.auS = auS;
         this.modelMapper = modelMapper;
     }
 
@@ -72,11 +68,18 @@ public class AsignacionControlller {
                       new ResourceNotFoundException(
                               "No existe el colegio: "+dto.getId_colegio()
                       ));
+        
+        Aula salon =auS.listId(dto.getId_aula())
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "No existe el aula: "+dto.getId_aula()
+                        ));
 
         validarAsignacion(dto, per, cole, null);
         AsignacionDocente ag=modelMapper.map(dto, AsignacionDocente.class);
         ag.setId_asignacion(null);
         ag.setCurso(q);
+        ag.setAula(salon);
         ag.setPeriodoAcademico(pe);
         ag.setPersona(per);
         ag.setColegio(cole);
@@ -119,7 +122,7 @@ public class AsignacionControlller {
         if(dto.getId_asignacion()==null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id_asignacion es obligatorio para actualizar");
         }
-        Optional<AsignacionDocente> existente =aS.listId(dto.getId_asignacion());
+        Optional<Asignacion> existente =aS.listId(dto.getId_asignacion());
         if(existente.isEmpty()){
             throw new ResourceNotFoundException( "No existe la asignación con id: " + dto.getId_asignacion()
             );
@@ -149,11 +152,17 @@ public class AsignacionControlller {
             );
         }
 
+        Optional<Aula> salon =auS.listId(dto.getId_aula());
+        if (salon.isEmpty()){
+            throw new ResourceNotFoundException( "No existe un salon con id: " + dto.getId_aula()
+            );
+        }
+
         validarAsignacion(dto, persona.get(), cole.get(), dto.getId_asignacion());
-        AsignacionDocente ad= existente.get();
-        ad.setHorassemanales(dto.getHorassemanales());
+        Asignacion ad= existente.get();
+        ad.setHorasSemanales(dto.getHorassemanales());
         ad.setModalidad(dto.getModalidad());
-        ad.setId_aula(dto.getId_aula());
+        ad.setAula(salon.get());
         ad.setCurso(qurso.get());
         ad.setPeriodoAcademico(periodo.get());
         ad.setPersona(persona.get());

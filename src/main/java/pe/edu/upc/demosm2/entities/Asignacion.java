@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "AsignacionDocente")
-public class AsignacionDocente {
-   @Id
+public class Asignacion {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_asignacion;
-    @Column(name = "nombre_colegio",length = 200,nullable = false)
-    private String id_aula;
+    @ManyToOne
+    @JoinColumn(name = "id_aula")
+    private Aula aula;
     @ManyToOne
     @JoinColumn(name = "id_curso")
     private Curso curso;
@@ -24,7 +25,7 @@ public class AsignacionDocente {
     private String modalidad;
     @Column(name = "horas_semanales",nullable = false)
     @JsonProperty("horassemanales")
-    private Long horassemanales;
+    private Long horasSemanales;
     @ManyToOne
     @JoinColumn(name = "id_colegio")
     private Colegio colegio;
@@ -37,12 +38,12 @@ public Long getId_asignacion() {
         this.id_asignacion = id_asignacion;
     }
 
-    public String getId_aula() {
-        return id_aula;
+    public Aula getAula() {
+        return aula;
     }
 
-    public void setId_aula(String id_aula) {
-        this.id_aula = id_aula;
+    public void setAula(Aula aula) {
+        this.aula = aula;
     }
 
     public Curso getCurso() {
@@ -77,12 +78,12 @@ public Long getId_asignacion() {
         this.modalidad = modalidad;
     }
 
-    public Long getHorassemanales() {
-        return horassemanales;
+    public Long getHorasSemanales() {
+        return horasSemanales;
     }
 
-    public void setHorassemanales(Long horassemanales) {
-        this.horassemanales = horassemanales;
+    public void setHorasSemanales(Long horasSemanales) {
+        this.horasSemanales = horasSemanales;
     }
 
     public Colegio getColegio() {
