@@ -1,4 +1,4 @@
-package org.example.andina2026.securities;
+package pe.edu.upc.demosm2.securities;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

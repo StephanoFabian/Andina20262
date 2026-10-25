@@ -1,4 +1,4 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.*;
 
@@ -24,7 +24,7 @@ public class MaterialCurso {
     public MaterialCurso(Material material, Curso curso) {
         this.material = material;
         this.curso = curso;
-        this.id = new MaterialCursoId(material.getIdMaterial(), curso.getIdCurso());
+        this.id = new MaterialCursoId(material.getIdMaterial(), curso.getId_curso());
     }
 
     public MaterialCursoId getId() {

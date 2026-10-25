@@ -1,4 +1,4 @@
-package org.example.andina2026.securities;
+package pe.edu.upc.demosm2.securities;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -1,4 +1,4 @@
-package org.example.andina2026.entities;
+package pe.edu.upc.demosm2.entities;
 
 import jakarta.persistence.*;
 
@@ -11,35 +11,49 @@ public class Persona {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPersona;
 
-    @Column(name="nombresPersona" ,length = 150, nullable = false)
+    @Column(name = "nombresPersona", length = 150, nullable = false)
     private String nombresPersona;
 
-    @Column(name="apellidosPersona" ,length = 150, nullable = false)
+    @Column(name = "apellidosPersona", length = 150, nullable = false)
     private String apellidosPersona;
 
-    @Column(name="fechaNacimientoPersona" , nullable = false)
+    @Column(name = "fechaNacimientoPersona", nullable = false)
     private LocalDate fechaNacimientoPersona;
 
-    @Column(name="emailPersona" ,length = 150, nullable = false)
+    @Column(name = "emailPersona", length = 150, nullable = false)
     private String emailPersona;
 
-    @Column(name="estadoPersona" ,length = 100, nullable = false)
+    @Column(name = "estadoPersona", length = 100, nullable = false)
     private String estadoPersona;
+
+    // Contraseña del login (se entra con el ID de la persona + esta contraseña).
+    // Se guarda SOLO el hash BCrypt, nunca la contraseña en claro. Sin nullable=false para no romper
+    // tablas que ya tienen personas al agregar la columna (ddl-auto=update); el registro la exige.
+    @Column(name = "passwordPersona", length = 200)
+    private String passwordPersona;
 
     @ManyToOne
     @JoinColumn(name = "idTipoPersona", nullable = false)
     private Rol rol;
 
+    // Aula actual (HU30/HU44/HU47). Opcional: docentes y administradores pueden no tener aula.
+    @ManyToOne
+    @JoinColumn(name = "idAula")
+    private Aula aula;
+
     public Persona() {
     }
 
-    public Persona(Long idPersona, String nombresPersona, String apellidosPersona, LocalDate fechaNacimientoPersona, String emailPersona, String estadoPersona) {
+    public Persona(Long idPersona, String nombresPersona, String apellidosPersona, LocalDate fechaNacimientoPersona,
+                   String emailPersona, String estadoPersona, String passwordPersona, Rol rol) {
         this.idPersona = idPersona;
         this.nombresPersona = nombresPersona;
         this.apellidosPersona = apellidosPersona;
         this.fechaNacimientoPersona = fechaNacimientoPersona;
         this.emailPersona = emailPersona;
         this.estadoPersona = estadoPersona;
+        this.passwordPersona = passwordPersona;
+        this.rol = rol;
     }
 
     public Long getIdPersona() {
@@ -88,5 +102,29 @@ public class Persona {
 
     public void setEstadoPersona(String estadoPersona) {
         this.estadoPersona = estadoPersona;
+    }
+
+    public String getPasswordPersona() {
+        return passwordPersona;
+    }
+
+    public void setPasswordPersona(String passwordPersona) {
+        this.passwordPersona = passwordPersona;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Aula getAula() {
+        return aula;
+    }
+
+    public void setAula(Aula aula) {
+        this.aula = aula;
     }
 }

@@ -1,12 +1,15 @@
-package org.example.andina2026.serviceimplements;
+package pe.edu.upc.demosm2.serviceimplements;
 
-import org.example.andina2026.entities.Colegio;
-import org.example.andina2026.repositories.IColegioRepository;
-import org.example.andina2026.serviceinterfaces.ColegioServiceInterface;
+import pe.edu.upc.demosm2.entities.Colegio;
+import pe.edu.upc.demosm2.repositories.IColegioRepository;
+import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 @Service
 public class ColegioServiceImplement implements ColegioServiceInterface {
@@ -18,7 +21,7 @@ public class ColegioServiceImplement implements ColegioServiceInterface {
     }
 
     @Override
-    public List<Colegio> list(){return ICR.findAll();}
+    public Slice<Colegio> list(Pageable pageable){return ICR.findAllBy(pageable);}
     @Override
     public void insert(Colegio c){ICR.save(c);}
     @Override
@@ -26,5 +29,31 @@ public class ColegioServiceImplement implements ColegioServiceInterface {
     @Override
     public void delete(Long id){ICR.deleteById(id);}
 
+    // HU06: mínimos para habilitar clases virtuales; se cambian con ANDINA_CONECTIVIDAD_BAJADA_MIN / _SUBIDA_MIN
+    @Value("${andina.conectividad.bajada-minima-mbps:2.0}")
+    private double bajadaMinimaMbps;
 
+    @Value("${andina.conectividad.subida-minima-mbps:1.0}")
+    private double subidaMinimaMbps;
+
+    @Override
+    public boolean cumpleConectividadMinima(Colegio c) {
+        return c.getVelocidadBajadaMbps() != null && c.getVelocidadSubidaMbps() != null
+                && c.getVelocidadBajadaMbps() >= bajadaMinimaMbps && c.getVelocidadSubidaMbps() >= subidaMinimaMbps;
+    }
+
+    @Override
+    public double getBajadaMinimaMbps() {
+        return bajadaMinimaMbps;
+    }
+
+    @Override
+    public double getSubidaMinimaMbps() {
+        return subidaMinimaMbps;
+    }
+
+    @Override
+    public List<Object[]> reporteConectividad() {
+        return ICR.reporteConectividad(bajadaMinimaMbps, subidaMinimaMbps);
+    }
 }

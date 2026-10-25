@@ -1,10 +1,30 @@
-package org.example.andina2026.repositories;
+package pe.edu.upc.demosm2.repositories;
 
+import org.springframework.data.repository.query.Param;
+
+import pe.edu.upc.demosm2.entities.MaterialCurso;
+import pe.edu.upc.demosm2.entities.MaterialCursoId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.example.andina2026.entities.MaterialCurso;
-import org.example.andina2026.entities.MaterialCursoId;
+
+import java.util.List;
 
 @Repository
 public interface IMaterialCursoRepository extends JpaRepository<MaterialCurso, MaterialCursoId> {
+
+    // Decisión: a qué cursos hay que subirles materiales primero (los que tienen menos salen arriba).
+    // Tablas: curso + material_curso (incluye cursos sin ningún material).
+    @Query(value = """
+            SELECT c.nombre_curso AS curso, COUNT(mc.id_material) AS cantidadMateriales
+            FROM curso c
+            LEFT JOIN material_curso mc ON mc.id_curso = c.id_curso
+            GROUP BY c.id_curso, c.nombre_curso
+            ORDER BY cantidadMateriales ASC, c.nombre_curso
+            """, nativeQuery = true)
+    List<Object[]> reporteMaterialesPorCurso();
+
+    // HU50: cursos a los que está asociado un material
+    @Query(value = "SELECT * FROM material_curso WHERE id_material = :idMaterial ORDER BY id_curso", nativeQuery = true)
+    List<MaterialCurso> listarPorMaterial(@Param("idMaterial") Long idMaterial);
 }
