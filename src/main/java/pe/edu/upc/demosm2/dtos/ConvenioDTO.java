@@ -16,7 +16,7 @@ public class ConvenioDTO {
     private String entidad;
 
     @NotBlank(message = "tipoEntidad es obligatorio")
-    @Pattern(regexp = "(?i)GOBIERNO_REGIONAL|COOPERACION_INTERNACIONAL|OTRO", message = "tipoEntidad debe ser GOBIERNO_REGIONAL, COOPERACION_INTERNACIONAL u OTRO")
+    @Pattern(regexp = "(?i)GOBIERNO_REGIONAL|UGEL|COOPERACION_INTERNACIONAL|OTRO", message = "tipoEntidad debe ser GOBIERNO_REGIONAL, UGEL, COOPERACION_INTERNACIONAL u OTRO")
     private String tipoEntidad;
 
     @NotBlank(message = "region es obligatorio")
@@ -35,8 +35,11 @@ public class ConvenioDTO {
     private BigDecimal presupuesto;
 
     // Si no se envía, queda VIGENTE
-    @Pattern(regexp = "(?i)VIGENTE|EN_RENOVACION|VENCIDO|FINALIZADO", message = "estado debe ser VIGENTE, EN_RENOVACION, VENCIDO o FINALIZADO")
+    @Pattern(regexp = "(?i)VIGENTE|EN_RENOVACION|SUSPENDIDO|VENCIDO|FINALIZADO", message = "estado debe ser VIGENTE, EN_RENOVACION, SUSPENDIDO, VENCIDO o FINALIZADO")
     private String estado;
+
+    @Size(max = 255, message = "descripcion admite como máximo 255 caracteres")
+    private String descripcion;
 
     public ConvenioDTO() {
     }
@@ -111,5 +114,13 @@ public class ConvenioDTO {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
