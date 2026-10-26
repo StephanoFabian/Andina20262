@@ -16,4 +16,10 @@ public interface IConvenioService {
     public void delete(Long id);
 
     public List<Object[]> reportePorVencer(Integer dias);
+
+    public List<Convenio> listarVigentes();
+
+    public List<Object[]> colegiosPorConvenio(String region, String tipoEntidad);
+
+    public long cantidadColegios(Long idConvenio);
 }
