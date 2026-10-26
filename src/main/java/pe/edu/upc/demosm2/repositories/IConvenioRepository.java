@@ -22,4 +22,26 @@ public interface IConvenioRepository extends JpaRepository<Convenio, Long> {
             ORDER BY fecha_fin, nombre
             """, nativeQuery = true)
     List<Object[]> reportePorVencer(@Param("dias") Integer dias);
+
+    // HU11: convenios activos hoy (estado VIGENTE y sin pasar su fecha de fin). El que vence antes sale primero.
+    @Query("""
+            SELECT c FROM Convenio c
+            WHERE UPPER(c.estado) = 'VIGENTE' AND c.fechaFin >= CURRENT_DATE
+            ORDER BY c.fechaFin, c.nombre
+            """)
+    List<Convenio> listarVigentes();
+
+    // HU11: cuántos colegios financia cada convenio, filtrando por región y/o tipo de entidad
+    // (un filtro vacío no filtra). Tablas: convenio + colegios. Los que cubren más colegios salen primero.
+    @Query(value = """
+            SELECT c.id_convenio, c.nombre, c.entidad, c.tipo_entidad, c.region, c.estado, c.fecha_fin,
+                   COUNT(co.id_colegio) AS cantidadColegios
+            FROM convenio c
+            LEFT JOIN colegios co ON co.id_convenio = c.id_convenio
+            WHERE (:region = '' OR UPPER(c.region) = UPPER(:region))
+              AND (:tipoEntidad = '' OR UPPER(c.tipo_entidad) = UPPER(:tipoEntidad))
+            GROUP BY c.id_convenio, c.nombre, c.entidad, c.tipo_entidad, c.region, c.estado, c.fecha_fin
+            ORDER BY cantidadColegios DESC, c.nombre
+            """, nativeQuery = true)
+    List<Object[]> colegiosPorConvenio(@Param("region") String region, @Param("tipoEntidad") String tipoEntidad);
 }
