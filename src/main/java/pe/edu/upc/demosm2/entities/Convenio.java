@@ -20,7 +20,7 @@ public class Convenio {
     @Column(name = "entidad", length = 200, nullable = false)
     private String entidad;
 
-    // GOBIERNO_REGIONAL, COOPERACION_INTERNACIONAL u OTRO
+    // GOBIERNO_REGIONAL, UGEL, COOPERACION_INTERNACIONAL u OTRO
     @Column(name = "tipo_entidad", length = 50, nullable = false)
     private String tipoEntidad;
 
@@ -36,9 +36,12 @@ public class Convenio {
     @Column(name = "presupuesto", precision = 14, scale = 2, nullable = false)
     private BigDecimal presupuesto;
 
-    // VIGENTE, EN_RENOVACION, VENCIDO o FINALIZADO
+    // VIGENTE, EN_RENOVACION, SUSPENDIDO, VENCIDO o FINALIZADO
     @Column(name = "estado", length = 20, nullable = false)
     private String estado;
+
+    @Column(name = "descripcion", length = 255)
+    private String descripcion;
 
     public Convenio() {
     }
@@ -113,5 +116,13 @@ public class Convenio {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

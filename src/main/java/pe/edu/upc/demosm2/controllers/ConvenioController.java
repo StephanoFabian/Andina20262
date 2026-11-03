@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.controllers;
 
+import pe.edu.upc.demosm2.dtos.ConvenioColegiosDTO;
 import pe.edu.upc.demosm2.dtos.ConvenioDTO;
 import pe.edu.upc.demosm2.dtos.ConvenioPorVencerDTO;
 import pe.edu.upc.demosm2.entities.Convenio;
@@ -30,8 +31,8 @@ public class ConvenioController {
 
     // La vigencia debe ser coherente; tipo y estado se guardan en mayúsculas (estado por defecto: VIGENTE)
     private Convenio aEntidad(ModelMapper m, ConvenioDTO dto) {
-        if (!dto.getFechaInicio().isBefore(dto.getFechaFin())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fechaInicio debe ser anterior a fechaFin");
+        if (dto.getFechaFin().isBefore(dto.getFechaInicio())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fechaFin no puede ser anterior a fechaInicio");
         }
         Convenio c = m.map(dto, Convenio.class);
         c.setTipoEntidad(dto.getTipoEntidad().trim().toUpperCase());
@@ -88,6 +89,11 @@ public class ConvenioController {
         if (cS.listId(id).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Convenio no encontrado");
         }
+        long colegios = cS.cantidadColegios(id);
+        if (colegios > 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar el convenio: tiene " + colegios + " colegio(s) asociado(s). Reasígnelos o desvincúlelos primero.");
+        }
         cS.delete(id);
         return ResponseEntity.ok("Convenio eliminado correctamente");
     }
@@ -115,6 +121,43 @@ public class ConvenioController {
             dto.setPresupuesto(fila[6] == null ? null : new BigDecimal(fila[6].toString()));
             dto.setEstado((String) fila[7]);
             dto.setSituacion((String) fila[8]);
+            respuesta.add(dto);
+        }
+        return ResponseEntity.ok(respuesta);
+    }
+
+    // JPQL (convenio): convenios activos hoy, VIGENTE y con fechaFin igual o posterior a la fecha actual
+    @GetMapping("/vigentes")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
+    public ResponseEntity<List<ConvenioDTO>> listarVigentes() {
+        ModelMapper m = new ModelMapper();
+        List<ConvenioDTO> lista = cS.listarVigentes().stream()
+                .map(x -> m.map(x, ConvenioDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
+    // Query nativo (convenio + colegios): cuántos colegios financia cada convenio, por región y/o tipo de entidad
+    @GetMapping("/colegios-por-convenio")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA')")
+    public ResponseEntity<?> colegiosPorConvenio(@RequestParam(required = false) String region,
+                                                 @RequestParam(required = false) String tipoEntidad) {
+        String r = region == null ? "" : region.trim();
+        String t = tipoEntidad == null ? "" : tipoEntidad.trim();
+        if (!t.isEmpty() && !t.matches("(?i)GOBIERNO_REGIONAL|UGEL|COOPERACION_INTERNACIONAL|OTRO")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("tipoEntidad debe ser GOBIERNO_REGIONAL, UGEL, COOPERACION_INTERNACIONAL u OTRO");
+        }
+        List<ConvenioColegiosDTO> respuesta = new ArrayList<>();
+        for (Object[] fila : cS.colegiosPorConvenio(r, t)) {
+            ConvenioColegiosDTO dto = new ConvenioColegiosDTO();
+            dto.setIdConvenio(((Number) fila[0]).longValue());
+            dto.setNombre((String) fila[1]);
+            dto.setEntidad((String) fila[2]);
+            dto.setTipoEntidad((String) fila[3]);
+            dto.setRegion((String) fila[4]);
+            dto.setEstado((String) fila[5]);
+            dto.setFechaFin(aFecha(fila[6]));
+            dto.setCantidadColegios(((Number) fila[7]).longValue());
             respuesta.add(dto);
         }
         return ResponseEntity.ok(respuesta);

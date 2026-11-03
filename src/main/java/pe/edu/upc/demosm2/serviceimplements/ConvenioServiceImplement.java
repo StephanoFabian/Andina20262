@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.demosm2.entities.Convenio;
+import pe.edu.upc.demosm2.repositories.IColegioRepository;
 import pe.edu.upc.demosm2.repositories.IConvenioRepository;
 import pe.edu.upc.demosm2.serviceinterfaces.IConvenioService;
 
@@ -13,6 +14,9 @@ public class ConvenioServiceImplement implements IConvenioService {
 
     @Autowired
     private IConvenioRepository cR;
+
+    @Autowired
+    private IColegioRepository coR;
 
     @Override
     public List<Convenio> list() {
@@ -42,5 +46,20 @@ public class ConvenioServiceImplement implements IConvenioService {
     @Override
     public List<Object[]> reportePorVencer(Integer dias) {
         return cR.reportePorVencer(dias);
+    }
+
+    @Override
+    public List<Convenio> listarVigentes() {
+        return cR.listarVigentes();
+    }
+
+    @Override
+    public List<Object[]> colegiosPorConvenio(String region, String tipoEntidad) {
+        return cR.colegiosPorConvenio(region, tipoEntidad);
+    }
+
+    @Override
+    public long cantidadColegios(Long idConvenio) {
+        return coR.countByConvenio_IdConvenio(idConvenio);
     }
 }
