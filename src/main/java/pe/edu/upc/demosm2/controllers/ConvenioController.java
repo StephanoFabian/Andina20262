@@ -1,0 +1,28 @@
+package pe.edu.upc.demosm2.controllers;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import java.net.URI;
+import pe.edu.upc.demosm2.dtos.ConvenioDTO;
+import pe.edu.upc.demosm2.serviceinterfaces.IConvenioService;
+@RestController
+@RequestMapping("/api/convenios")
+public class ConvenioController {
+    private final IConvenioService service;
+    public ConvenioController(IConvenioService service) { this.service=service; }
+    @GetMapping("/{id}")
+    public ConvenioDTO buscar(@PathVariable Long id) { return service.buscar(id); }
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<ConvenioDTO> insertar(@Valid @RequestBody ConvenioDTO dto) {
+        ConvenioDTO creado=service.guardar(null,dto);
+        return ResponseEntity.created(URI.create("/api/convenios/" + creado.getIdConvenio())).body(creado);
+    }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ConvenioDTO actualizar(@PathVariable Long id,@Valid @RequestBody ConvenioDTO dto) { return service.guardar(id,dto); }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) { service.eliminar(id); return ResponseEntity.noContent().build(); }
+}

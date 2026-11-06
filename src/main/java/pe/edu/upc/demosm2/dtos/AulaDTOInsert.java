@@ -1,6 +1,8 @@
 package pe.edu.upc.demosm2.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class AulaDTOInsert {
 
@@ -12,10 +14,10 @@ public class AulaDTOInsert {
     @NotBlank(message = "La seccion es obligatoria!!!")
     private String seccion;
 
-    @NotBlank(message = "La capacidad es obligatoria!!!")
+    @Positive(message = "La capacidad debe ser positiva")
     private int capacidad;
 
-    @NotBlank(message = "El id del colegio es obligatorio!!!")
+    @NotNull @Positive
     private Long idColegio;
 
     public Long getIdAula() {

@@ -1,6 +1,7 @@
 package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -39,6 +40,7 @@ public class PeriodoAcademicoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<PeriodoAcademicoDTOList> registrar(@Valid @RequestBody PeriodoAcademicoDTOInsert dto) {
         PeriodoAcademico periodo = toEntity(dto);
         periodo.setIdPeriodo(null);
@@ -52,6 +54,7 @@ public class PeriodoAcademicoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<PeriodoAcademicoDTOList> modificar(@PathVariable Long id, @Valid @RequestBody PeriodoAcademicoDTOInsert dto) {
         service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));
@@ -62,6 +65,7 @@ public class PeriodoAcademicoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         PeriodoAcademico periodo = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el periodo académico: " + id));

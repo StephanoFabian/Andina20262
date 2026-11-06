@@ -3,6 +3,9 @@ package pe.edu.upc.demosm2.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public class CursoDTOList {
+    private Long id_curso;
+    public Long getId_curso() { return id_curso; }
+    public void setId_curso(Long id) { this.id_curso=id; }
     private String nombre_curso;
 
     private String descripcion;

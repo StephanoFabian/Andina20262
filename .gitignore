@@ -9,3 +9,13 @@ out/
 # Varios
 .DS_Store
 *.log
+
+# Angular
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/coverage/
+
+# Herramientas Python
+__pycache__/
+*.pyc

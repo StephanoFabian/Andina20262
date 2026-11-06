@@ -1,0 +1,32 @@
+-- Ejecutar con psql -f, fuera de una transacción. Idempotente.
+-- Aplicar después del primer inicio que crea las cinco tablas nuevas.
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_colegios_nombre ON colegios (lower(nombre) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_colegios_departamento ON colegios (lower(departamento) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_colegios_distrito ON colegios (lower(distrito) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_aulas_nombre ON aulas (lower(nombre) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_aulas_seccion ON aulas (lower(seccion) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_grados_nombre ON grados (lower(nombre) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_grados_nivel ON grados (lower(nivel) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_curso_nombre_curso ON curso (lower(nombre_curso) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_curso_area ON curso (lower(area) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_periodos_academicos_nombre ON periodos_academicos (lower(nombre) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_periodos_academicos_estado ON periodos_academicos (lower(estado) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_persona_nombres_persona ON persona (lower(nombres_persona) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_persona_apellidos_persona ON persona (lower(apellidos_persona) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_persona_email_persona ON persona (lower(email_persona) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_rol_detalle_rol ON rol (lower(detalle_rol) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_perfil_academico_detallepa ON perfil_academico (lower(detallepa) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_material_titulo ON material (lower(titulo) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_material_tipo ON material (lower(tipo) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_asignacion_docente_nombre_colegio ON asignacion_docente (lower(nombre_colegio) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_asignacion_docente_modalidad ON asignacion_docente (lower(modalidad) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_sesiones_virtuales_titulo ON sesiones_virtuales (lower(titulo) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_sesiones_virtuales_estado ON sesiones_virtuales (lower(estado) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_asistencias_estado ON asistencias (lower(estado) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_convenios_nombre ON convenios (lower(nombre) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_convenios_institucion ON convenios (lower(institucion) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_convenios_estado ON convenios (lower(estado) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_incidencias_titulo ON incidencias (lower(titulo) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_incidencias_estado ON incidencias (lower(estado) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_incidencias_prioridad ON incidencias (lower(prioridad) text_pattern_ops);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_busca_detalles_matricula_estado ON detalles_matricula (lower(estado) text_pattern_ops);

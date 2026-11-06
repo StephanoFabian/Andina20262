@@ -1,6 +1,7 @@
 package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import pe.edu.upc.demosm2.dtos.AulaDTOInsert;
 import pe.edu.upc.demosm2.dtos.AulaDTOList;
 import pe.edu.upc.demosm2.entities.Aula;
@@ -41,6 +42,7 @@ public class AulaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<AulaDTOInsert> registrar(@Valid @RequestBody AulaDTOInsert dto){
         Colegio st=CSI.listId(dto.getIdColegio())
                 .orElseThrow(()->
@@ -48,7 +50,8 @@ public class AulaController {
                                 "No existe el Colegio"+dto.getIdColegio()
                         ));
         Aula mv=MM.map(dto, Aula.class);
-        mv.setIdAula(mv.getIdAula());
+        mv.setIdAula(null);
+        mv.setColegio(st);
         ASI.insert(mv);
         AulaDTOInsert responseDTO=MM.map(mv,AulaDTOInsert.class);
         URI location = ServletUriComponentsBuilder
@@ -72,6 +75,7 @@ public class AulaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<Void>eliminar(@PathVariable Long id){
         Aula movie=ASI.listId(id)
                 .orElseThrow(()->
@@ -82,4 +86,13 @@ public class AulaController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<AulaDTOList> actualizar(@PathVariable Long id, @Valid @RequestBody AulaDTOInsert dto) {
+        Aula aula=ASI.listId(id).orElseThrow(() -> new ResourceNotFoundException("No existe el aula: " + id));
+        Colegio colegio=CSI.listId(dto.getIdColegio()).orElseThrow(() -> new ResourceNotFoundException("No existe el colegio"));
+        aula.setNombre(dto.getNombre()); aula.setSeccion(dto.getSeccion()); aula.setCapacidad(dto.getCapacidad()); aula.setColegio(colegio);
+        ASI.insert(aula);
+        return ResponseEntity.ok(MM.map(aula,AulaDTOList.class));
+    }
 }

@@ -1,6 +1,7 @@
 package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,6 +46,7 @@ public class MatriculaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<MatriculaDTOList> registrar(@Valid @RequestBody MatriculaDTOInsert dto) {
         Matricula matricula = toEntity(dto);
         matricula.setIdMatricula(null);
@@ -58,6 +60,7 @@ public class MatriculaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<MatriculaDTOList> modificar(@PathVariable Long id, @Valid @RequestBody MatriculaDTOInsert dto) {
         service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe la matrícula: " + id));
@@ -68,6 +71,7 @@ public class MatriculaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         Matricula matricula = service.listId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe la matrícula: " + id));

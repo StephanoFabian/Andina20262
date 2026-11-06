@@ -1,6 +1,7 @@
 package pe.edu.upc.demosm2.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,7 @@ public class AsignacionControlller {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<AsignacionDTOInsert> registrar (@Valid @RequestBody AsignacionDTOInsert dto){
         Curso q = cs.listId(dto.getId_curso())
         .orElseThrow(()->
@@ -70,7 +72,7 @@ public class AsignacionControlller {
                       ));
 
         AsignacionDocente ag=modelMapper.map(dto, AsignacionDocente.class);
-        ag.setId_asignacion(ag.getId_asignacion());
+        ag.setId_asignacion(null);
         ag.setCurso(q);
         ag.setPeriodoAcademico(pe);
         ag.setPersona(per);
@@ -107,6 +109,7 @@ public class AsignacionControlller {
     }
 
 @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<AsignacionDTOInsert> actualizar (@Valid @RequestBody AsignacionDTOInsert dto){
         Optional<AsignacionDocente> existente =aS.listId(dto.getId_asignacion());
         if(existente.isEmpty()){
@@ -154,6 +157,7 @@ public class AsignacionControlller {
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         AsignacionDocente docente = aS.listId(id)
                 .orElseThrow(()->

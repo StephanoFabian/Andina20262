@@ -4,6 +4,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public class AsignacionDTOList {
+    private Long id_asignacion;
+    public Long getId_asignacion() { return id_asignacion; }
+    public void setId_asignacion(Long value) { this.id_asignacion=value; }
+    private Long id_periodo;
+    public Long getId_periodo() { return id_periodo; }
+    public void setId_periodo(Long value) { this.id_periodo=value; }
+    private Long id_persona;
+    public Long getId_persona() { return id_persona; }
+    public void setId_persona(Long value) { this.id_persona=value; }
+    private Long id_colegio;
+    public Long getId_colegio() { return id_colegio; }
+    public void setId_colegio(Long value) { this.id_colegio=value; }
+
     private String id_aula;
     private Long id_curso;
     private String modalidad;

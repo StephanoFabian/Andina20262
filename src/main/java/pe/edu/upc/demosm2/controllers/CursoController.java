@@ -2,6 +2,7 @@ package pe.edu.upc.demosm2.controllers;
 
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +29,13 @@ public class CursoController {
 
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<CursoDTOInsert> resgitrar (@Valid @RequestBody CursoDTOInsert dto){
         Curso q = modelMapper.map(dto, Curso.class);
 
+        q.setId_curso(null);
         cS.insert(q);
-        CursoDTOInsert registro = modelMapper.map(dto, CursoDTOInsert.class);
+        CursoDTOInsert registro = modelMapper.map(q, CursoDTOInsert.class);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -64,6 +67,7 @@ public class CursoController {
     }
 
 @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<CursoDTOInsert> actualizar(@Valid @RequestBody CursoDTOInsert dto){
         Curso existente = cS.listId(dto.getId_curso())
                 .orElseThrow(()->

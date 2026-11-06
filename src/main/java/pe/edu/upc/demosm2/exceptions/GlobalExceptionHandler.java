@@ -48,5 +48,12 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(error);
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(400,ex.getMessage(),request.getRequestURI()));
+    }
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleIntegrity(Exception ex, HttpServletRequest request) {
+        return ResponseEntity.status(409).body(new ErrorResponse(409,"Hay un registro duplicado o relacionado. Revisa los datos y las dependencias.",request.getRequestURI()));
+    }
 }
-

@@ -1,0 +1,42 @@
+<section class="page">
+  <p class="eyebrow">TU COMUNIDAD EDUCATIVA</p>
+  <h1>Un nuevo día para aprender.</h1>
+  <p>Organiza, conecta y acompaña el recorrido de tus estudiantes.</p>
+  <div class="welcome-banner">
+    <div>
+      <span class="banner-tag">TODO EN UN SOLO LUGAR</span>
+      <h2>Más cerca de cada escuela.</h2>
+      <p>
+        Gestiona tus matrículas, programa sesiones virtuales<br />y lleva el
+        seguimiento de tu comunidad.
+      </p>
+      <a routerLink="/sesiones-virtuales">Explorar sesiones <span>↗</span></a>
+    </div>
+    <div class="banner-graphic" aria-hidden="true">
+      <span>✦</span><span>A</span><span>↗</span>
+    </div>
+  </div>
+  <div class="section-heading">
+    <h2>Gestión académica</h2>
+    <span>{{modulos.length}} módulos disponibles</span>
+  </div>
+  <div class="module-grid">
+    @for(m of modulos;track m.key){<a
+      [routerLink]="['/',m.key]"
+      class="module-card"
+      ><div class="module-card-top">
+        <span class="module-icon"
+          ><mat-icon
+            >{{m.key==='asistencias'?'fact_check':m.key==='sesiones-virtuales'?'videocam':m.key==='horarios'?'schedule':m.key==='convenios'?'handshake':m.key==='incidencias'?'report_problem':m.key==='personas'?'people_outline':'school'}}</mat-icon
+          ></span
+        ><span class="card-arrow">↗</span>
+      </div>
+      <h3>{{m.label}}</h3>
+      <p>
+        {{auth.puedeEscribir(m)?'Consultar y administrar registros':'Consultar
+        registros'}}
+      </p>
+      <span class="module-card-link">Abrir módulo →</span></a
+    >}
+  </div>
+</section>

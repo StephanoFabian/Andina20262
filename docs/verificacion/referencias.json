@@ -1,0 +1,9 @@
+{
+  "passed": 3,
+  "checks": [
+    "Selección de relación con búsqueda paginada",
+    "Edición preserva el ID del colegio",
+    "CRUD con relación y limpieza"
+  ],
+  "errors": []
+}

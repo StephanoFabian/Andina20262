@@ -2,6 +2,7 @@ package pe.edu.upc.demosm2.controllers;
 
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import pe.edu.upc.demosm2.dtos.ColegioDTOInsert;
 import pe.edu.upc.demosm2.dtos.ColegioDTOList;
 import pe.edu.upc.demosm2.entities.Colegio;
@@ -40,9 +41,11 @@ public class ColegioController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
     public ResponseEntity<ColegioDTOInsert> registrar(
             @Valid @RequestBody ColegioDTOInsert dto) {
         Colegio st = MM.map(dto, Colegio.class);
+        st.setIdColegio(null);
         CSI.insert(st);
         ColegioDTOInsert responseDTO =
                 MM.map(st, ColegioDTOInsert.class);
@@ -58,4 +61,17 @@ public class ColegioController {
                 .body(responseDTO);
     }
 
+    @GetMapping("/{id}")
+    public ColegioDTOList buscar(@PathVariable Long id) { return MM.map(existente(id),ColegioDTOList.class); }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ColegioDTOList actualizar(@PathVariable Long id,@Valid @RequestBody ColegioDTOInsert dto) {
+        existente(id);
+        Colegio colegio=MM.map(dto,Colegio.class); colegio.setIdColegio(id); CSI.insert(colegio);
+        return MM.map(colegio,ColegioDTOList.class);
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) { existente(id); CSI.delete(id); return ResponseEntity.noContent().build(); }
+    private Colegio existente(Long id) { return CSI.listId(id).orElseThrow(() -> new pe.edu.upc.demosm2.exceptions.ResourceNotFoundException("No existe el colegio: " + id)); }
 }

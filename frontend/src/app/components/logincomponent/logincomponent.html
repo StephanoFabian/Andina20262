@@ -1,0 +1,74 @@
+<div class="login-layout">
+  <section class="login-story">
+    <div class="brand light">
+      <span class="brand-icon">A</span
+      ><span>andina<small>APRENDER NOS CONECTA</small></span>
+    </div>
+    <div class="story-content">
+      <p class="eyebrow">JUNTOS, MÁS LEJOS</p>
+      <h1>La educación<br />nos conecta.</h1>
+      <p>
+        Un espacio para acercar escuelas, acompañar a los estudiantes y
+        construir nuevas oportunidades.
+      </p>
+      <div class="mountain-art" aria-hidden="true">
+        <i></i><i></i><i></i><span class="sun"></span>
+      </div>
+    </div>
+    <p class="story-footer">Comunidades conectadas. Futuros compartidos.</p>
+  </section>
+  <section class="login-form-section">
+    <form class="login-form" [formGroup]="form" (ngSubmit)="ingresar()">
+      <span class="login-badge"
+        ><mat-icon>school</mat-icon>PLATAFORMA EDUCATIVA</span
+      >
+      <h2>Bienvenido a Andina</h2>
+      <p>Ingresa tus datos para acceder a tu espacio académico.</p>
+      @if(error()){
+      <div class="notice error" role="alert">{{error()}}</div>
+      }<mat-form-field appearance="outline"
+        ><mat-label>ID de persona</mat-label
+        ><input
+          matInput
+          type="number"
+          formControlName="idPersona"
+          min="1"
+          autocomplete="username"
+        /><mat-icon matPrefix>person_outline</mat-icon
+        ><mat-error>Ingresa tu ID de persona</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Contraseña</mat-label
+        ><input
+          matInput
+          [type]="ocultar()?'password':'text'"
+          formControlName="passwordPersona"
+          autocomplete="current-password"
+        /><mat-icon matPrefix>lock_outline</mat-icon
+        ><button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultar.set(!ocultar())"
+          [attr.aria-label]="ocultar()?'Mostrar contraseña':'Ocultar contraseña'"
+        >
+          <mat-icon
+            >{{ocultar()?'visibility_off':'visibility'}}</mat-icon
+          ></button
+        ><mat-error>Ingresa tu contraseña</mat-error></mat-form-field
+      ><button
+        mat-flat-button
+        class="login-submit"
+        type="submit"
+        [disabled]="cargando()"
+      >
+        {{cargando()?'Ingresando…':'Iniciar sesión'}}<mat-icon iconPositionEnd
+          >arrow_forward</mat-icon
+        >
+      </button>
+      <p class="login-help">
+        ¿Necesitas una cuenta? Contacta con el administrador de tu colegio.
+      </p>
+    </form>
+    <span class="login-copyright">Andina · Gestión educativa</span>
+  </section>
+</div>
