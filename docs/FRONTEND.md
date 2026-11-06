@@ -10,7 +10,7 @@ Asistencia y Sesión virtual: Stephano. Horario: Francisco. Convenio: Eddinson. 
 
 ## Ejecución
 
-Backend en localhost:8080. Frontend: `cd frontend`, `npm ci`, `npm start`. Abrir http://localhost:4200. El proxy `/backend` evita depender de CORS en desarrollo. Producción debe enrutar `/backend/*` hacia la API quitando el prefijo.
+Backend en localhost:8080. Frontend: `cd frontend`, `npm ci`, `npm start`. Abrir http://localhost:4200. Angular llama directamente a `http://localhost:8080`. El archivo `configs/CorsConfig.java` permite `http://localhost:4200` y `http://127.0.0.1:4200`, incluyendo la cabecera Authorization para JWT. Se conecta explícitamente desde SecurityConfig. Los orígenes se pueden configurar con `ANDINA_CORS_ORIGINS`. PostgreSQL local está configurado en `localhost:5432/andina`.
 
 ## Módulos y responsables
 

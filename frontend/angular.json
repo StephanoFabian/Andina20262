@@ -72,9 +72,7 @@
             }
           },
           "defaultConfiguration": "development",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          }
+          "options": {}
         },
         "test": {
           "builder": "@angular/build:unit-test"

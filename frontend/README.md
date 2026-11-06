@@ -7,7 +7,7 @@ npm ci
 npm start
 ```
 
-Abre http://localhost:4200. La API debe estar en http://localhost:8080. El proxy local transforma `/backend/*` en `/*`. Para cambiar el puerto de la API, edita `proxy.conf.json`.
+Abre http://localhost:4200. Angular llama directamente a http://localhost:8080. La URL está en `src/environments/environment.ts` y `environment.development.ts`. El backend permite los orígenes locales mediante `configs/CorsConfig.java`.
 
 ```bash
 npm run build    # dist/demoFront8228/browser
@@ -15,7 +15,7 @@ npm test        # pruebas del interceptor de autenticación
 npm run format
 ```
 
-En producción sirve el directorio `dist/demoFront8228/browser`, redirige las rutas Angular a `index.html` y configura un proxy `/backend/*` hacia el backend quitando `/backend`. No es necesario un servidor SSR.
+Para otro despliegue, configura la URL de la API en los archivos de entorno y los orígenes permitidos con `ANDINA_CORS_ORIGINS` en el backend. Sirve `dist/demoFront8228/browser` y redirige las rutas Angular a `index.html`.
 
 ## Carpetas
 

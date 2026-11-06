@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+const api = environment.base;
 
 describe('Autenticación de peticiones', () => {
   let http: HttpClient;
@@ -36,8 +38,8 @@ describe('Autenticación de peticiones', () => {
   });
   afterEach(() => requests.verify());
   it('envía el token a nuestra API', () => {
-    http.get('/backend/api/grados/pagina').subscribe();
-    const req = requests.expectOne('/backend/api/grados/pagina');
+    http.get(`${api}/api/grados/pagina`).subscribe();
+    const req = requests.expectOne(`${api}/api/grados/pagina`);
     expect(req.request.headers.get('Authorization')).toBe(
       'Bearer token-de-prueba',
     );
@@ -50,17 +52,17 @@ describe('Autenticación de peticiones', () => {
     req.flush({});
   });
   it('cierra una sesión rechazada por la API', () => {
-    http.get('/backend/api/grados/pagina').subscribe({ error: () => {} });
+    http.get(`${api}/api/grados/pagina`).subscribe({ error: () => {} });
     requests
-      .expectOne('/backend/api/grados/pagina')
+      .expectOne(`${api}/api/grados/pagina`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(logout).toHaveBeenCalledOnce();
     expect(navigate).toHaveBeenCalledWith(['/login']);
   });
   it('mantiene el login al rechazar una contraseña', () => {
-    http.post('/backend/login', {}).subscribe({ error: () => {} });
+    http.post(`${api}/login`, {}).subscribe({ error: () => {} });
     requests
-      .expectOne('/backend/login')
+      .expectOne(`${api}/login`)
       .flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(logout).not.toHaveBeenCalled();
   });
