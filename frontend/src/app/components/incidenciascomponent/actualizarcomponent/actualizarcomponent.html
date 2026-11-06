@@ -1,54 +1,94 @@
 <section class="page narrow">
-  <a class="back-link" [routerLink]="['/',config.key]"
-    >← Volver a {{ config.label.toLowerCase() }}</a
-  >
-  <p class="eyebrow">{{ editando ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO' }}</p>
-  <h1>{{ config.label }}</h1>
-  <p>Los campos marcados con * son obligatorios.</p>
+  <a class="back-link" routerLink="/incidencias">← Volver a incidencias</a>
+  <h1>Incidencias</h1>
   <div class="panel form-panel">
-    @if(cargando()){<mat-progress-bar
-      mode="indeterminate"
-      aria-label="Cargando registro"
-    />} @if(error()){
-    <div class="notice error" role="alert">{{error()}}</div>
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
     }
-    <form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
-      @for(campo of config.fields;track campo.key){
-      @if(campo.type==='reference'){<app-referencia
-        [control]="control(campo.key)"
-        [resource]="campo.resource!"
-        [label]="campo.label"
-      />} @else {<mat-form-field
-        appearance="outline"
-        [class.full-width]="campo.type==='textarea'"
-        ><mat-label>{{campo.label}}</mat-label>
-        @if(campo.type==='select'){<mat-select [formControlName]="campo.key"
-          >@for(op of campo.options;track opcionValor(op)){<mat-option
-            [value]="opcionValor(op)"
-            >{{opcionEtiqueta(op)}}</mat-option
-          >}</mat-select
-        >} @else if(campo.type==='textarea'){<textarea
-          matInput
-          [formControlName]="campo.key"
-          rows="3"
-          [attr.maxlength]="campo.maxLength || null"
-        ></textarea
-        >} @else {<input
-          matInput
-          [type]="campo.type"
-          [formControlName]="campo.key"
-          [attr.maxlength]="campo.maxLength || null"
-          [attr.min]="campo.min ?? null"
-          [attr.max]="campo.max ?? null"
-          [attr.step]="campo.type==='number' ? 'any' : null"
-          [attr.autocomplete]="campo.type==='password' ? 'new-password' : 'off'"
-        />} @if(campo.type==='password' && editando){<mat-hint
-          >Déjala vacía para conservar la contraseña actual.</mat-hint
-        >} <mat-error>{{errorCampo(campo)}}</mat-error> </mat-form-field
-      >} } @if(form.hasError('rango')){
-      <p class="notice error full-width" role="alert">
-        La fecha u hora final debe ser posterior a la inicial.
-      </p>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Título</mat-label
+        ><input matInput type="text" formControlName="titulo" /><mat-error
+          >{{error('titulo')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Descripción</mat-label
+        ><textarea matInput rows="3" formControlName="descripcion"></textarea
+        ><mat-error>{{error('descripcion')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Fecha</mat-label
+        ><input matInput type="date" formControlName="fecha" /><mat-error
+          >{{error('fecha')}}</mat-error
+        ></mat-form-field
+      >
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar reportado por</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdPersona"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdPersona()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdPersona()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Reportado por</mat-label
+          ><mat-select formControlName="idPersona"
+            >@for(r of opcionesIdPersona();track r.idPersona){<mat-option
+              [value]="r.idPersona"
+              >{{r.nombresPersona}} · #{{r.idPersona}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idPersona')}}</mat-error></mat-form-field
+        >
+      </div>
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar colegio</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdColegio"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdColegio()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdColegio()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Colegio</mat-label
+          ><mat-select formControlName="idColegio"
+            >@for(r of opcionesIdColegio();track r.idColegio){<mat-option
+              [value]="r.idColegio"
+              >{{r.nombre}} · #{{r.idColegio}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idColegio')}}</mat-error></mat-form-field
+        >
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estado"
+          ><mat-option [value]="'ABIERTA'">ABIERTA</mat-option
+          ><mat-option [value]="'EN_PROCESO'">EN PROCESO</mat-option
+          ><mat-option [value]="'RESUELTA'">RESUELTA</mat-option
+          ><mat-option [value]="'CERRADA'">CERRADA</mat-option></mat-select
+        ><mat-error>{{error('estado')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Prioridad</mat-label
+        ><mat-select formControlName="prioridad"
+          ><mat-option [value]="'BAJA'">BAJA</mat-option
+          ><mat-option [value]="'MEDIA'">MEDIA</mat-option
+          ><mat-option [value]="'ALTA'">ALTA</mat-option
+          ><mat-option [value]="'CRITICA'">CRITICA</mat-option></mat-select
+        ><mat-error>{{error('prioridad')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
       }
       <div class="form-actions full-width">
         <button
@@ -56,8 +96,8 @@
           type="submit"
           [disabled]="guardando() || cargando() || cargaFallida()"
         >
-          {{guardando() ? 'Guardando…' : 'Guardar registro'}}</button
-        ><a mat-stroked-button [routerLink]="['/',config.key]">Cancelar</a>
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/incidencias">Cancelar</a>
       </div>
     </form>
   </div>

@@ -144,4 +144,21 @@ public class PeriodoAcademicoController {
         if (valor instanceof LocalDate f) return f;
         return ((java.sql.Date) valor).toLocalDate();
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.PeriodoAcademicoDTOList> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.PeriodoAcademicoDTOList> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:service.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,service.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.PeriodoAcademicoDTOList filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.PeriodoAcademicoDTOList dto=new pe.edu.upc.demosm2.dtos.PeriodoAcademicoDTOList();
+        dto.setIdPeriodo((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setNombre((fila[1] == null ? null : (String)fila[1]));
+        dto.setFechaInicio((fila[2] == null ? null : (fila[2] instanceof java.time.LocalDate ? (java.time.LocalDate)fila[2] : ((java.sql.Date)fila[2]).toLocalDate())));
+        dto.setFechaFin((fila[3] == null ? null : (fila[3] instanceof java.time.LocalDate ? (java.time.LocalDate)fila[3] : ((java.sql.Date)fila[3]).toLocalDate())));
+        dto.setEstado((fila[4] == null ? null : (String)fila[4]));
+        return dto;
+    }
 }

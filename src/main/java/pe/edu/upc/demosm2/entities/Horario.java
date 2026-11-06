@@ -3,7 +3,7 @@ package pe.edu.upc.demosm2.entities;
 import jakarta.persistence.*;
 import java.time.*;
 @Entity
-@Table(name="horarios", indexes={@Index(name="ix_horarios_cruce", columnList="idAsignacion,diaSemana,horaInicio,horaFin"),@Index(name="ix_horarios_idAsignacion", columnList="idAsignacion")})
+@Table(name="horarios", uniqueConstraints=@UniqueConstraint(name="uk_horario_asignacion_dia_horas",columnNames={"idAsignacion","diaSemana","horaInicio","horaFin"}), indexes={@Index(name="ix_horarios_cruce", columnList="idAsignacion,diaSemana,horaInicio,horaFin"),@Index(name="ix_horarios_idAsignacion", columnList="idAsignacion")})
 public class Horario {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long idHorario;

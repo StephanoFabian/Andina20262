@@ -1,4 +1,7 @@
-import { PaginaEdissonBase } from '../../../shared/pagina-edisson.base';
+import { OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
+import { mensajeError as errorPeticion } from '../../../services/errores';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { Component, inject, signal } from '@angular/core';
@@ -38,7 +41,7 @@ import { entero, mensajeCampo } from '../../compartido/validadores';
   providers: [{ provide: MatPaginatorIntl, useClass: PaginadorIntl }],
   templateUrl: './convenio-por-vencer.html',
 })
-export class ConvenioPorVencer extends PaginaEdissonBase<ConvenioPorVencerDTO> {
+export class ConvenioPorVencer implements OnInit {
   private readonly cS = inject(Convenioservice);
 
   protected readonly estados = ESTADOS_CONVENIO;
@@ -82,5 +85,47 @@ export class ConvenioPorVencer extends PaginaEdissonBase<ConvenioPorVencerDTO> {
   /** Vencidos o con 30 días o menos se resaltan */
   protected claseDias(dias: number): string {
     return dias <= 30 ? 'estado-alerta' : 'estado-neutro';
+  }
+
+  protected readonly dataSource = new MatTableDataSource<ConvenioPorVencerDTO>(
+    [],
+  );
+  protected readonly cargando = signal(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly total = signal(0);
+  protected page = 0;
+  protected size = 10;
+  protected q = '';
+  ngOnInit(): void {
+    this.cargar();
+  }
+  protected cargar(): void {
+    this.cargando.set(true);
+    this.error.set(null);
+    this.obtenerPagina().subscribe({
+      next: (p) => {
+        this.dataSource.data = p.content;
+        this.total.set(p.totalElements);
+        this.cargando.set(false);
+        if (this.page > 0 && !p.content.length) {
+          this.page--;
+          this.cargar();
+        }
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        this.error.set(errorPeticion(err));
+      },
+    });
+  }
+  protected paginar(e: PageEvent): void {
+    this.page = e.pageIndex;
+    this.size = e.pageSize;
+    this.cargar();
+  }
+  protected buscar(texto: string): void {
+    this.q = texto.trim().slice(0, 100);
+    this.page = 0;
+    this.cargar();
   }
 }

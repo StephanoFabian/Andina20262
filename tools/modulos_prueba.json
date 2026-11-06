@@ -52,7 +52,12 @@
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -95,7 +100,12 @@
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -119,12 +129,21 @@
         "label": "Nivel",
         "type": "select",
         "required": true,
-        "options": ["Inicial", "Primaria", "Secundaria"]
+        "options": [
+          "Inicial",
+          "Primaria",
+          "Secundaria"
+        ]
       }
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -160,7 +179,12 @@
     ],
     "createPath": "",
     "updatePath": "",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -196,12 +220,21 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["ACTIVO", "INACTIVO", "CERRADO"]
+        "options": [
+          "ACTIVO",
+          "INACTIVO",
+          "CERRADO"
+        ]
       }
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -230,7 +263,12 @@
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -253,7 +291,11 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["VIGENTE", "RETIRADO", "TRASLADADO"]
+        "options": [
+          "VIGENTE",
+          "RETIRADO",
+          "TRASLADADO"
+        ]
       },
       {
         "key": "idMatricula",
@@ -286,7 +328,12 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -330,7 +377,10 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["ACTIVO", "INACTIVO"]
+        "options": [
+          "ACTIVO",
+          "INACTIVO"
+        ]
       },
       {
         "key": "idRol",
@@ -349,7 +399,9 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN"],
+    "roles": [
+      "ADMIN"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -378,7 +430,9 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN"],
+    "roles": [
+      "ADMIN"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -408,7 +462,12 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -439,7 +498,12 @@
         "label": "Tipo",
         "type": "select",
         "required": true,
-        "options": ["DOCUMENTO", "VIDEO", "AUDIO", "ENLACE"]
+        "options": [
+          "DOCUMENTO",
+          "VIDEO",
+          "AUDIO",
+          "ENLACE"
+        ]
       },
       {
         "key": "urlArchivo",
@@ -464,7 +528,12 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}",
     "source": "edisson"
@@ -494,7 +563,12 @@
     ],
     "createPath": "/nuevo",
     "updatePath": "/actualiza",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": false,
     "deletePath": "/{idMaterial}/{idCurso}",
     "source": "edisson"
@@ -547,7 +621,11 @@
         "label": "Modalidad",
         "type": "select",
         "required": true,
-        "options": ["PRESENCIAL", "VIRTUAL", "HIBRIDA"]
+        "options": [
+          "PRESENCIAL",
+          "VIRTUAL",
+          "HIBRIDA"
+        ]
       },
       {
         "key": "horassemanales",
@@ -560,7 +638,12 @@
     ],
     "createPath": "",
     "updatePath": "",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -616,12 +699,23 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["PROGRAMADA", "EN_CURSO", "FINALIZADA", "CANCELADA"]
+        "options": [
+          "PROGRAMADA",
+          "EN_CURSO",
+          "FINALIZADA",
+          "CANCELADA"
+        ]
       }
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL", "DOCENTE"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL",
+      "DOCENTE"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -652,7 +746,12 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["PRESENTE", "AUSENTE", "TARDANZA", "JUSTIFICADA"]
+        "options": [
+          "PRESENTE",
+          "AUSENTE",
+          "TARDANZA",
+          "JUSTIFICADA"
+        ]
       },
       {
         "key": "observacion",
@@ -664,7 +763,13 @@
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL", "DOCENTE"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL",
+      "DOCENTE"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -734,7 +839,12 @@
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   },
@@ -784,12 +894,21 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["VIGENTE", "VENCIDO", "CANCELADO"]
+        "options": [
+          "VIGENTE",
+          "VENCIDO",
+          "CANCELADO"
+        ]
       }
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL"
+    ],
     "editable": true,
     "deletePath": "/{id}",
     "source": "edisson"
@@ -841,19 +960,35 @@
         "label": "Estado",
         "type": "select",
         "required": true,
-        "options": ["ABIERTA", "EN_PROCESO", "RESUELTA", "CERRADA"]
+        "options": [
+          "ABIERTA",
+          "EN_PROCESO",
+          "RESUELTA",
+          "CERRADA"
+        ]
       },
       {
         "key": "prioridad",
         "label": "Prioridad",
         "type": "select",
         "required": true,
-        "options": ["BAJA", "MEDIA", "ALTA", "CRITICA"]
+        "options": [
+          "BAJA",
+          "MEDIA",
+          "ALTA",
+          "CRITICA"
+        ]
       }
     ],
     "createPath": "",
     "updatePath": "/{id}",
-    "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL", "DOCENTE"],
+    "roles": [
+      "ADMIN",
+      "ADMIN_ESCUELA",
+      "ESPECIALISTA",
+      "LOCAL",
+      "DOCENTE"
+    ],
     "editable": true,
     "deletePath": "/{id}"
   }

@@ -11,4 +11,6 @@ public interface GradoServiceInterface {
     public Optional<Grado> listId(Long id);
     public void update(Grado grado);
     public void delete(Long id);
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

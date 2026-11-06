@@ -1,3 +1,5 @@
+> Registro histórico de la versión inicial. Para la implementación actual consulta PATRONES_REFERENCIA.md.
+
 # Verificación del frontend · 6 de noviembre de 2026
 
 Pruebas contra una base PostgreSQL independiente: `andina_frontend_verificacion_20261106`. No se modificaron registros de la base de trabajo `andina`.

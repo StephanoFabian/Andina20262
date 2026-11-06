@@ -226,5 +226,9 @@
   }
 }
 
-.pagina .filtros { margin-bottom: 18px; }
-.pagina .filtros mat-form-field { min-width: min(280px, 100%); }
+.pagina .filtros {
+  margin-bottom: 18px;
+}
+.pagina .filtros mat-form-field {
+  min-width: min(280px, 100%);
+}

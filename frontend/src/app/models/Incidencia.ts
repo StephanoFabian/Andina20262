@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Incidencia extends Fila {
+export interface Incidencia {
   idIncidencia?: number;
   titulo: string;
   descripcion: string;

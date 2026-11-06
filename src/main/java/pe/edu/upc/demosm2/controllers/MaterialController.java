@@ -126,4 +126,51 @@ public class MaterialController {
         }
         return ResponseEntity.ok(respuesta);
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.MaterialDTO> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.MaterialDTO> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:mS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,mS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.MaterialDTO filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.MaterialDTO dto=new pe.edu.upc.demosm2.dtos.MaterialDTO();
+        dto.setIdMaterial((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setTitulo((fila[1] == null ? null : (String)fila[1]));
+        dto.setDescripcion((fila[2] == null ? null : (String)fila[2]));
+        dto.setTipo((fila[3] == null ? null : (String)fila[3]));
+        dto.setUrlArchivo((fila[4] == null ? null : (String)fila[4]));
+        dto.setFechaPublicacion((fila[5] == null ? null : (fila[5] instanceof java.time.LocalDate ? (java.time.LocalDate)fila[5] : ((java.sql.Date)fila[5]).toLocalDate())));
+        dto.setIdPersona((fila[6] == null ? null : ((Number)fila[6]).longValue()));
+        dto.setNombreAutor((fila[7] == null ? null : (String)fila[7]));
+        dto.setApellidosAutor((fila[8] == null ? null : (String)fila[8]));
+        return dto;
+    }
+    @GetMapping("/tipos")
+    public java.util.List<String> tipos(@RequestParam(defaultValue="") String q) {
+        if(q.length()>100)throw new IllegalArgumentException("Búsqueda demasiado larga");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        return mS.tiposSugeridos(texto);
+    }
+    @GetMapping("/consulta/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<MaterialDTO> consultaPagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q,@RequestParam(defaultValue="0") Long idCurso) {
+        if(page<0 || page>10000 || size<1 || size>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100");
+        if(q.length()>100 || idCurso<0)throw new IllegalArgumentException("Revisa la búsqueda o el curso");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<MaterialDTO> resultado=new java.util.ArrayList<>();
+        for(Object[] fila:mS.consultaPagina(texto,idCurso,size,page*size)) {
+            MaterialDTO dto=new MaterialDTO();dto.setIdMaterial(((Number)fila[0]).longValue());dto.setTitulo((String)fila[1]);dto.setDescripcion((String)fila[2]);dto.setTipo((String)fila[3]);dto.setUrlArchivo((String)fila[4]);dto.setFechaPublicacion(fila[5]==null?null:(fila[5] instanceof java.time.LocalDate ? (java.time.LocalDate)fila[5]:((java.sql.Date)fila[5]).toLocalDate()));dto.setIdPersona(((Number)fila[6]).longValue());resultado.add(dto);
+        }
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(resultado,mS.contarConsulta(texto,idCurso),page,size);
+    }
+    @GetMapping("/reporte-por-tipo/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO> tiposPagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) {
+        if(page<0 || page>10000 || size<1 || size>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100");
+        java.util.List<pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO> resultado=new java.util.ArrayList<>();
+        for(Object[] fila:mS.tiposPagina(size,page*size)) {
+            pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO dto=new pe.edu.upc.demosm2.dtos.MaterialPorTipoDTO();dto.setTipo((String)fila[0]);dto.setCantidad(((Number)fila[1]).longValue());resultado.add(dto);
+        }
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(resultado,mS.contarTipos(),page,size);
+    }
 }

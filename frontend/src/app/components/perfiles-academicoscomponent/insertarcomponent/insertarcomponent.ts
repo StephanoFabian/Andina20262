@@ -1,17 +1,108 @@
-import { Component } from '@angular/core';
 import {
-  FormularioBase,
-  FORMULARIO_IMPORTS,
-} from '../../../shared/formulario.base';
-import { PerfilAcademicoService } from '../../../services/perfiles-academicos.service';
+  Component,
+  OnInit,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PerfilAcademico } from '../../../models/PerfilAcademico';
+import { PerfilAcademicoService } from '../../../services/perfiles-academicos.service';
+import {
+  mensajeCampo,
+  noVacio,
+  rangoFechas,
+} from '../../compartido/validadores';
+import { mensajeError } from '../../../services/errores';
+
 @Component({
   selector: 'app-perfiles-academicos-insertar',
-  imports: FORMULARIO_IMPORTS,
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './insertarcomponent.html',
 })
-export class PerfilAcademicoInsertarComponent extends FormularioBase<PerfilAcademico> {
-  constructor(service: PerfilAcademicoService) {
-    super(service);
+export class PerfilAcademicoInsertarComponent implements OnInit {
+  private readonly service = inject(PerfilAcademicoService);
+  private readonly router = inject(Router);
+  private readonly snack = inject(MatSnackBar);
+  readonly id = input<string>();
+  readonly edicion = computed(() => !!this.id());
+  readonly guardando = signal(false);
+  readonly cargando = signal(false);
+  readonly cargaFallida = signal(false);
+  readonly mensaje = signal('');
+
+  readonly form = inject(FormBuilder).group({
+    detallePA: ['', [Validators.required, noVacio, Validators.maxLength(100)]],
+    notasPA: [
+      null as number | null,
+      [Validators.required, Validators.min(0), Validators.max(20)],
+    ],
+  });
+  ngOnInit(): void {
+    if (this.edicion()) {
+      this.cargando.set(true);
+      this.service.listId(Number(this.id())).subscribe({
+        next: (dto) => {
+          this.form.patchValue(dto);
+          this.cargando.set(false);
+        },
+        error: (err) => {
+          this.cargando.set(false);
+          this.cargaFallida.set(true);
+          this.mensaje.set(mensajeError(err));
+        },
+      });
+    }
+  }
+
+  error(campo: string): string {
+    return mensajeCampo(this.form.get(campo)!);
+  }
+  guardar(): void {
+    if (this.guardando() || this.cargando() || this.cargaFallida()) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const v = this.form.getRawValue();
+    const dto: PerfilAcademico = {
+      idPerfilAcademico: this.edicion() ? Number(this.id()) : undefined,
+      detallePA: (v.detallePA ?? '').trim(),
+      notasPA: Number(v.notasPA),
+    };
+    this.guardando.set(true);
+    this.mensaje.set('');
+    const peticion = this.edicion()
+      ? this.service.actualizar(dto)
+      : this.service.insertar(dto);
+    peticion.subscribe({
+      next: () => {
+        this.snack.open('Registro guardado', 'Cerrar', { duration: 3500 });
+        void this.router.navigate(['/perfiles-academicos']);
+      },
+      error: (err) => {
+        this.guardando.set(false);
+        this.mensaje.set(mensajeError(err));
+      },
+    });
   }
 }

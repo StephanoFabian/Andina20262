@@ -45,4 +45,8 @@ public class MaterialCursoServiceImplement implements IMaterialCursoService {
     public List<Object[]> reporteMaterialesPorCurso() {
         return mcR.reporteMaterialesPorCurso();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento, Long idMaterial) {return mcR.pagina(texto,limite,desplazamiento, idMaterial);}
+    public long contarPagina(String texto, Long idMaterial) {return mcR.contarPagina(texto, idMaterial);}
+    public java.util.List<Object[]> cursosPagina(int limite,int desplazamiento) {return mcR.cursosPagina(limite,desplazamiento);}
+    public long contarCursos() {return mcR.contarCursos();}
 }

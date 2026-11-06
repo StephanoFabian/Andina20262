@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface SesionVirtual extends Fila {
+export interface SesionVirtual {
   idSesionVirtual?: number;
   titulo: string;
   idAsignacion: number;

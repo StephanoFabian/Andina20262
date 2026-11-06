@@ -103,4 +103,20 @@ List<CursoDTOList> filtro = cS.buscarporArea(a)
         .toList();
 return ResponseEntity.ok(filtro);
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.CursoDTOList> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.CursoDTOList> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:cS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,cS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.CursoDTOList filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.CursoDTOList dto=new pe.edu.upc.demosm2.dtos.CursoDTOList();
+        dto.setId_curso((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setNombre_curso((fila[1] == null ? null : (String)fila[1]));
+        dto.setDescripcion((fila[2] == null ? null : (String)fila[2]));
+        dto.setArea((fila[3] == null ? null : (String)fila[3]));
+        return dto;
+    }
 }

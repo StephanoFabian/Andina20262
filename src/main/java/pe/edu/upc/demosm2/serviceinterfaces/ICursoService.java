@@ -12,4 +12,6 @@ public interface ICursoService {
     public void update(Curso q);
     public void delete(Long id);
     public List<Curso> buscarporArea(String area);
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

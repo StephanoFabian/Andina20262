@@ -1,4 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
+import org.springframework.data.repository.query.Param;
 
 import pe.edu.upc.demosm2.entities.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,8 @@ public interface IRolRepository extends JpaRepository<Rol, Long> {
             ORDER BY cantidad DESC
             """, nativeQuery = true)
     List<Object[]> reporteCantidadPersonasPorRol();
+    @Query(value="SELECT t.id_tipo_persona,t.detalle_rol FROM rol t WHERE (:texto = '%' OR LOWER(t.detalle_rol) LIKE :texto ESCAPE '!') ORDER BY t.id_tipo_persona LIMIT :limite OFFSET :desplazamiento",nativeQuery=true)
+    java.util.List<Object[]> pagina(@Param("texto") String texto,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
+    @Query(value="SELECT COUNT(*) FROM rol t WHERE (:texto = '%' OR LOWER(t.detalle_rol) LIKE :texto ESCAPE '!')",nativeQuery=true)
+    long contarPagina(@Param("texto") String texto);
 }

@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Horario extends Fila {
+export interface Horario {
   idHorario?: number;
   idAsignacion: number;
   diaSemana: number;

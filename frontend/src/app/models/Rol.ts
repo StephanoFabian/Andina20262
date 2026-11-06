@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Rol extends Fila {
+export interface Rol {
   idTipoPersona?: number;
   detalle: string;
 }

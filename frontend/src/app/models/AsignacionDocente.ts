@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface AsignacionDocente extends Fila {
+export interface AsignacionDocente {
   id_asignacion?: number;
   id_aula: string;
   id_curso: number;

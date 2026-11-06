@@ -22,7 +22,7 @@ def call(method,path,data=None,expect=200,token=None):
  return result,location
 TOKEN=call('POST','/login',{'idPersona':int(os.environ.get('ANDINA_TEST_PERSONA','1')),'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']},token='')[0]['token']
 call('GET','/api/grados/pagina',expect=401,token='');checks.append('API exige autenticación')
-mods=json.loads((Path(__file__).resolve().parents[1]/'frontend/modulos.json').read_text())
+mods=json.loads((Path(__file__).resolve().parents[1]/'tools/modulos_prueba.json').read_text())
 configs={m['key']:m for m in mods};ids={};created={};stamp=str(time.time_ns())[-8:]
 values={
  'colegios':dict(nombre='QA'+stamp,departamento='Lima',provincia='Lima',distrito='Lima',comunidad='Prueba',tipo_zona='RURAL'),
@@ -86,8 +86,8 @@ def write_schedule(_):
   with urllib.request.urlopen(request,timeout=20) as r:return r.status
  except urllib.error.HTTPError as e:return e.code
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:codes=list(pool.map(write_schedule,range(8)))
-assert codes.count(201)==1 and codes.count(400)==7,codes
-checks.append('8 horarios concurrentes superpuestos: 1 creado y 7 rechazados')
+assert codes.count(201)==1 and sum(c in (400,409) for c in codes)==7,codes
+checks.append('8 horarios concurrentes superpuestos: 1 creado y 7 rechazados por validación o unicidad')
 # Deletion in reverse dependency order for every supported module.
 for key in reversed(order):
  if key=='horarios':

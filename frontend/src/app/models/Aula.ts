@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Aula extends Fila {
+export interface Aula {
   idAula?: number;
   nombre: string;
   seccion: string;

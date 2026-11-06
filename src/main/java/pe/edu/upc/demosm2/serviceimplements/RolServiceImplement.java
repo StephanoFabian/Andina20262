@@ -44,4 +44,6 @@ public class RolServiceImplement implements IRolService {
     public List<Object[]> reporteCantidadPersonasPorRol() {
         return rR.reporteCantidadPersonasPorRol();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return rR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return rR.contarPagina(texto);}
 }

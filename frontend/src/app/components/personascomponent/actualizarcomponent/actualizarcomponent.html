@@ -1,54 +1,83 @@
 <section class="page narrow">
-  <a class="back-link" [routerLink]="['/',config.key]"
-    >← Volver a {{ config.label.toLowerCase() }}</a
-  >
-  <p class="eyebrow">{{ editando ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO' }}</p>
-  <h1>{{ config.label }}</h1>
-  <p>Los campos marcados con * son obligatorios.</p>
+  <a class="back-link" routerLink="/personas">← Volver a personas</a>
+  <h1>Personas</h1>
   <div class="panel form-panel">
-    @if(cargando()){<mat-progress-bar
-      mode="indeterminate"
-      aria-label="Cargando registro"
-    />} @if(error()){
-    <div class="notice error" role="alert">{{error()}}</div>
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
     }
-    <form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
-      @for(campo of config.fields;track campo.key){
-      @if(campo.type==='reference'){<app-referencia
-        [control]="control(campo.key)"
-        [resource]="campo.resource!"
-        [label]="campo.label"
-      />} @else {<mat-form-field
-        appearance="outline"
-        [class.full-width]="campo.type==='textarea'"
-        ><mat-label>{{campo.label}}</mat-label>
-        @if(campo.type==='select'){<mat-select [formControlName]="campo.key"
-          >@for(op of campo.options;track opcionValor(op)){<mat-option
-            [value]="opcionValor(op)"
-            >{{opcionEtiqueta(op)}}</mat-option
-          >}</mat-select
-        >} @else if(campo.type==='textarea'){<textarea
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Nombres</mat-label
+        ><input
           matInput
-          [formControlName]="campo.key"
-          rows="3"
-          [attr.maxlength]="campo.maxLength || null"
-        ></textarea
-        >} @else {<input
+          type="text"
+          formControlName="nombresPersona"
+        /><mat-error>{{error('nombresPersona')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Apellidos</mat-label
+        ><input
           matInput
-          [type]="campo.type"
-          [formControlName]="campo.key"
-          [attr.maxlength]="campo.maxLength || null"
-          [attr.min]="campo.min ?? null"
-          [attr.max]="campo.max ?? null"
-          [attr.step]="campo.type==='number' ? 'any' : null"
-          [attr.autocomplete]="campo.type==='password' ? 'new-password' : 'off'"
-        />} @if(campo.type==='password' && editando){<mat-hint
-          >Déjala vacía para conservar la contraseña actual.</mat-hint
-        >} <mat-error>{{errorCampo(campo)}}</mat-error> </mat-form-field
-      >} } @if(form.hasError('rango')){
-      <p class="notice error full-width" role="alert">
-        La fecha u hora final debe ser posterior a la inicial.
-      </p>
+          type="text"
+          formControlName="apellidosPersona"
+        /><mat-error>{{error('apellidosPersona')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Fecha de nacimiento</mat-label
+        ><input
+          matInput
+          type="date"
+          formControlName="fechaNacimientoPersona"
+        /><mat-error
+          >{{error('fechaNacimientoPersona')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Correo electrónico</mat-label
+        ><input
+          matInput
+          type="email"
+          formControlName="emailPersona"
+        /><mat-error>{{error('emailPersona')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estadoPersona"
+          ><mat-option [value]="'ACTIVO'">ACTIVO</mat-option
+          ><mat-option [value]="'INACTIVO'">INACTIVO</mat-option></mat-select
+        ><mat-error>{{error('estadoPersona')}}</mat-error></mat-form-field
+      >
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar rol</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdRol"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdRol()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdRol()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Rol</mat-label
+          ><mat-select formControlName="idRol"
+            >@for(r of opcionesIdRol();track r.idTipoPersona){<mat-option
+              [value]="r.idTipoPersona"
+              >{{r.detalle}} · #{{r.idTipoPersona}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idRol')}}</mat-error></mat-form-field
+        >
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>Contraseña</mat-label
+        ><input
+          matInput
+          type="password"
+          formControlName="passwordPersona"
+          autocomplete="new-password"
+        /><mat-error>{{error('passwordPersona')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
       }
       <div class="form-actions full-width">
         <button
@@ -56,8 +85,8 @@
           type="submit"
           [disabled]="guardando() || cargando() || cargaFallida()"
         >
-          {{guardando() ? 'Guardando…' : 'Guardar registro'}}</button
-        ><a mat-stroked-button [routerLink]="['/',config.key]">Cancelar</a>
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/personas">Cancelar</a>
       </div>
     </form>
   </div>

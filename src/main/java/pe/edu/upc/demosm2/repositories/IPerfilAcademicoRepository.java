@@ -19,4 +19,8 @@ public interface IPerfilAcademicoRepository extends JpaRepository<PerfilAcademic
             ORDER BY notaspa ASC
             """, nativeQuery = true)
     List<PerfilAcademico> listarPerfilesConNotaMenorA(@Param("nota") Double nota);
+    @Query(value="SELECT t.id_perfil_academico,t.detallepa,t.notaspa FROM perfil_academico t WHERE (:texto = '%' OR LOWER(t.detallepa) LIKE :texto ESCAPE '!') ORDER BY t.id_perfil_academico LIMIT :limite OFFSET :desplazamiento",nativeQuery=true)
+    java.util.List<Object[]> pagina(@Param("texto") String texto,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
+    @Query(value="SELECT COUNT(*) FROM perfil_academico t WHERE (:texto = '%' OR LOWER(t.detallepa) LIKE :texto ESCAPE '!')",nativeQuery=true)
+    long contarPagina(@Param("texto") String texto);
 }

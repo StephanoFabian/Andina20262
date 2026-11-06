@@ -82,4 +82,27 @@ public class MaterialCursoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ese material no está asignado a ese curso");
         }
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.MaterialCursoDTO> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q, @RequestParam(defaultValue="0") Long idMaterial) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.MaterialCursoDTO> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:mcS.pagina(texto,size,page*size, idMaterial)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,mcS.contarPagina(texto, idMaterial),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.MaterialCursoDTO filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.MaterialCursoDTO dto=new pe.edu.upc.demosm2.dtos.MaterialCursoDTO();
+        dto.setIdMaterial((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setIdCurso((fila[1] == null ? null : ((Number)fila[1]).longValue()));
+        dto.setMaterial((fila[2] == null ? null : (String)fila[2]));
+        dto.setCurso((fila[3] == null ? null : (String)fila[3]));
+        return dto;
+    }
+    @GetMapping("/reporte-materiales-por-curso/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<CursoMaterialesDTO> cursosPagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) {
+        if(page<0 || page>10000 || size<1 || size>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100");
+        java.util.List<CursoMaterialesDTO> resultado=new java.util.ArrayList<>();
+        for(Object[] fila:mcS.cursosPagina(size,page*size)) {CursoMaterialesDTO dto=new CursoMaterialesDTO();dto.setCurso((String)fila[0]);dto.setCantidadMateriales(((Number)fila[1]).longValue());resultado.add(dto);}
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(resultado,mcS.contarCursos(),page,size);
+    }
 }

@@ -1,54 +1,132 @@
 <section class="page narrow">
-  <a class="back-link" [routerLink]="['/',config.key]"
-    >← Volver a {{ config.label.toLowerCase() }}</a
+  <a class="back-link" routerLink="/detalles-matricula"
+    >← Volver a detalles de matrícula</a
   >
-  <p class="eyebrow">{{ editando ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO' }}</p>
-  <h1>{{ config.label }}</h1>
-  <p>Los campos marcados con * son obligatorios.</p>
+  <h1>Detalles de matrícula</h1>
   <div class="panel form-panel">
-    @if(cargando()){<mat-progress-bar
-      mode="indeterminate"
-      aria-label="Cargando registro"
-    />} @if(error()){
-    <div class="notice error" role="alert">{{error()}}</div>
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
     }
-    <form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
-      @for(campo of config.fields;track campo.key){
-      @if(campo.type==='reference'){<app-referencia
-        [control]="control(campo.key)"
-        [resource]="campo.resource!"
-        [label]="campo.label"
-      />} @else {<mat-form-field
-        appearance="outline"
-        [class.full-width]="campo.type==='textarea'"
-        ><mat-label>{{campo.label}}</mat-label>
-        @if(campo.type==='select'){<mat-select [formControlName]="campo.key"
-          >@for(op of campo.options;track opcionValor(op)){<mat-option
-            [value]="opcionValor(op)"
-            >{{opcionEtiqueta(op)}}</mat-option
-          >}</mat-select
-        >} @else if(campo.type==='textarea'){<textarea
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Fecha de matrícula</mat-label
+        ><input
           matInput
-          [formControlName]="campo.key"
-          rows="3"
-          [attr.maxlength]="campo.maxLength || null"
-        ></textarea
-        >} @else {<input
-          matInput
-          [type]="campo.type"
-          [formControlName]="campo.key"
-          [attr.maxlength]="campo.maxLength || null"
-          [attr.min]="campo.min ?? null"
-          [attr.max]="campo.max ?? null"
-          [attr.step]="campo.type==='number' ? 'any' : null"
-          [attr.autocomplete]="campo.type==='password' ? 'new-password' : 'off'"
-        />} @if(campo.type==='password' && editando){<mat-hint
-          >Déjala vacía para conservar la contraseña actual.</mat-hint
-        >} <mat-error>{{errorCampo(campo)}}</mat-error> </mat-form-field
-      >} } @if(form.hasError('rango')){
-      <p class="notice error full-width" role="alert">
-        La fecha u hora final debe ser posterior a la inicial.
-      </p>
+          type="date"
+          formControlName="fechaMatricula"
+        /><mat-error>{{error('fechaMatricula')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estado"
+          ><mat-option [value]="'VIGENTE'">VIGENTE</mat-option
+          ><mat-option [value]="'RETIRADO'">RETIRADO</mat-option
+          ><mat-option [value]="'TRASLADADO'"
+            >TRASLADADO</mat-option
+          ></mat-select
+        ><mat-error>{{error('estado')}}</mat-error></mat-form-field
+      >
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar matrícula</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdMatricula"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdMatricula()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdMatricula()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Matrícula</mat-label
+          ><mat-select formControlName="idMatricula"
+            >@for(r of opcionesIdMatricula();track r.idMatricula){<mat-option
+              [value]="r.idMatricula"
+              >{{r.idMatricula}} · #{{r.idMatricula}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idMatricula')}}</mat-error></mat-form-field
+        >
+      </div>
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar curso</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdCurso"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdCurso()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdCurso()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Curso</mat-label
+          ><mat-select formControlName="idCurso"
+            >@for(r of opcionesIdCurso();track r.id_curso){<mat-option
+              [value]="r.id_curso"
+              >{{r.nombre_curso}} · #{{r.id_curso}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idCurso')}}</mat-error></mat-form-field
+        >
+      </div>
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar periodo académico</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdPeriodo"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdPeriodo()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdPeriodo()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Periodo académico</mat-label
+          ><mat-select formControlName="idPeriodo"
+            >@for(r of opcionesIdPeriodo();track r.idPeriodo){<mat-option
+              [value]="r.idPeriodo"
+              >{{r.nombre}} · #{{r.idPeriodo}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idPeriodo')}}</mat-error></mat-form-field
+        >
+      </div>
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar grado</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdGrado"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdGrado()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdGrado()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Grado</mat-label
+          ><mat-select formControlName="idGrado"
+            >@for(r of opcionesIdGrado();track r.idGrado){<mat-option
+              [value]="r.idGrado"
+              >{{r.nombre}} · #{{r.idGrado}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idGrado')}}</mat-error></mat-form-field
+        >
+      </div>
+      @if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
       }
       <div class="form-actions full-width">
         <button
@@ -56,8 +134,8 @@
           type="submit"
           [disabled]="guardando() || cargando() || cargaFallida()"
         >
-          {{guardando() ? 'Guardando…' : 'Guardar registro'}}</button
-        ><a mat-stroked-button [routerLink]="['/',config.key]">Cancelar</a>
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/detalles-matricula">Cancelar</a>
       </div>
     </form>
   </div>

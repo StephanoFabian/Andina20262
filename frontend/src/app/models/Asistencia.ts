@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Asistencia extends Fila {
+export interface Asistencia {
   idAsistencia?: number;
   idSesionVirtual: number;
   idPersona: number;

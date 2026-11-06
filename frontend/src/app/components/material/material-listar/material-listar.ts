@@ -1,3 +1,7 @@
+import { OnInit, signal } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
+import { mensajeError as errorPeticion } from '../../../services/errores';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
@@ -18,7 +22,6 @@ import { RouterLink } from '@angular/router';
 import { filter, switchMap } from 'rxjs';
 import { MaterialDTO } from '../../../models/material';
 
-import { PaginaEdissonBase } from '../../../shared/pagina-edisson.base';
 import { map } from 'rxjs';
 import { mensajeError } from '../../../services/errores';
 import { Loginservice } from '../../../services/loginservice';
@@ -49,7 +52,7 @@ interface FilaMaterial extends MaterialDTO {
   providers: [{ provide: MatPaginatorIntl, useClass: PaginadorIntl }],
   templateUrl: './material-listar.html',
 })
-export class MaterialListar extends PaginaEdissonBase<FilaMaterial> {
+export class MaterialListar implements OnInit {
   private readonly mS = inject(Materialservice);
   private readonly dialog = inject(MatDialog);
   private readonly snack = inject(MatSnackBar);
@@ -123,5 +126,45 @@ export class MaterialListar extends PaginaEdissonBase<FilaMaterial> {
           this.snack.open(mensaje, 'Cerrar', { duration: 6000 });
         },
       });
+  }
+
+  protected readonly dataSource = new MatTableDataSource<FilaMaterial>([]);
+  protected readonly cargando = signal(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly total = signal(0);
+  protected page = 0;
+  protected size = 10;
+  protected q = '';
+  ngOnInit(): void {
+    this.cargar();
+  }
+  protected cargar(): void {
+    this.cargando.set(true);
+    this.error.set(null);
+    this.obtenerPagina().subscribe({
+      next: (p) => {
+        this.dataSource.data = p.content;
+        this.total.set(p.totalElements);
+        this.cargando.set(false);
+        if (this.page > 0 && !p.content.length) {
+          this.page--;
+          this.cargar();
+        }
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        this.error.set(errorPeticion(err));
+      },
+    });
+  }
+  protected paginar(e: PageEvent): void {
+    this.page = e.pageIndex;
+    this.size = e.pageSize;
+    this.cargar();
+  }
+  protected buscar(texto: string): void {
+    this.q = texto.trim().slice(0, 100);
+    this.page = 0;
+    this.cargar();
   }
 }

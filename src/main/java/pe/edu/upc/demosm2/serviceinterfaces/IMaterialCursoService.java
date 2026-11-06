@@ -14,4 +14,8 @@ public interface IMaterialCursoService {
     public void delete(MaterialCursoId id);
 
     public List<Object[]> reporteMaterialesPorCurso();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento, Long idMaterial);
+    long contarPagina(String texto, Long idMaterial);
+    java.util.List<Object[]> cursosPagina(int limite,int desplazamiento);
+    long contarCursos();
 }

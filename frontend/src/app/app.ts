@@ -8,7 +8,6 @@ import {
 } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from './core/auth.service';
 import { MODULOS } from './models/catalogo';
 @Component({
@@ -28,7 +27,7 @@ export class App {
   readonly abierto = signal(false);
   readonly modulos = MODULOS;
   constructor() {
-    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) this.abierto.set(false);
     });
   }

@@ -14,4 +14,6 @@ public interface MatriculaServiceInterface {
 
     public List<Object[]> matriculasPorColegio();
     public List<Object[]> estudiantesConVariasMatriculas();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

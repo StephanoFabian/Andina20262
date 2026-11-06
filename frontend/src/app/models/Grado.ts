@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface Grado extends Fila {
+export interface Grado {
   idGrado?: number;
   nombre: string;
   nivel: string;

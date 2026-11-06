@@ -27,4 +27,6 @@ public class ColegioServiceImplement implements ColegioServiceInterface {
     public void delete(Long id){ICR.deleteById(id);}
 
 
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return ICR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return ICR.contarPagina(texto);}
 }

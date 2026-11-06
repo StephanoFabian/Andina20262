@@ -46,4 +46,6 @@ public class CursoServiceImplement implements ICursoService {
     public List<Curso> buscarporArea(String area) {
         return qR.findByArea(area);
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return qR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return qR.contarPagina(texto);}
 }

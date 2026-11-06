@@ -1,17 +1,17 @@
-import { ReferenciaComponent } from '../../../shared/referencia.component';
+import { Curso } from '../../../models/Curso';
+import { CursoService } from '../../../services/cursos.service';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { map } from 'rxjs';
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterLink } from '@angular/router';
 import { MaterialDTO } from '../../../models/material';
-
 import { Materialservice } from '../../../services/materialservice';
 import {
   Consulta,
@@ -20,13 +20,11 @@ import {
 } from '../../compartido/consulta';
 import { mensajeCampo, noVacio } from '../../compartido/validadores';
 import { MaterialTabla } from '../material-tabla/material-tabla';
-
 /** Consultas para todos los roles: materiales por título y materiales de un curso */
 @Component({
   selector: 'app-material-consultas',
   imports: [
     ReactiveFormsModule,
-    ReferenciaComponent,
     MatPaginatorModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -126,5 +124,16 @@ export class MaterialConsultas {
       this.error,
       'El curso no tiene materiales asociados.',
     );
+  }
+  private readonly servicioIdCurso = inject(CursoService);
+  protected readonly listaIdCurso = signal<Curso[]>([]);
+  protected readonly buscarIdCurso = new FormControl('', { nonNullable: true });
+  protected cargarIdCurso(): void {
+    this.servicioIdCurso
+      .pagina(0, 20, this.buscarIdCurso.value.trim())
+      .subscribe({ next: (p) => this.listaIdCurso.set(p.content) });
+  }
+  constructor() {
+    this.cargarIdCurso();
   }
 }

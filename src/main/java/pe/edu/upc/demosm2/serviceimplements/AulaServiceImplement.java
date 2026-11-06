@@ -25,4 +25,6 @@ public class AulaServiceImplement implements AulaServiceInterface {
 
     @Override
     public void delete(Long id){IAR.deleteById(id);}
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return IAR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return IAR.contarPagina(texto);}
 }

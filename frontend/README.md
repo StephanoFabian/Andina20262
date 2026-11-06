@@ -15,7 +15,7 @@ npm test        # pruebas del interceptor de autenticación
 npm run format
 ```
 
-Para otro despliegue, configura la URL de la API en los archivos de entorno y los orígenes permitidos con `ANDINA_CORS_ORIGINS` en el backend. Sirve `dist/demoFront8228/browser` y redirige las rutas Angular a `index.html`.
+Para otro despliegue, configura la URL de la API en los archivos de entorno y los orígenes permitidos en `configs/CorsConfig.java` del backend. Sirve `dist/demoFront8228/browser` y redirige las rutas Angular a `index.html`.
 
 ## Carpetas
 
@@ -25,7 +25,7 @@ Para otro despliegue, configura la URL de la API en los archivos de entorno y lo
 - `src/app/core`: sesión JWT, interceptor y guards.
 - `src/app/shared`: comportamiento común de listas y formularios; selector remoto de referencias.
 
-`modulos.json` es la fuente del catálogo y de los componentes generados. Para cambiar campos, edítalo y ejecuta `python3 ../tools/generar_frontend.py` y `npm run format`. El generador conserva el código de `core/`, `shared/`, login e inicio.
+Cada entidad tiene componentes y servicios explícitos que se editan directamente. No hay un generador de pantallas.
 
 El rol se lee del JWT para mostrar acciones; el backend valida los permisos nuevamente. La sesión se guarda en `sessionStorage`. Los selectores consultan hasta 20 coincidencias y requieren seleccionar un registro existente.
 
@@ -33,4 +33,4 @@ Material por curso usa la clave compuesta `idMaterial/idCurso`: permite vincular
 
 ## Entrega de Edisson
 
-Materiales, Materiales por curso y Convenios se sustituyeron por las pantallas de `andina-frontend.zip`, adaptadas a esta API y con paginación en el servidor. Sus módulos tienen `source: "edisson"` y el generador no los sobrescribe. Antes de actualizar una base anterior, aplica `../docs/sql/integracion_edisson.sql`. Detalles en [la integración](../docs/INTEGRACION_EDISSON.md).
+Materiales, Materiales por curso y Convenios se sustituyeron por las pantallas de `andina-frontend.zip`, adaptadas a esta API y con paginación en el servidor. Sus componentes se editan directamente. Antes de actualizar una base anterior, aplica `../docs/sql/integracion_edisson.sql`. Detalles en [la integración](../docs/INTEGRACION_EDISSON.md).

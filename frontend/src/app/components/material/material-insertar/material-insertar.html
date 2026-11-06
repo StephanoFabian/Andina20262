@@ -52,11 +52,28 @@
       <mat-error>{{ error('urlArchivo') }}</mat-error>
     </mat-form-field>
 
-    <app-referencia
-      [control]="form.controls.idPersona"
-      resource="personas"
-      label="Autor"
-    />
+    <div class="reference-search">
+      <mat-form-field
+        ><mat-label>Buscar autor</mat-label
+        ><input
+          matInput
+          [formControl]="buscarIdPersona"
+          maxlength="100"
+          (keydown.enter)="$event.preventDefault();cargarIdPersona()" /></mat-form-field
+      ><button mat-button type="button" (click)="cargarIdPersona()">
+        Buscar
+      </button>
+    </div>
+    <mat-form-field
+      ><mat-label>Autor</mat-label
+      ><mat-select [formControl]="form.controls.idPersona"
+        >@for(r of listaIdPersona();track r.idPersona){<mat-option
+          [value]="r.idPersona"
+          >{{r.nombresPersona}} · #{{r.idPersona}}</mat-option
+        >}</mat-select
+      ><mat-hint>Hasta 20 coincidencias.</mat-hint
+      ><mat-error>Selecciona un registro.</mat-error></mat-form-field
+    >
 
     @if (mensaje()) {
     <div class="mensaje-error" role="alert">{{ mensaje() }}</div>

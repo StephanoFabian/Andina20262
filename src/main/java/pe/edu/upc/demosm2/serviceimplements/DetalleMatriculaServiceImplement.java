@@ -54,4 +54,6 @@ public class DetalleMatriculaServiceImplement implements IDetalleMatriculaServic
     public List<Object[]> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual) {
         return dmR.reporteRetencionPorColegio(idPeriodoAnterior, idPeriodoActual);
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return dmR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return dmR.contarPagina(texto);}
 }

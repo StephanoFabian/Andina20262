@@ -50,4 +50,6 @@ public class MatriculaServiceImplement implements MatriculaServiceInterface {
     public List<Object[]> estudiantesConVariasMatriculas() {
         return repository.estudiantesConVariasMatriculas();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return repository.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return repository.contarPagina(texto);}
 }

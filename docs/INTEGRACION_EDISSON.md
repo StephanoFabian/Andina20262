@@ -1,3 +1,5 @@
+> Actualización: el ajuste posterior a los patrones del ZIP se documenta en [PATRONES_REFERENCIA.md](PATRONES_REFERENCIA.md). La versión actual no usa clases base ni generadores.
+
 # Integración del frontend de Edisson
 
 Fuente: `/home/nathaniel-r/Descargas/andina-frontend.zip`. SHA-256: `82bbd48fdd02b34f252d387009e481a01fa0e9d5dd7197ddf955db044e2781a2`.
@@ -13,7 +15,6 @@ La versión anterior se conserva en el commit `2f2beda`. La integración se real
 - Los listados y reportes usan paginación en el servidor (máximo 100 filas); los selectores de referencias y las sugerencias de tipos consultan hasta 20 coincidencias. No se descargan directorios completos de personas, materiales ni cursos. Los nombres de autor/material/curso se obtienen en la misma proyección del listado.
 - Las búsquedas de materiales usan prefijo; la etiqueta del formulario lo indica. Las tablas y los gráficos de los reportes representan la página solicitada.
 - Se incorpora el estilo de los componentes del ZIP dentro de `.pagina`, manteniendo los estilos de los demás compañeros.
-- El generador omite los módulos marcados con `source: "edisson"`. Sus archivos se editan directamente en `components/material`, `components/materialcurso`, `components/convenio` y los servicios correspondientes. Los módulos restantes siguen generándose desde `modulos.json`.
 
 ## Convenios y compatibilidad
 

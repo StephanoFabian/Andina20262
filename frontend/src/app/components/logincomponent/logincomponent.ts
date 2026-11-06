@@ -6,10 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
 import { AuthService } from '../../core/auth.service';
-import { mensajeError } from '../../shared/error';
+import { mensajeError } from '../../services/errores';
 @Component({
   selector: 'app-login',
   imports: [
@@ -24,7 +22,6 @@ import { mensajeError } from '../../shared/error';
 export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly destroy = inject(DestroyRef);
   readonly cargando = signal(false);
   readonly error = signal('');
   readonly ocultar = signal(true);
@@ -49,10 +46,7 @@ export class LoginComponent {
     const value = this.form.getRawValue();
     this.auth
       .login(value.idPersona!, value.passwordPersona)
-      .pipe(
-        finalize(() => this.cargando.set(false)),
-        takeUntilDestroyed(this.destroy),
-      )
+      .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: () => void this.router.navigate(['/inicio']),
         error: (err) => this.error.set(mensajeError(err)),

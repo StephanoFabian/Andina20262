@@ -54,4 +54,11 @@ public class MaterialServiceImplement implements IMaterialService {
     public List<Object[]> reporteMaterialesPorTipo() {
         return mR.reporteMaterialesPorTipo();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return mR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return mR.contarPagina(texto);}
+    public java.util.List<String> tiposSugeridos(String texto) {return mR.tiposSugeridos(texto);}
+    public java.util.List<Object[]> consultaPagina(String texto,Long idCurso,int limite,int desplazamiento) {return mR.consultaPagina(texto,idCurso,limite,desplazamiento);}
+    public long contarConsulta(String texto,Long idCurso) {return mR.contarConsulta(texto,idCurso);}
+    public java.util.List<Object[]> tiposPagina(int limite,int desplazamiento) {return mR.tiposPagina(limite,desplazamiento);}
+    public long contarTipos() {return mR.contarTipos();}
 }

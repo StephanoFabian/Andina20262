@@ -1,4 +1,7 @@
-import { PaginaEdissonBase } from '../../../shared/pagina-edisson.base';
+import { OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
+import { mensajeError as errorPeticion } from '../../../services/errores';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { map } from 'rxjs';
 import { Component, computed, inject, signal } from '@angular/core';
@@ -87,7 +90,7 @@ import {
     </section>
   `,
 })
-export class MaterialReporteTipo extends PaginaEdissonBase<MaterialPorTipoDTO> {
+export class MaterialReporteTipo implements OnInit {
   protected readonly resultado =
     signal<Consulta<MaterialPorTipoDTO>>(SIN_CONSULTAR);
   protected readonly columnas = ['tipo', 'cantidad'];
@@ -112,5 +115,47 @@ export class MaterialReporteTipo extends PaginaEdissonBase<MaterialPorTipoDTO> {
         return p;
       }),
     );
+  }
+
+  protected readonly dataSource = new MatTableDataSource<MaterialPorTipoDTO>(
+    [],
+  );
+  protected readonly cargando = signal(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly total = signal(0);
+  protected page = 0;
+  protected size = 10;
+  protected q = '';
+  ngOnInit(): void {
+    this.cargar();
+  }
+  protected cargar(): void {
+    this.cargando.set(true);
+    this.error.set(null);
+    this.obtenerPagina().subscribe({
+      next: (p) => {
+        this.dataSource.data = p.content;
+        this.total.set(p.totalElements);
+        this.cargando.set(false);
+        if (this.page > 0 && !p.content.length) {
+          this.page--;
+          this.cargar();
+        }
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        this.error.set(errorPeticion(err));
+      },
+    });
+  }
+  protected paginar(e: PageEvent): void {
+    this.page = e.pageIndex;
+    this.size = e.pageSize;
+    this.cargar();
+  }
+  protected buscar(texto: string): void {
+    this.q = texto.trim().slice(0, 100);
+    this.page = 0;
+    this.cargar();
   }
 }

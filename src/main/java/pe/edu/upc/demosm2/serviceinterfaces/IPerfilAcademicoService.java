@@ -13,4 +13,6 @@ public interface IPerfilAcademicoService {
     public void delete(Long id);
 
     public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota);
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

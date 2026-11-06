@@ -50,4 +50,6 @@ public class PeriodoAcademicoServiceImplement implements PeriodoAcademicoService
     public List<Object[]> matriculaTardiaPorPeriodo() {
         return repository.matriculaTardiaPorPeriodo();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return repository.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return repository.contarPagina(texto);}
 }

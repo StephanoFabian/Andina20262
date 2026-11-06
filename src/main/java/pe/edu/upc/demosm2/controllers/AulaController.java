@@ -95,4 +95,21 @@ public class AulaController {
         ASI.insert(aula);
         return ResponseEntity.ok(MM.map(aula,AulaDTOList.class));
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.AulaDTOList> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.AulaDTOList> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:ASI.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,ASI.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.AulaDTOList filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.AulaDTOList dto=new pe.edu.upc.demosm2.dtos.AulaDTOList();
+        dto.setIdAula((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setNombre((fila[1] == null ? null : (String)fila[1]));
+        dto.setSeccion((fila[2] == null ? null : (String)fila[2]));
+        dto.setCapacidad((fila[3] == null ? 0 : ((Number)fila[3]).intValue()));
+        dto.setIdColegio((fila[4] == null ? null : ((Number)fila[4]).longValue()));
+        return dto;
+    }
 }

@@ -47,4 +47,6 @@ public class AsignacionServiceImplement implements IAsignacionDocenteService {
     public List<AsignacionDocente> ObtenerPorRangoHoras(Long hora_min, Long hora_max) {
         return aR.findByHorassemanalesIsBetween(hora_min,hora_max);
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return aR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return aR.contarPagina(texto);}
 }

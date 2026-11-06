@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface PerfilAcademico extends Fila {
+export interface PerfilAcademico {
   idPerfilAcademico?: number;
   detallePA: string;
   notasPA: number;

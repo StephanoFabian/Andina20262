@@ -1,23 +1,29 @@
-import { ReferenciaComponent } from '../../../shared/referencia.component';
+import { Curso } from '../../../models/Curso';
+import { CursoService } from '../../../services/cursos.service';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MaterialDTO } from '../../../models/material';
+import { Materialservice } from '../../../services/materialservice';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
-
 import { mensajeError } from '../../../services/errores';
 import { Materialcursoservice } from '../../../services/materialcursoservice';
-
 import { mensajeCampo } from '../../compartido/validadores';
-
 /** Asocia un material a un curso (no hay edición: para cambiarlo se quita y se vuelve a asociar) */
 @Component({
   selector: 'app-materialcurso-insertar',
   imports: [
-    ReferenciaComponent,
+    MatInputModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -70,5 +76,27 @@ export class MaterialcursoInsertar {
         );
       },
     });
+  }
+  private readonly servicioIdMaterial = inject(Materialservice);
+  protected readonly listaIdMaterial = signal<MaterialDTO[]>([]);
+  protected readonly buscarIdMaterial = new FormControl('', {
+    nonNullable: true,
+  });
+  protected cargarIdMaterial(): void {
+    this.servicioIdMaterial
+      .pagina(0, 20, this.buscarIdMaterial.value.trim())
+      .subscribe({ next: (p) => this.listaIdMaterial.set(p.content) });
+  }
+  private readonly servicioIdCurso = inject(CursoService);
+  protected readonly listaIdCurso = signal<Curso[]>([]);
+  protected readonly buscarIdCurso = new FormControl('', { nonNullable: true });
+  protected cargarIdCurso(): void {
+    this.servicioIdCurso
+      .pagina(0, 20, this.buscarIdCurso.value.trim())
+      .subscribe({ next: (p) => this.listaIdCurso.set(p.content) });
+  }
+  constructor() {
+    this.cargarIdMaterial();
+    this.cargarIdCurso();
   }
 }

@@ -176,4 +176,24 @@ public class AsignacionControlller {
                 .toList();
         return ResponseEntity.ok(filtro);
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.AsignacionDTOList> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.AsignacionDTOList> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:aS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,aS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.AsignacionDTOList filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.AsignacionDTOList dto=new pe.edu.upc.demosm2.dtos.AsignacionDTOList();
+        dto.setId_asignacion((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setId_aula((fila[1] == null ? null : (String)fila[1]));
+        dto.setId_curso((fila[2] == null ? null : ((Number)fila[2]).longValue()));
+        dto.setId_periodo((fila[3] == null ? null : ((Number)fila[3]).longValue()));
+        dto.setId_persona((fila[4] == null ? null : ((Number)fila[4]).longValue()));
+        dto.setId_colegio((fila[5] == null ? null : ((Number)fila[5]).longValue()));
+        dto.setModalidad((fila[6] == null ? null : (String)fila[6]));
+        dto.setHorassemanales((fila[7] == null ? null : ((Number)fila[7]).longValue()));
+        return dto;
+    }
 }

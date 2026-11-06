@@ -46,7 +46,28 @@
 
     <mat-tab label="Por curso">
       <form class="filtros" (ngSubmit)="buscarPorCurso()" novalidate>
-        <app-referencia [control]="idCurso" resource="cursos" label="Curso" />
+        <div class="reference-search">
+          <mat-form-field
+            ><mat-label>Buscar curso</mat-label
+            ><input
+              matInput
+              [formControl]="buscarIdCurso"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdCurso()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdCurso()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field
+          ><mat-label>Curso</mat-label
+          ><mat-select [formControl]="idCurso"
+            >@for(r of listaIdCurso();track r.id_curso){<mat-option
+              [value]="r.id_curso"
+              >{{r.nombre_curso}} · #{{r.id_curso}}</mat-option
+            >}</mat-select
+          ><mat-hint>Hasta 20 coincidencias.</mat-hint
+          ><mat-error>Selecciona un registro.</mat-error></mat-form-field
+        >
         <button
           mat-flat-button
           type="submit"

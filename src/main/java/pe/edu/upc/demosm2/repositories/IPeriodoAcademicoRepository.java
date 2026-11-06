@@ -1,4 +1,5 @@
 package pe.edu.upc.demosm2.repositories;
+import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +35,8 @@ public interface IPeriodoAcademicoRepository extends JpaRepository<PeriodoAcadem
             " GROUP BY p.id_periodo, p.nombre, p.fecha_inicio " +
             " ORDER BY porcentaje_tardias DESC, p.fecha_inicio DESC", nativeQuery = true)
     List<Object[]> matriculaTardiaPorPeriodo();
+    @Query(value="SELECT t.id_periodo,t.nombre,t.fecha_inicio,t.fecha_fin,t.estado FROM periodos_academicos t WHERE (:texto = '%' OR LOWER(t.nombre) LIKE :texto ESCAPE '!' OR LOWER(t.estado) LIKE :texto ESCAPE '!') ORDER BY t.id_periodo LIMIT :limite OFFSET :desplazamiento",nativeQuery=true)
+    java.util.List<Object[]> pagina(@Param("texto") String texto,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
+    @Query(value="SELECT COUNT(*) FROM periodos_academicos t WHERE (:texto = '%' OR LOWER(t.nombre) LIKE :texto ESCAPE '!' OR LOWER(t.estado) LIKE :texto ESCAPE '!')",nativeQuery=true)
+    long contarPagina(@Param("texto") String texto);
 }

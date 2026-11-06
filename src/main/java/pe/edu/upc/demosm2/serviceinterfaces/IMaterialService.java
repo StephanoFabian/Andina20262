@@ -15,4 +15,11 @@ public interface IMaterialService {
     public List<Material> buscarPorTitulo(String titulo);
     public List<Material> listarMaterialesPorCurso(Long idCurso);
     public List<Object[]> reporteMaterialesPorTipo();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
+    java.util.List<String> tiposSugeridos(String texto);
+    java.util.List<Object[]> consultaPagina(String texto,Long idCurso,int limite,int desplazamiento);
+    long contarConsulta(String texto,Long idCurso);
+    java.util.List<Object[]> tiposPagina(int limite,int desplazamiento);
+    long contarTipos();
 }

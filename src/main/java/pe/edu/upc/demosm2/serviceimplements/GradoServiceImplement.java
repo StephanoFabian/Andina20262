@@ -40,4 +40,6 @@ public class GradoServiceImplement implements GradoServiceInterface {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return repository.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return repository.contarPagina(texto);}
 }

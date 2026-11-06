@@ -44,4 +44,6 @@ public class PerfilAcademicoServiceImplement implements IPerfilAcademicoService 
     public List<PerfilAcademico> listarPerfilesConNotaMenorA(Double nota) {
         return paR.listarPerfilesConNotaMenorA(nota);
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return paR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return paR.contarPagina(texto);}
 }

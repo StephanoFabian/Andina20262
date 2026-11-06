@@ -68,4 +68,8 @@ public interface IDetalleMatriculaRepository extends JpaRepository<DetalleMatric
             """, nativeQuery = true)
     List<Object[]> reporteRetencionPorColegio(@Param("idPeriodoAnterior") Long idPeriodoAnterior,
                                                            @Param("idPeriodoActual") Long idPeriodoActual);
+    @Query(value="SELECT t.id_d_matricula,t.fecha_matricula,t.estado,t.id_matricula,t.id_curso,t.id_periodo,t.id_grado FROM detalles_matricula t WHERE (:texto = '%' OR LOWER(t.estado) LIKE :texto ESCAPE '!') ORDER BY t.id_d_matricula LIMIT :limite OFFSET :desplazamiento",nativeQuery=true)
+    java.util.List<Object[]> pagina(@Param("texto") String texto,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
+    @Query(value="SELECT COUNT(*) FROM detalles_matricula t WHERE (:texto = '%' OR LOWER(t.estado) LIKE :texto ESCAPE '!')",nativeQuery=true)
+    long contarPagina(@Param("texto") String texto);
 }

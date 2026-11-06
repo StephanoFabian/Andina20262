@@ -66,4 +66,10 @@ public class MaterialDTO {
     public void setIdPersona(Long idPersona) {
         this.idPersona = idPersona;
     }
+    private String nombreAutor;
+    public String getNombreAutor() {return nombreAutor;}
+    public void setNombreAutor(String value) {this.nombreAutor=value;}
+    private String apellidosAutor;
+    public String getApellidosAutor() {return apellidosAutor;}
+    public void setApellidosAutor(String value) {this.apellidosAutor=value;}
 }

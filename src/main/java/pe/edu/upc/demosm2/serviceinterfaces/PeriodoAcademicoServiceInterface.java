@@ -14,4 +14,6 @@ public interface PeriodoAcademicoServiceInterface {
 
     public List<Object[]> evolucionDeMatricula();
     public List<Object[]> matriculaTardiaPorPeriodo();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

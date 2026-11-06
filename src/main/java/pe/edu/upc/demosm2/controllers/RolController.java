@@ -90,4 +90,18 @@ public class RolController {
         }
         return ResponseEntity.ok(respuesta);
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.RolDTO> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.RolDTO> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:rS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,rS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.RolDTO filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.RolDTO dto=new pe.edu.upc.demosm2.dtos.RolDTO();
+        dto.setIdTipoPersona((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setDetalle((fila[1] == null ? null : (String)fila[1]));
+        return dto;
+    }
 }

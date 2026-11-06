@@ -10,4 +10,6 @@ public interface ColegioServiceInterface {
     public void insert(Colegio c);
     public Optional<Colegio> listId(Long id);
     public void delete(Long id);
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

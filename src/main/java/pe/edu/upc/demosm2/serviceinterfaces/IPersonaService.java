@@ -13,4 +13,6 @@ public interface IPersonaService {
     public void delete(Long id);
 
     public List<Object[]> reporteCuentasPorRol();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

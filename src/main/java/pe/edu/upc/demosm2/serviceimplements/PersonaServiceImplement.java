@@ -56,4 +56,6 @@ public class PersonaServiceImplement implements IPersonaService {
     public List<Object[]> reporteCuentasPorRol() {
         return pR.reporteCuentasPorRol();
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return pR.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return pR.contarPagina(texto);}
 }

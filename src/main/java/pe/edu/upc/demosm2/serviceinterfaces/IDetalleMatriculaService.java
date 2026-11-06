@@ -15,4 +15,6 @@ public interface IDetalleMatriculaService {
     public List<Object[]> reporteRetiroPorCurso();
     public List<Object[]> reporteAulasNecesariasPorGrado(Long idPeriodo);
     public List<Object[]> reporteRetencionPorColegio(Long idPeriodoAnterior, Long idPeriodoActual);
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
 }

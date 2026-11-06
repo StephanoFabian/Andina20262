@@ -195,4 +195,23 @@ public class DetalleMatriculaController {
         }
         return ResponseEntity.ok(respuesta);
     }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:dmS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,dmS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO dto=new pe.edu.upc.demosm2.dtos.DetalleMatriculaDTO();
+        dto.setIdDetalleMatricula((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setFechaMatricula((fila[1] == null ? null : (fila[1] instanceof java.time.LocalDate ? (java.time.LocalDate)fila[1] : ((java.sql.Date)fila[1]).toLocalDate())));
+        dto.setEstado((fila[2] == null ? null : (String)fila[2]));
+        dto.setIdMatricula((fila[3] == null ? null : ((Number)fila[3]).longValue()));
+        dto.setIdCurso((fila[4] == null ? null : ((Number)fila[4]).longValue()));
+        dto.setIdPeriodo((fila[5] == null ? null : ((Number)fila[5]).longValue()));
+        dto.setIdGrado((fila[6] == null ? null : ((Number)fila[6]).longValue()));
+        return dto;
+    }
 }

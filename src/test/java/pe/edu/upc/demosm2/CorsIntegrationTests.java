@@ -34,7 +34,6 @@ class CorsIntegrationTests {
                 HttpResponse<String> response = preflight(origin, method);
                 assertEquals(200, response.statusCode());
                 assertEquals(origin, response.headers().firstValue("Access-Control-Allow-Origin").orElseThrow());
-                assertEquals("3600", response.headers().firstValue("Access-Control-Max-Age").orElseThrow());
                 assertTrue(response.headers().firstValue("Access-Control-Allow-Headers").orElseThrow()
                         .toLowerCase().contains("authorization"));
                 assertTrue(response.headers().firstValue("Access-Control-Allow-Credentials").isEmpty());

@@ -1,25 +1,24 @@
 package pe.edu.upc.demosm2.serviceimplements;
-import jakarta.persistence.*;
+import pe.edu.upc.demosm2.serviceinterfaces.ColegioServiceInterface;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import pe.edu.upc.demosm2.entities.*;
 import pe.edu.upc.demosm2.dtos.ConvenioDTO;
 import pe.edu.upc.demosm2.repositories.IConvenioRepository;
 import pe.edu.upc.demosm2.serviceinterfaces.IConvenioService;
 import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
 @Service
-@Transactional
 public class ConvenioServiceImplement implements IConvenioService {
     private final IConvenioRepository repo;
-    private final EntityManager em;
-    public ConvenioServiceImplement(IConvenioRepository repo, EntityManager em) { this.repo=repo; this.em=em; }
-    @Transactional(readOnly=true)
-    public ConvenioDTO buscar(Long id) { return convertir(existente(id)); }
+    private final ColegioServiceInterface colegioService;
+    public ConvenioServiceImplement(IConvenioRepository repo, ColegioServiceInterface colegioService) { this.repo=repo; this.colegioService=colegioService; }
+        public ConvenioDTO buscar(Long id) { return convertir(existente(id)); }
     private Convenio existente(Long id) { return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe Convenio: " + id)); }
     public ConvenioDTO guardar(Long id, ConvenioDTO dto) {
         Convenio entidad = id == null ? new Convenio() : existente(id);
         if (dto.getIdColegio()!=null) {
-            Colegio colegio=em.find(Colegio.class,dto.getIdColegio());
+            Colegio colegio=colegioService.listId(dto.getIdColegio()).orElseThrow(() -> new ResourceNotFoundException("No existe colegio"));
             if(colegio==null) throw new ResourceNotFoundException("No existe colegio: "+dto.getIdColegio());
             entidad.setColegio(colegio);
         }
@@ -50,4 +49,9 @@ public class ConvenioServiceImplement implements IConvenioService {
         dto.setPresupuesto(e.getPresupuesto());
         return dto;
     }
+    public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return repo.pagina(texto,limite,desplazamiento);}
+    public long contarPagina(String texto) {return repo.contarPagina(texto);}
+    public java.util.List<Object[]> vencimientosPagina(int dias,int limite,int desplazamiento) {return repo.vencimientosPagina(dias,limite,desplazamiento);}
+    public long contarVencimientos(int dias) {return repo.contarVencimientos(dias);}
+    public java.util.Optional<Convenio> listId(Long id) {return repo.findById(id);}
 }

@@ -1,5 +1,4 @@
-import { Fila } from './modulo';
-export interface PeriodoAcademico extends Fila {
+export interface PeriodoAcademico {
   idPeriodo?: number;
   nombre: string;
   fechaInicio: string;
