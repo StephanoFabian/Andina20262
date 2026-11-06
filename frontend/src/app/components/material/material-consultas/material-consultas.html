@@ -1,0 +1,83 @@
+<section class="pagina">
+  <h1>Buscar materiales</h1>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Buscando" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">{{ error() }}</div>
+  }
+
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
+    <mat-tab label="Por título">
+      <form class="filtros" (ngSubmit)="buscarPorTitulo()" novalidate>
+        <mat-form-field class="campo-ancho">
+          <mat-label>Título comienza con</mat-label>
+          <input matInput [formControl]="titulo" required />
+          <mat-error>{{ errorTitulo() }}</mat-error>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          type="submit"
+          class="boton-consultar"
+          [disabled]="cargando() > 0"
+        >
+          Buscar
+        </button>
+      </form>
+
+      @if (porTitulo().datos; as datos) {
+      <p class="solo-lector" aria-live="polite">
+        {{ porTitulo().aviso ?? datos.length + ' material(es) encontrados.' }}
+      </p>
+      <app-material-tabla
+        [materiales]="datos"
+        titulo="Materiales por título"
+        [sinDatos]="porTitulo().aviso"
+      />
+      }
+      <mat-paginator
+        [length]="totalTitulo()"
+        [pageIndex]="paginaTitulo"
+        [pageSize]="sizeTitulo"
+        [pageSizeOptions]="[10,25,50]"
+        (page)="paginarTitulo($event)"
+      />
+    </mat-tab>
+
+    <mat-tab label="Por curso">
+      <form class="filtros" (ngSubmit)="buscarPorCurso()" novalidate>
+        <app-referencia [control]="idCurso" resource="cursos" label="Curso" />
+        <button
+          mat-flat-button
+          type="submit"
+          class="boton-consultar"
+          [disabled]="cargando() > 0"
+        >
+          Buscar
+        </button>
+      </form>
+
+      @if (porCurso().datos; as datos) {
+      <p class="solo-lector" aria-live="polite">
+        {{ porCurso().aviso ?? datos.length + ' material(es) en el curso.' }}
+      </p>
+      <app-material-tabla
+        [materiales]="datos"
+        titulo="Materiales del curso"
+        [sinDatos]="porCurso().aviso"
+      />
+      }
+      <mat-paginator
+        [length]="totalCurso()"
+        [pageIndex]="paginaCurso"
+        [pageSize]="sizeCurso"
+        [pageSizeOptions]="[10,25,50]"
+        (page)="paginarCurso($event)"
+      />
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="acciones">
+    <a mat-button routerLink="/materiales">Volver a materiales</a>
+  </div>
+</section>

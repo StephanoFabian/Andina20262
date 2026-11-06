@@ -42,3 +42,7 @@ Las relaciones se seleccionan mediante autocompletado remoto, con un máximo de 
 La paginación usa OFFSET y un conteo exacto. A medida que crezcan los datos o aumenten las páginas profundas, ambos pueden costar más; el límite de tiempo evita consultas indefinidas. Los índices de búsqueda se entregan como SQL idempotente, aplicable sin bloquear escrituras durante su construcción. Para volúmenes que excedan lo probado se debe medir de nuevo y considerar paginación por cursor y conteos aproximados o diferidos.
 
 Los formularios deshabilitan el botón mientras se guarda, pero no conservan borradores sin guardar al reiniciar el navegador. No se añaden colas ni trabajos en segundo plano. Los registros confirmados se conservan en PostgreSQL. Las sesiones contienen un enlace HTTPS para entrar a una videollamada; esta entrega no implementa un servidor de videoconferencias.
+
+## Actualización con la entrega de Edisson
+
+Los tres módulos de Edisson utilizan ahora sus componentes y reportes del ZIP. Sus campos de Convenio y el colegio opcional se describen en [INTEGRACION_EDISSON.md](INTEGRACION_EDISSON.md), junto con la migración necesaria. Las rutas anteriores de los módulos siguen funcionando como alias.

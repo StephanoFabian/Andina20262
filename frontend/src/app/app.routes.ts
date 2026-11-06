@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
+import { rutasEdisson } from './edisson.routes';
 import { authGuard, escrituraGuard } from './core/auth.guard';
 export const routes: Routes = [
+  ...rutasEdisson,
   {
     path: 'login',
     loadComponent: () =>
@@ -378,69 +380,6 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'materiales',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/materialescomponent/materialescomponent').then(
-        (m) => m.MaterialComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/materialescomponent/listarcomponent/listarcomponent').then(
-            (m) => m.MaterialListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'materiales' },
-        loadComponent: () =>
-          import('./components/materialescomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.MaterialInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'materiales' },
-        loadComponent: () =>
-          import('./components/materialescomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.MaterialActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'materiales-cursos',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/materiales-cursoscomponent/materiales-cursoscomponent').then(
-        (m) => m.MaterialCursoComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/materiales-cursoscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.MaterialCursoListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'materiales-cursos' },
-        loadComponent: () =>
-          import('./components/materiales-cursoscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.MaterialCursoInsertarComponent,
-          ),
-      },
-    ],
-  },
-  {
     path: 'asignaciones',
     canActivate: [authGuard],
     loadComponent: () =>
@@ -580,42 +519,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/horarioscomponent/actualizarcomponent/actualizarcomponent').then(
             (m) => m.HorarioActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'convenios',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/convenioscomponent/convenioscomponent').then(
-        (m) => m.ConvenioComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/convenioscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.ConvenioListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'convenios' },
-        loadComponent: () =>
-          import('./components/convenioscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.ConvenioInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'convenios' },
-        loadComponent: () =>
-          import('./components/convenioscomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.ConvenioActualizarComponent,
           ),
       },
     ],

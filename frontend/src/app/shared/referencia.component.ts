@@ -98,10 +98,15 @@ export class ReferenciaComponent implements OnInit {
     return `${label}${row['apellidosPersona'] ? ' ' + row['apellidosPersona'] : ''} · #${row[this.config.id]}`;
   };
   ngOnInit(): void {
+    let primeraEmision = true;
     this.query.valueChanges
       .pipe(
         startWith(''),
         tap((value) => {
+          if (primeraEmision) {
+            primeraEmision = false;
+            return;
+          }
           if (typeof value === 'string')
             this.control.setValue(null, { emitEvent: false });
         }),

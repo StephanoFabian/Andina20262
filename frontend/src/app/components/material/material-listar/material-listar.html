@@ -1,0 +1,131 @@
+<section class="pagina">
+  <div class="encabezado">
+    <h1>Materiales</h1>
+    <div class="acciones-encabezado">
+      @if (puedeConsultar) {
+      <a mat-button routerLink="/materiales/consultas">
+        <mat-icon aria-hidden="true">manage_search</mat-icon>
+        Buscar
+      </a>
+      } @if (puedeVerReporte) {
+      <a mat-button routerLink="/materiales/reporte-tipo">
+        <mat-icon aria-hidden="true">insights</mat-icon>
+        Por tipo
+      </a>
+      } @if (puedeInsertar) {
+      <a mat-flat-button routerLink="/materiales/nuevo">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        Nuevo material
+      </a>
+      }
+    </div>
+  </div>
+
+  <div class="filtros">
+    <mat-form-field>
+      <mat-label>Filtrar</mat-label>
+      <input
+        matInput
+        maxlength="100"
+        #busqueda
+        (input)="buscar(busqueda.value)"
+      />
+      <mat-hint>Por el comienzo del título, tipo o autor</mat-hint>
+    </mat-form-field>
+  </div>
+
+  @if (cargando()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando materiales" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">{{ error() }}</div>
+  }
+
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="dataSource">
+      <caption class="solo-lector">
+        Lista de materiales
+      </caption>
+
+      <ng-container matColumnDef="titulo">
+        <th mat-header-cell *matHeaderCellDef>Título</th>
+        <td mat-cell *matCellDef="let m">
+          {{ m.titulo }} @if (m.descripcion) {
+          <span class="id-secundario descripcion">{{ m.descripcion }}</span>
+          }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let m">{{ m.tipo || '—' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="autor">
+        <th mat-header-cell *matHeaderCellDef>Autor</th>
+        <td mat-cell *matCellDef="let m">{{ m.autor }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fechaPublicacion">
+        <th mat-header-cell *matHeaderCellDef>Publicado</th>
+        <td mat-cell *matCellDef="let m">
+          {{ m.fechaPublicacion ? (m.fechaPublicacion | date: 'dd/MM/yyyy') :
+          '—' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="urlArchivo">
+        <th mat-header-cell *matHeaderCellDef>Archivo</th>
+        <td mat-cell *matCellDef="let m">
+          @if (m.urlArchivo) {
+          <a [href]="m.urlArchivo" target="_blank" rel="noopener noreferrer">
+            Abrir<span class="solo-lector">
+              {{ m.titulo }} (se abre en una pestaña nueva)</span
+            >
+          </a>
+          } @else { — }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="acciones-celda">
+          Acciones
+        </th>
+        <td mat-cell *matCellDef="let m" class="acciones-celda">
+          @if (puedeModificar) {
+          <a
+            mat-icon-button
+            [routerLink]="['/materiales/ediciones', m.idMaterial]"
+            [attr.aria-label]="'Editar ' + m.titulo"
+            matTooltip="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          } @if (puedeEliminar) {
+          <button
+            mat-icon-button
+            type="button"
+            (click)="eliminar(m)"
+            [attr.aria-label]="'Eliminar ' + m.titulo"
+            matTooltip="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td class="mat-mdc-cell sin-datos" [attr.colspan]="columnas.length">
+          {{ cargando() ? 'Cargando…' : (busqueda.value ? 'Ningún material
+          coincide con el filtro.' : 'No hay materiales registrados.') }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator
+    [length]="total()"
+    [pageIndex]="page"
+    [pageSize]="size"
+    (page)="paginar($event)"
+    [pageSizeOptions]="[5, 10, 20, 50]"
+    aria-label="Paginación de materiales"
+  />
+</section>

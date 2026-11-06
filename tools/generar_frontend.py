@@ -12,7 +12,7 @@ mods=json.loads((root/'modulos.json').read_text())
 put(Path('models/modulo.ts'),'''export type Fila = Record<string, string | number | null>;
 export interface Pagina<T> { content: T[]; totalElements: number; number: number; size: number; }
 export interface Campo { key: string; label: string; type: string; required: boolean; resource?: string; options?: (string | {value: number; label: string})[]; min?: number; max?: number; minLength?: number; maxLength?: number; }
-export interface Modulo { key: string; name: string; label: string; owner: string; path: string; id: string; fields: Campo[]; createPath: string; updatePath: string; deletePath: string; roles: string[]; editable: boolean; }
+export interface Modulo { key: string; name: string; label: string; owner: string; path: string; id: string; fields: Campo[]; createPath: string; updatePath: string; deletePath: string; roles: string[]; editable: boolean; source?: string; }
 ''')
 put(Path('models/catalogo.ts'),"import { Modulo } from './modulo';\nexport const MODULOS: Modulo[] = "+json.dumps(mods,ensure_ascii=False,indent=2)+";\nexport const modulo = (key: string): Modulo => { const found=MODULOS.find(m=>m.key===key); if (!found) throw new Error('Módulo desconocido'); return found; };\n")
 put(Path('services/crud.service.ts'),'''import { HttpClient, HttpParams } from '@angular/common/http';
@@ -65,6 +65,7 @@ formtemplate='''<section class="page narrow"><a class="back-link" [routerLink]="
 '''
 routes=[]
 for m in mods:
+ if m.get('source')=='edisson':continue
  key,name=m['key'],m['name'];tsfields=[f"  {m['id']}?: number;"]
  for f in m['fields']:
   if f['key']==m['id']:continue
@@ -105,8 +106,10 @@ export class {cls} extends {base}<{name}> {{ constructor(service: {name}Service)
     {{path:'insertar',canActivate:[escrituraGuard],data:{{modulo:'{key}'}},loadComponent:()=>import('./components/{key}component/insertarcomponent/insertarcomponent').then(m=>m.{name}InsertarComponent)}},
 ''' + (f"    {{path:'editar/:id',canActivate:[escrituraGuard],data:{{modulo:'{key}'}},loadComponent:()=>import('./components/{key}component/actualizarcomponent/actualizarcomponent').then(m=>m.{name}ActualizarComponent)}},\n" if m['editable'] else '')+'  ]},')
 put(Path('app.routes.ts'),'''import { Routes } from '@angular/router';
+import { rutasEdisson } from './edisson.routes';
 import { authGuard, escrituraGuard } from './core/auth.guard';
 export const routes: Routes = [
+  ...rutasEdisson,
   {path:'login',loadComponent:()=>import('./components/logincomponent/logincomponent').then(m=>m.LoginComponent)},
   {path:'',pathMatch:'full',redirectTo:'inicio'},
   {path:'inicio',canActivate:[authGuard],loadComponent:()=>import('./components/homecomponent/homecomponent').then(m=>m.HomeComponent)},

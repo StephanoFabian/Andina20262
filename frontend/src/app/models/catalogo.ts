@@ -468,6 +468,7 @@ export const MODULOS: Modulo[] = [
     roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
     editable: true,
     deletePath: '/{id}',
+    source: 'edisson',
   },
   {
     key: 'materiales-cursos',
@@ -497,6 +498,7 @@ export const MODULOS: Modulo[] = [
     roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
     editable: false,
     deletePath: '/{idMaterial}/{idCurso}',
+    source: 'edisson',
   },
   {
     key: 'asignaciones',
@@ -791,6 +793,7 @@ export const MODULOS: Modulo[] = [
     roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
     editable: true,
     deletePath: '/{id}',
+    source: 'edisson',
   },
   {
     key: 'incidencias',

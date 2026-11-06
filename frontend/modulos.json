@@ -466,7 +466,8 @@
     "updatePath": "/actualiza",
     "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
     "editable": true,
-    "deletePath": "/{id}"
+    "deletePath": "/{id}",
+    "source": "edisson"
   },
   {
     "key": "materiales-cursos",
@@ -495,7 +496,8 @@
     "updatePath": "/actualiza",
     "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
     "editable": false,
-    "deletePath": "/{idMaterial}/{idCurso}"
+    "deletePath": "/{idMaterial}/{idCurso}",
+    "source": "edisson"
   },
   {
     "key": "asignaciones",
@@ -789,7 +791,8 @@
     "updatePath": "/{id}",
     "roles": ["ADMIN", "ADMIN_ESCUELA", "ESPECIALISTA", "LOCAL"],
     "editable": true,
-    "deletePath": "/{id}"
+    "deletePath": "/{id}",
+    "source": "edisson"
   },
   {
     "key": "incidencias",

@@ -1,0 +1,95 @@
+<section class="pagina">
+  <h1>{{ edicion() ? 'Editar convenio' : 'Nuevo convenio' }}</h1>
+
+  <form class="formulario" [formGroup]="form" (ngSubmit)="aceptar()" novalidate>
+    <mat-form-field>
+      <mat-label>Nombre del convenio</mat-label>
+      <input matInput formControlName="nombre" required />
+      <mat-hint align="end">{{ largo('nombre') }}/200</mat-hint>
+      <mat-error>{{ error('nombre') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Entidad</mat-label>
+      <input matInput formControlName="entidad" required />
+      <mat-hint>Gobierno regional u organismo de cooperación</mat-hint>
+      <mat-hint align="end">{{ largo('entidad') }}/200</mat-hint>
+      <mat-error>{{ error('entidad') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Tipo de entidad</mat-label>
+      <mat-select formControlName="tipoEntidad" required>
+        @for (t of tiposEntidad | keyvalue: sinOrden; track t.key) {
+        <mat-option [value]="t.key">{{ t.value }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ error('tipoEntidad') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Región</mat-label>
+      <input matInput formControlName="region" required />
+      <mat-hint align="end">{{ largo('region') }}/50</mat-hint>
+      <mat-error>{{ error('region') }}</mat-error>
+    </mat-form-field>
+
+    <div class="fila">
+      <mat-form-field>
+        <mat-label>Fecha de inicio</mat-label>
+        <input matInput type="date" formControlName="fechaInicio" required />
+        <mat-error>{{ error('fechaInicio') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fecha de fin</mat-label>
+        <input
+          matInput
+          type="date"
+          formControlName="fechaFin"
+          [min]="form.controls.fechaInicio.value"
+          required
+        />
+        <mat-error>{{ error('fechaFin') }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Presupuesto (S/)</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        step="0.01"
+        formControlName="presupuesto"
+        required
+      />
+      <mat-error>{{ error('presupuesto') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="estado">
+        @for (e of estados | keyvalue: sinOrden; track e.key) {
+        <mat-option [value]="e.key">{{ e.value }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ error('estado') }}</mat-error>
+    </mat-form-field>
+
+    @if (mensaje()) {
+    <div class="mensaje-error" role="alert">{{ mensaje() }}</div>
+    }
+
+    <div class="acciones">
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="guardando() || cargando() || cargaFallida()"
+      >
+        {{ edicion() ? 'Guardar cambios' : 'Registrar' }}
+      </button>
+      <a mat-button routerLink="/convenios">Cancelar</a>
+    </div>
+  </form>
+</section>

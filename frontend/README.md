@@ -30,3 +30,7 @@ En producción sirve el directorio `dist/demoFront8228/browser`, redirige las ru
 El rol se lee del JWT para mostrar acciones; el backend valida los permisos nuevamente. La sesión se guarda en `sessionStorage`. Los selectores consultan hasta 20 coincidencias y requieren seleccionar un registro existente.
 
 Material por curso usa la clave compuesta `idMaterial/idCurso`: permite vincular y quitar materiales. Para cambiar una vinculación, quita la existente y agrega la nueva.
+
+## Entrega de Edisson
+
+Materiales, Materiales por curso y Convenios se sustituyeron por las pantallas de `andina-frontend.zip`, adaptadas a esta API y con paginación en el servidor. Sus módulos tienen `source: "edisson"` y el generador no los sobrescribe. Antes de actualizar una base anterior, aplica `../docs/sql/integracion_edisson.sql`. Detalles en [la integración](../docs/INTEGRACION_EDISSON.md).

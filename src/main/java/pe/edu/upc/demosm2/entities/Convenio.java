@@ -7,17 +7,17 @@ import java.time.*;
 public class Convenio {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long idConvenio;
-    @Column(length=150, nullable=false)
+    @Column(length=200, nullable=false)
     private String nombre;
-    @Column(length=150, nullable=false)
+    @Column(length=200, nullable=false)
     private String institucion;
     @Column(nullable=false)
     private LocalDate fechaInicio;
     @Column(nullable=false)
     private LocalDate fechaFin;
-    @Column(length=150, nullable=false)
+    @Column(length=200, nullable=false)
     private String estado;
-    @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="idColegio", nullable=false)
+    @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="idColegio")
     private Colegio colegio;
     public Long getIdConvenio() { return idConvenio; }
     public void setIdConvenio(Long value) { this.idConvenio = value; }
@@ -33,4 +33,16 @@ public class Convenio {
     public void setEstado(String value) { this.estado = value; }
     public Colegio getColegio() { return colegio; }
     public void setColegio(Colegio value) { this.colegio = value; }
+    @Column(length=50)
+    private String tipoEntidad;
+    @Column(length=50)
+    private String region;
+    @Column(precision=14,scale=2)
+    private java.math.BigDecimal presupuesto;
+    public String getTipoEntidad() { return tipoEntidad; }
+    public void setTipoEntidad(String value) { tipoEntidad=value; }
+    public String getRegion() { return region; }
+    public void setRegion(String value) { region=value; }
+    public java.math.BigDecimal getPresupuesto() { return presupuesto; }
+    public void setPresupuesto(java.math.BigDecimal value) { presupuesto=value; }
 }

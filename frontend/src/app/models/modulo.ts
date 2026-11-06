@@ -30,4 +30,5 @@ export interface Modulo {
   deletePath: string;
   roles: string[];
   editable: boolean;
+  source?: string;
 }

@@ -1,0 +1,32 @@
+<section class="pagina">
+  <h1>Asociar material a un curso</h1>
+
+  <form class="formulario" [formGroup]="form" (ngSubmit)="aceptar()" novalidate>
+    <app-referencia
+      [control]="form.controls.idMaterial"
+      resource="materiales"
+      label="Material"
+    />
+
+    <app-referencia
+      [control]="form.controls.idCurso"
+      resource="cursos"
+      label="Curso"
+    />
+
+    @if (mensaje()) {
+    <div class="mensaje-error" role="alert">{{ mensaje() }}</div>
+    }
+
+    <div class="acciones">
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="guardando() || cargando() || cargaFallida()"
+      >
+        Asociar
+      </button>
+      <a mat-button routerLink="/materiales-cursos">Cancelar</a>
+    </div>
+  </form>
+</section>

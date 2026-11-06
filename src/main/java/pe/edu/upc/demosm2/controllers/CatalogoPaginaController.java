@@ -50,11 +50,11 @@ public class CatalogoPaginaController {
     }
     @GetMapping("/materiales/pagina")
     public PaginaDTO<Map<String,Object>> paginaMaterial(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
-        return servicio.pagina(Material.class,new String[]{"idMaterial=idMaterial","titulo=titulo","descripcion=descripcion","tipo=tipo","urlArchivo=urlArchivo","fechaPublicacion=fechaPublicacion","idPersona=persona.idPersona"},new String[]{"titulo","tipo"},new String[]{"idMaterial"},page,size,q);
+        return servicio.pagina(Material.class,new String[]{"idMaterial=idMaterial","titulo=titulo","descripcion=descripcion","tipo=tipo","urlArchivo=urlArchivo","fechaPublicacion=fechaPublicacion","idPersona=persona.idPersona","nombreAutor=persona.nombresPersona","apellidosAutor=persona.apellidosPersona"},new String[]{"titulo","tipo","persona.nombresPersona","persona.apellidosPersona"},new String[]{"idMaterial"},page,size,q);
     }
     @GetMapping("/materiales-cursos/pagina")
-    public PaginaDTO<Map<String,Object>> paginaMaterialCurso(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
-        return servicio.pagina(MaterialCurso.class,new String[]{"idMaterial=id.idMaterial","idCurso=id.idCurso"},new String[]{"material.titulo","curso.nombre_curso"},new String[]{"id.idMaterial","id.idCurso"},page,size,q);
+    public PaginaDTO<Map<String,Object>> paginaMaterialCurso(@RequestParam(required=false) Long idMaterial,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        return servicio.pagina(MaterialCurso.class,new String[]{"idMaterial=id.idMaterial","idCurso=id.idCurso","material=material.titulo","curso=curso.nombre_curso"},new String[]{"material.titulo","curso.nombre_curso"},new String[]{"id.idMaterial","id.idCurso"},page,size,q,idMaterial==null ? Map.of() : Map.of("id.idMaterial",idMaterial));
     }
     @GetMapping("/asignacion/pagina")
     public PaginaDTO<Map<String,Object>> paginaAsignacionDocente(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
@@ -74,7 +74,7 @@ public class CatalogoPaginaController {
     }
     @GetMapping("/api/convenios/pagina")
     public PaginaDTO<Map<String,Object>> paginaConvenio(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
-        return servicio.pagina(Convenio.class,new String[]{"idConvenio=idConvenio","nombre=nombre","institucion=institucion","fechaInicio=fechaInicio","fechaFin=fechaFin","estado=estado","idColegio=colegio.idColegio"},new String[]{"nombre","institucion","estado"},new String[]{"idConvenio"},page,size,q);
+        return servicio.pagina(Convenio.class,new String[]{"idConvenio=idConvenio","nombre=nombre","institucion=institucion","entidad=institucion","tipoEntidad=tipoEntidad","region=region","presupuesto=presupuesto","fechaInicio=fechaInicio","fechaFin=fechaFin","estado=estado","idColegio=colegio.idColegio"},new String[]{"nombre","institucion","region","estado"},new String[]{"idConvenio"},page,size,q);
     }
     @GetMapping("/api/incidencias/pagina")
     public PaginaDTO<Map<String,Object>> paginaIncidencia(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {

@@ -18,15 +18,20 @@ public class ConvenioServiceImplement implements IConvenioService {
     private Convenio existente(Long id) { return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe Convenio: " + id)); }
     public ConvenioDTO guardar(Long id, ConvenioDTO dto) {
         Convenio entidad = id == null ? new Convenio() : existente(id);
-        Colegio colegio = em.find(Colegio.class, dto.getIdColegio());
-        if (colegio == null) throw new ResourceNotFoundException("No existe colegio: " + dto.getIdColegio());
-        entidad.setColegio(colegio);
+        if (dto.getIdColegio()!=null) {
+            Colegio colegio=em.find(Colegio.class,dto.getIdColegio());
+            if(colegio==null) throw new ResourceNotFoundException("No existe colegio: "+dto.getIdColegio());
+            entidad.setColegio(colegio);
+        }
         if (dto.getFechaFin().isBefore(dto.getFechaInicio())) throw new IllegalArgumentException("La fecha final debe ser posterior o igual a la inicial");
         entidad.setNombre(dto.getNombre());
-        entidad.setInstitucion(dto.getInstitucion());
+        entidad.setInstitucion(dto.getEntidad()!=null && !dto.getEntidad().isBlank() ? dto.getEntidad().trim() : dto.getInstitucion().trim());
+        if(dto.getTipoEntidad()!=null) entidad.setTipoEntidad(dto.getTipoEntidad());
+        if(dto.getRegion()!=null) entidad.setRegion(dto.getRegion().trim());
+        if(dto.getPresupuesto()!=null) entidad.setPresupuesto(dto.getPresupuesto());
         entidad.setFechaInicio(dto.getFechaInicio());
         entidad.setFechaFin(dto.getFechaFin());
-        entidad.setEstado(dto.getEstado());
+        entidad.setEstado(dto.getEstado()==null ? "VIGENTE" : dto.getEstado());
         return convertir(repo.saveAndFlush(entidad));
     }
     public void eliminar(Long id) { repo.delete(existente(id)); repo.flush(); }
@@ -38,7 +43,11 @@ public class ConvenioServiceImplement implements IConvenioService {
         dto.setFechaInicio(e.getFechaInicio());
         dto.setFechaFin(e.getFechaFin());
         dto.setEstado(e.getEstado());
-        dto.setIdColegio(e.getColegio().getIdColegio());
+        dto.setIdColegio(e.getColegio()==null ? null : e.getColegio().getIdColegio());
+        dto.setEntidad(e.getInstitucion());
+        dto.setTipoEntidad(e.getTipoEntidad());
+        dto.setRegion(e.getRegion());
+        dto.setPresupuesto(e.getPresupuesto());
         return dto;
     }
 }

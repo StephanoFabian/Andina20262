@@ -1,0 +1,135 @@
+<section class="pagina">
+  <div class="encabezado">
+    <h1>Convenios</h1>
+    <div class="acciones-encabezado">
+      @if (puedeVerPorVencer) {
+      <a mat-button routerLink="/convenios/por-vencer">
+        <mat-icon aria-hidden="true">event_busy</mat-icon>
+        Por vencer
+      </a>
+      } @if (puedeInsertar) {
+      <a mat-flat-button routerLink="/convenios/nuevo">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        Nuevo convenio
+      </a>
+      }
+    </div>
+  </div>
+
+  <div class="filtros">
+    <mat-form-field>
+      <mat-label>Buscar</mat-label>
+      <input
+        matInput
+        maxlength="100"
+        #busqueda
+        (input)="filtrar(busqueda.value)"
+      />
+      <mat-hint>Por nombre, entidad, región o estado</mat-hint>
+    </mat-form-field>
+  </div>
+
+  @if (cargando()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando convenios" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">{{ error() }}</div>
+  }
+
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="dataSource">
+      <caption class="solo-lector">
+        Lista de convenios
+      </caption>
+
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let c">{{ c.nombre }}</td>
+      </ng-container>
+      <ng-container matColumnDef="entidad">
+        <th mat-header-cell *matHeaderCellDef>Entidad</th>
+        <td mat-cell *matCellDef="let c">{{ c.entidad }}</td>
+      </ng-container>
+      <ng-container matColumnDef="tipoEntidad">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let c">
+          {{ tiposEntidad[c.tipoEntidad] ?? c.tipoEntidad }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="region">
+        <th mat-header-cell *matHeaderCellDef>Región</th>
+        <td mat-cell *matCellDef="let c">{{ c.region }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fechaInicio">
+        <th mat-header-cell *matHeaderCellDef>Inicio</th>
+        <td mat-cell *matCellDef="let c">
+          {{ c.fechaInicio | date: 'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="fechaFin">
+        <th mat-header-cell *matHeaderCellDef>Fin</th>
+        <td mat-cell *matCellDef="let c">
+          {{ c.fechaFin | date: 'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="presupuesto">
+        <th mat-header-cell *matHeaderCellDef class="numero">Presupuesto</th>
+        <td mat-cell *matCellDef="let c" class="numero">
+          {{ c.presupuesto | currency: 'PEN' : 'symbol-narrow' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let c">
+          <span class="estado" [class]="claseEstado(c.estado)"
+            >{{ estados[c.estado] ?? c.estado }}</span
+          >
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="acciones-celda">
+          Acciones
+        </th>
+        <td mat-cell *matCellDef="let c" class="acciones-celda">
+          @if (puedeModificar) {
+          <a
+            mat-icon-button
+            [routerLink]="['/convenios/ediciones', c.idConvenio]"
+            [attr.aria-label]="'Editar ' + c.nombre"
+            matTooltip="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          } @if (puedeEliminar) {
+          <button
+            mat-icon-button
+            type="button"
+            (click)="eliminar(c)"
+            [attr.aria-label]="'Eliminar ' + c.nombre"
+            matTooltip="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td class="mat-mdc-cell sin-datos" [attr.colspan]="columnas.length">
+          {{ cargando() ? 'Cargando…' : (busqueda.value ? 'Ningún convenio
+          coincide con la búsqueda.' : 'No hay convenios registrados.') }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator
+    [length]="total()"
+    [pageIndex]="page"
+    [pageSize]="size"
+    (page)="paginar($event)"
+    [pageSizeOptions]="[5, 10, 20, 50]"
+    aria-label="Paginación de convenios"
+  />
+</section>

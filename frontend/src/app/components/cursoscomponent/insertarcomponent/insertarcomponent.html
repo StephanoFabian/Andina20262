@@ -44,8 +44,7 @@
           [attr.autocomplete]="campo.type==='password' ? 'new-password' : 'off'"
         />} @if(campo.type==='password' && editando){<mat-hint
           >Déjala vacía para conservar la contraseña actual.</mat-hint
-        >}
-        <mat-error>{{errorCampo(campo)}}</mat-error> </mat-form-field
+        >} <mat-error>{{errorCampo(campo)}}</mat-error> </mat-form-field
       >} } @if(form.hasError('rango')){
       <p class="notice error full-width" role="alert">
         La fecha u hora final debe ser posterior a la inicial.
