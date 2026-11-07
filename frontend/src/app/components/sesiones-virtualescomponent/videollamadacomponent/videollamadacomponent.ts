@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom, Subscription } from 'rxjs';
@@ -29,7 +30,7 @@ import { mensajeError } from '../../../services/errores';
 
 @Component({
   selector: 'app-videollamada',
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, DatePipe],
   templateUrl: './videollamadacomponent.html',
   styleUrl: './videollamadacomponent.css',
 })
@@ -38,6 +39,7 @@ export class VideollamadaComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   @ViewChild('videos', { static: true }) videos!: ElementRef<HTMLDivElement>;
   @ViewChild('audios', { static: true }) audios!: ElementRef<HTMLDivElement>;
+  @ViewChild('chatLog', { static: true }) chatLog!: ElementRef<HTMLDivElement>;
   readonly titulo = signal('Sesión virtual');
   readonly conectado = signal(false);
   readonly conectando = signal(false);
@@ -515,12 +517,21 @@ export class VideollamadaComponent implements OnDestroy {
 
   private agregar(s: SubtituloLlamada): void {
     if (this.recibidos.has(s.id)) return;
+    const chat = this.chatLog.nativeElement;
+    const seguirConversacion =
+      chat.scrollHeight - chat.scrollTop - chat.clientHeight < 72;
     this.recibidos.add(s.id);
     if (this.recibidos.size > 200)
       this.recibidos.delete(this.recibidos.values().next().value!);
     this.subtitulos.update((items) =>
       [...items, s].sort((a, b) => a.creado - b.creado).slice(-20),
     );
+    if (seguirConversacion) {
+      requestAnimationFrame(() => {
+        if (!this.cerrando && chat.isConnected)
+          chat.scrollTop = chat.scrollHeight;
+      });
+    }
   }
 
   private guardarPendientes(): void {

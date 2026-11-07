@@ -79,8 +79,30 @@ def main():
         pages[0].get_by_role("button", name="Compartir traducción de mi voz", exact=True).click()
         receiver.locator(".subtitulos article").first.wait_for(timeout=180000)
         receiver.wait_for_function("window.andinaAudioMax > 0.002", timeout=90000)
+        message = receiver.locator(".subtitulos article").first
+        original = message.locator(".texto-original").inner_text()
+        translated = message.locator(".texto-traduccion").inner_text()
+        assert original and translated
+        assert "Original" in message.locator(".etiqueta-original").inner_text()
+        assert "Traducción" in message.locator(".etiqueta-traduccion").inner_text()
+        assert message.locator(".texto-original").get_attribute("lang") == "es"
+        assert message.locator(".texto-traduccion").get_attribute("lang") == "quy"
+        receiver.locator('select').nth(1).select_option("es")
+        assert message.locator(".texto-original").inner_text() == original
+        assert message.locator(".texto-traduccion").inner_text() == translated
+        receiver.locator('select').nth(1).select_option("quy")
+        receiver.get_by_label("Mostrar subtítulos en el video", exact=True).uncheck()
+        assert receiver.get_by_role("complementary", name="Chat de traducción").is_visible()
+        receiver.locator(".subtitulo-actual").wait_for(state="detached", timeout=5000)
+        pages[0].locator(".mensaje-propio").first.wait_for()
+        video_box = receiver.locator(".llamada").bounding_box()
+        chat_box = receiver.locator(".chat-traduccion").bounding_box()
+        assert chat_box["x"] >= video_box["x"] + video_box["width"]
         report["comprobaciones"].extend(["El otro participante recibe los subtítulos del audio interpretado",
-                                            "La pista de voz traducida llega al receptor con señal de audio medible"])
+                                            "La pista de voz traducida llega al receptor con señal de audio medible",
+                                            "Chat a la derecha del video con original y traducción etiquetados por idioma",
+                                            "Cambiar el idioma de escucha conserva original y traducción en sus bloques",
+                                            "Ocultar subtítulos del video mantiene visible el chat y los mensajes propios"])
         report["voz_recibida_rms_max"] = receiver.evaluate("window.andinaAudioMax")
         report["subtitulo_prueba"] = receiver.locator(".subtitulos article").first.inner_text()
         receiver.screenshot(path=str(out / "sala.png"), full_page=True)

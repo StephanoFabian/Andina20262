@@ -49,11 +49,14 @@
       "Dos participantes autenticados reciben cámara local y remota en una misma sala",
       "El otro participante recibe los subtítulos del audio interpretado",
       "La pista de voz traducida llega al receptor con señal de audio medible",
+      "Chat a la derecha del video con original y traducción etiquetados por idioma",
+      "Cambiar el idioma de escucha conserva original y traducción en sus bloques",
+      "Ocultar subtítulos del video mantiene visible el chat y los mensajes propios",
       "Alternar cámara conserva una sola vista local",
       "Ambos participantes salen y liberan cámara, micrófono y conexión"
     ],
-    "voz_recibida_rms_max": 0.1574825712782395,
-    "subtitulo_prueba": "Participante 8a66\n\nAllin p'unchaykuna, kunanqa junt'aqmi yachananchis.\n\nbuenos días hoy vamos a aprender juntos",
+    "voz_recibida_rms_max": 0.11584461265117244,
+    "subtitulo_prueba": "Participante 8a66\n01:04\nOriginal · Español\n\nbuenos días hoy vamos a aprender juntos\n\nTraducción · Quechua de Ayacucho\n\nAllin p'unchaykuna, kunanqa junt'aqmi yachananchis.",
     "errores_navegador": []
   },
   "circuito_audio_sintetico": {
@@ -121,6 +124,15 @@
       "repo": "facebook/mms-tts-quy",
       "revision": "3fa7ac3f7bd06cd5ca8f33267a2744f0f397dc19",
       "licencia": "cc-by-nc-4.0"
+    }
+  },
+  "ultima_actualizacion_interfaz": "2026-11-07",
+  "chat_interfaz": {
+    "tipo": "Mensajes controlados para verificar disposición, desplazamiento y móvil",
+    "resultados": {
+      "sigue_mensajes_nuevos": true,
+      "respeta_lectura_anterior": true,
+      "sin_desbordamiento_movil": true
     }
   }
 }

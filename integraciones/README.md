@@ -13,8 +13,11 @@ Cada participante puede publicar cámara, micrófono y, tras activarlo, la
 traducción de su propio micrófono. Se capturan fragmentos independientes de seis
 segundos; la API local reconoce el habla, traduce y sintetiza voz. Los subtítulos
 se envían a los demás participantes por LiveKit y la voz sintetizada viaja como
-una pista de audio distinta. Cada receptor elige su idioma, subtítulos, voz
-traducida y audio original. La salida sintetizada no se reproduce en el altavoz
+una pista de audio distinta. El chat a la derecha del video muestra el original
+y la traducción en bloques separados, con idioma, participante y hora. Sigue
+los mensajes nuevos sin mover la vista de quien está leyendo mensajes anteriores;
+en móvil aparece debajo del video. Cada receptor elige su idioma, subtítulos
+en el video, voz traducida y audio original. La salida sintetizada no se reproduce en el altavoz
 del emisor. Se recomiendan audífonos para evitar recapturar a otros participantes.
 
 La traducción es experimental y se limita a **español y quechua de Ayacucho

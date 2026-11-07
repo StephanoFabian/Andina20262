@@ -23,7 +23,7 @@
       <div #audios hidden></div>
       @if (mostrarSubtitulos.value && subtitulos().length) { @let actual =
       subtitulos()[subtitulos().length - 1];
-      <div class="subtitulo-actual" aria-live="polite">
+      <div class="subtitulo-actual">
         <small>{{ actual.participante }}</small>
         <p>
           {{ actual.idiomaDestino === idiomaEscucha.value ? actual.traduccion :
@@ -58,8 +58,8 @@
       </div>
       }
     </div>
-    <aside class="panel interpretacion">
-      <h2>Entendernos en dos idiomas</h2>
+    <section class="panel interpretacion" aria-label="Idiomas y audio">
+      <h2>Idiomas y audio</h2>
       <p>
         Traducción experimental por fragmentos. Puede equivocarse; confirma con
         la otra persona lo que necesitas aclarar.
@@ -101,7 +101,7 @@
       >
       <label class="opcion"
         ><input type="checkbox" [formControl]="mostrarSubtitulos" /> Mostrar
-        subtítulos</label
+        subtítulos en el video</label
       >
       @if (latencia()) {
       <p class="tiempo">
@@ -113,29 +113,67 @@
         audífonos. Al activarla, los fragmentos se procesan para generar los
         subtítulos y la voz compartidos con la sala.
       </p>
+    </section>
+    <aside class="panel chat-traduccion" aria-label="Chat de traducción">
+      <header class="chat-cabecera">
+        <p class="eyebrow">CONVERSACIÓN EN VIVO</p>
+        <h2>Chat de traducción</h2>
+        <p>Lo que se dice y su traducción, juntos en cada mensaje.</p>
+      </header>
+      <div
+        #chatLog
+        class="subtitulos chat-mensajes"
+        role="log"
+        aria-label="Mensajes originales y traducidos"
+        aria-live="polite"
+        aria-relevant="additions"
+        tabindex="0"
+      >
+        @for (s of subtitulos(); track s.id) {
+        <article
+          class="mensaje"
+          [class.mensaje-propio]="s.participante === 'Tú'"
+        >
+          <div class="mensaje-cabecera">
+            <strong>{{ s.participante }}</strong>
+            <time [attr.datetime]="s.creado | date:'yyyy-MM-ddTHH:mm:ssZZZZZ'"
+              >{{ s.creado | date:'HH:mm' }}</time
+            >
+          </div>
+          <div class="mensaje-original">
+            <span class="etiqueta-original"
+              >Original · {{ s.idiomaOrigen === 'es' ? 'Español' : 'Quechua de
+              Ayacucho' }}</span
+            >
+            <p class="texto-original" [attr.lang]="s.idiomaOrigen">
+              {{ s.transcripcion }}
+            </p>
+          </div>
+          <div class="mensaje-traduccion">
+            <span class="etiqueta-traduccion"
+              >Traducción · {{ s.idiomaDestino === 'es' ? 'Español' : 'Quechua
+              de Ayacucho' }}</span
+            >
+            <p class="texto-traduccion" [attr.lang]="s.idiomaDestino">
+              {{ s.traduccion }}
+            </p>
+          </div>
+        </article>
+        } @empty {
+        <div class="chat-vacio">
+          <span class="chat-icono" aria-hidden="true">Aa</span>
+          <h3>Aquí aparecerá la conversación</h3>
+          <p>
+            Activa «Compartir traducción de mi voz» y habla. Cada intervención
+            mostrará el original y la traducción.
+          </p>
+        </div>
+        }
+      </div>
+      <footer class="chat-pie">
+        {{ subtitulos().length }} de las 20 intervenciones más recientes ·
+        Traducción experimental
+      </footer>
     </aside>
   </div>
-  @if (mostrarSubtitulos.value) {
-  <section class="panel subtitulos" aria-label="Subtítulos de la llamada">
-    <h2>Subtítulos</h2>
-    @for (s of subtitulos(); track s.id) {
-    <article>
-      <strong>{{ s.participante }}</strong>
-      <p>
-        {{ s.idiomaDestino === idiomaEscucha.value ? s.traduccion :
-        s.transcripcion }}
-      </p>
-      <small
-        >{{ s.idiomaDestino === idiomaEscucha.value ? s.transcripcion :
-        s.traduccion }}</small
-      >
-    </article>
-    } @empty {
-    <p>
-      Los subtítulos aparecerán cuando un participante active la traducción y
-      hable.
-    </p>
-    }
-  </section>
-  }
 </section>
