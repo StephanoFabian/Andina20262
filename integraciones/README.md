@@ -1,5 +1,9 @@
 # Videollamada con interpretación español–quechua
 
+La generación de materiales con Llama 70B se inicia y verifica por separado:
+[texto, revisión, figuras y PDF](materiales/README.md). La comparación de modelos
+para mejorar reconocimiento y traducción está en [MODELOS_CANDIDATOS.md](MODELOS_CANDIDATOS.md).
+
 La ruta `/sesiones-virtuales/sala/:id` abre una sala LiveKit asociada a una
 sesión virtual existente. Se entra desde el botón de cámara del listado.
 Angular sigue siendo un proyecto independiente y Spring continúa con PostgreSQL

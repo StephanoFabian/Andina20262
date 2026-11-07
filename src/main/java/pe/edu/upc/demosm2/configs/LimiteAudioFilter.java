@@ -14,12 +14,13 @@ public class LimiteAudioFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        if (request.getMethod().equals("POST") && request.getRequestURI().matches("/api/sesiones-virtuales/[0-9]+/videollamada/fragmentos")) {
+        boolean material = request.getRequestURI().equals("/api/materiales-ia");
+        if (request.getMethod().equals("POST") && (material || request.getRequestURI().matches("/api/sesiones-virtuales/[0-9]+/videollamada/fragmentos"))) {
             long length = request.getContentLengthLong();
-            if (length < 0 || length > 1_410_000) {
+            if (length < 0 || length > (material ? 20_000 : 1_410_000)) {
                 response.setStatus(length < 0 ? 411 : 413);
                 response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write("{\"message\":\"Envía un fragmento de hasta 1 MB con Content-Length\"}");
+                response.getWriter().write("{\"message\":\"Envía un cuerpo con Content-Length dentro de los límites del servicio\"}");
                 return;
             }
         }

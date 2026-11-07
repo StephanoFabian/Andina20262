@@ -31,7 +31,14 @@ def settings():
             "ANDINA_IA_THREADS": "6",
         }
         file.write_text(json.dumps(config, indent=2) + "\n"); file.chmod(0o600)
-    return json.loads(file.read_text())
+    config = json.loads(file.read_text())
+    if "ANDINA_MATERIAL_IA_API_KEY" not in config:
+        config["ANDINA_MATERIAL_IA_API_KEY"] = secrets.token_urlsafe(48)
+        config["ANDINA_MATERIAL_IA_URL"] = "http://127.0.0.1:8096"
+        config["ANDINA_MATERIAL_MODEL"] = "llama3.3:70b-1bit"
+        config["ANDINA_MATERIAL_FIGURE_MODEL"] = "qwen3:14b"
+        file.write_text(json.dumps(config, indent=2)+"\n"); file.chmod(0o600)
+    return config
 
 
 def python_ia():
@@ -99,6 +106,8 @@ def run(which):
         current["HF_HUB_OFFLINE"] = "1"
         current["TRANSFORMERS_OFFLINE"] = "1"
         cmd = [python_ia(), str(ROOT / "ia" / "servidor.py")]
+    elif which == "materiales":
+        cmd = [os.environ.get("ANDINA_MATERIAL_PYTHON", sys.executable), str(ROOT / "materiales" / "servidor.py")]
     else:
         current.setdefault("SERVER_ADDRESS", "127.0.0.1")
         java = shutil.which("java")
@@ -120,7 +129,7 @@ def run(which):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("accion", choices=["preparar", "video", "ia", "backend"])
+    parser.add_argument("accion", choices=["preparar", "video", "ia", "materiales", "backend"])
     args = parser.parse_args()
     if args.accion == "preparar":
         prepare()

@@ -1,0 +1,145 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">MATERIAL EDUCATIVO</p>
+      <h1>Crear material con IA</h1>
+    </div>
+    <a mat-stroked-button routerLink="/materiales">Volver a materiales</a>
+  </div>
+  <p class="introduccion">
+    Primero se redacta el contenido. Después, una segunda IA revisa el texto y
+    propone las figuras. Con esa versión se preparan los archivos para descargar.
+  </p>
+  @if(error()){
+  <p class="notice error" role="alert">{{error()}}</p>
+  }
+  <div class="generador-layout">
+    <form class="panel formulario" [formGroup]="form" (ngSubmit)="generar()">
+      <h2>¿Qué vamos a aprender?</h2>
+      <mat-form-field appearance="outline"
+        ><mat-label>Tema</mat-label
+        ><input matInput formControlName="tema" maxlength="200" /><mat-error
+          >Escribe un tema de hasta 200 caracteres.</mat-error
+        ></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>Nivel educativo</mat-label
+        ><input matInput formControlName="nivel" maxlength="60" /><mat-error
+          >Escribe un nivel educativo.</mat-error
+        ></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>Indicaciones para el material</mat-label
+        ><textarea
+          matInput
+          formControlName="instrucciones"
+          maxlength="1000"
+          rows="5"
+        ></textarea>
+      </mat-form-field>
+      <p class="ayuda">
+        Figuras disponibles: triángulos, rectángulos y círculos. Indica las
+        medidas que deben aparecer en el ejemplo.
+      </p>
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="enviando() || trabajando()"
+      >
+        {{ trabajando() ? 'Creando material…' : 'Crear texto, figuras y PDF' }}
+      </button>
+      <p class="ayuda">
+        Redacción: Llama 3.3 70B IQ1_S. Es un modelo muy comprimido: revisa el
+        borrador y los cálculos antes de utilizarlo en clase. La generación
+        puede tardar varios minutos.
+      </p>
+    </form>
+    <div class="resultado">
+      @if(documento(); as doc){
+      <section class="panel progreso" aria-live="polite">
+        <p class="eyebrow">
+          {{ doc.estado === 'listo' ? 'TERMINADO' : 'PROGRESO' }}
+        </p>
+        <h2>{{ estadoTexto() }}</h2>
+        @if(trabajando()){<mat-progress-bar mode="indeterminate" />
+        <p>
+          Puedes recargar esta página: el trabajo continúa y conserva el
+          progreso.
+        </p>
+        } @if(doc.mensaje){
+        <p class="notice error" role="alert">{{doc.mensaje}}</p>
+        }
+        <div class="descargas">
+          @if(doc.archivos?.includes('material.pdf')){<button
+            mat-flat-button
+            (click)="descargar('material.pdf')"
+            [disabled]="descargando()"
+          >
+            Descargar PDF</button
+          >} @if(doc.archivos?.includes('material.docx')){<button
+            mat-stroked-button
+            (click)="descargar('material.docx')"
+            [disabled]="descargando()"
+          >
+            Descargar Word</button
+          >} @if(doc.archivos?.includes('material.txt')){<button
+            mat-stroked-button
+            (click)="descargar('material.txt')"
+            [disabled]="descargando()"
+          >
+            Descargar texto original</button
+          >}
+        </div>
+      </section>
+      @if(doc.texto){
+      <section class="panel borrador">
+        <p class="eyebrow">PRIMERA ETAPA · TEXTO ORIGINAL</p>
+        <h2>{{doc.titulo}}</h2>
+        <div class="contenido">{{doc.texto}}</div>
+      </section>
+      } @if(doc.textoRevisado){
+      <section class="panel borrador">
+        <p class="eyebrow">SEGUNDA ETAPA · TEXTO REVISADO PARA EL PDF</p>
+        <h2>Versión revisada</h2>
+        <div class="contenido">{{doc.textoRevisado}}</div>
+        <button
+          mat-stroked-button
+          (click)="descargar('material-revisado.txt')"
+          [disabled]="descargando()"
+        >
+          Descargar texto revisado
+        </button>
+      </section>
+      } @for(imagen of figuras(); track imagen.nombre){
+      <section class="panel figura">
+        <img
+          [src]="imagen.url"
+          [alt]="'Figura geométrica del material: ' + imagen.nombre"
+        />
+        <div class="descargas">
+          <button
+            mat-stroked-button
+            (click)="descargar(imagen.nombre)"
+            [disabled]="descargando()"
+          >
+            Descargar imagen PNG</button
+          ><button
+            mat-stroked-button
+            (click)="descargar(imagen.nombre.replace('.png','.svg'))"
+            [disabled]="descargando()"
+          >
+            Descargar SVG
+          </button>
+        </div>
+      </section>
+      } } @else {
+      <section class="panel vacio">
+        <h2>De una idea a una ficha de clase</h2>
+        <p>1. El modelo de 70B escribe el material.</p>
+        <p>2. La segunda IA revisa el texto y propone las figuras.</p>
+        <p>3. Se comprueban sus medidas y se genera el PDF con las imágenes.</p>
+      </section>
+      }
+    </div>
+  </div>
+</section>

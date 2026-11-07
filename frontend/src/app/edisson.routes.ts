@@ -6,6 +6,15 @@ export const rutasEdisson: Routes = [
     canActivate: [authGuard],
     children: [
       {
+        path: 'crear-con-ia',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'materiales' },
+        loadComponent: () =>
+          import('./components/material/material-ia/material-ia').then(
+            (m) => m.MaterialIAComponent,
+          ),
+      },
+      {
         path: '',
         loadComponent: () =>
           import('./components/material/material-listar/material-listar').then(

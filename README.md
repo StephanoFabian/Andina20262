@@ -20,3 +20,7 @@ CORS se configura en `src/main/java/pe/edu/upc/demosm2/configs/CorsConfig.java`,
 ## Videollamadas e interpretación de voz
 
 El módulo de sesiones virtuales incluye una sala con LiveKit y traducción experimental español–quechua de Ayacucho, con subtítulos y voz. Consulta [preparación, modelos, límites y pruebas](integraciones/README.md).
+
+## Materiales con IA
+
+En **Materiales → Crear con IA**, Llama 3.3 70B IQ1_S redacta el contenido y una segunda IA revisa el texto y propone figuras geométricas. Se descargan el borrador original, la revisión, imágenes PNG/SVG, PDF y Word. La generación conserva su progreso al reiniciar y requiere revisión docente. Consulta [inicio, permisos, límites y verificaciones](integraciones/materiales/README.md) y [la investigación de modelos para voz y traducción](integraciones/MODELOS_CANDIDATOS.md).
