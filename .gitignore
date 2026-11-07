@@ -19,3 +19,8 @@ frontend/coverage/
 # Herramientas Python
 __pycache__/
 *.pyc
+
+# Servicios locales: modelos, audio temporal, claves y dependencias
+integraciones/.local/
+integraciones/ia/.deps/
+.env

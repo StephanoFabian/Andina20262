@@ -1,0 +1,141 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">SESIÓN VIRTUAL</p>
+      <h1>{{ titulo() }}</h1>
+    </div>
+    <a mat-stroked-button routerLink="/sesiones-virtuales/listar"
+      >Volver a sesiones</a
+    >
+  </div>
+  @if (error()) {
+  <p class="notice error" role="alert">{{ error() }}</p>
+  } @if (aviso()) {
+  <p class="notice" role="status">{{ aviso() }}</p>
+  }
+  <div class="llamada-layout">
+    <div class="panel llamada">
+      <div
+        #videos
+        class="videos"
+        aria-label="Participantes de la videollamada"
+      ></div>
+      <div #audios hidden></div>
+      @if (mostrarSubtitulos.value && subtitulos().length) { @let actual =
+      subtitulos()[subtitulos().length - 1];
+      <div class="subtitulo-actual" aria-live="polite">
+        <small>{{ actual.participante }}</small>
+        <p>
+          {{ actual.idiomaDestino === idiomaEscucha.value ? actual.traduccion :
+          actual.transcripcion }}
+        </p>
+      </div>
+      } @if (!conectado()) {
+      <div class="espera">
+        <h2>Aprender también es entendernos</h2>
+        <p>
+          Comparte cámara y audio con los participantes de esta sesión. Puedes
+          activar la traducción entre español y quechua de Ayacucho.
+        </p>
+        <button mat-flat-button (click)="entrar()" [disabled]="conectando()">
+          {{ conectando() ? 'Conectando…' : 'Entrar a la videollamada' }}
+        </button>
+      </div>
+      } @else {
+      <div class="controles">
+        <button mat-stroked-button (click)="cambiarMicrofono()">
+          {{ microfono() ? 'Silenciar micrófono' : 'Activar micrófono' }}
+        </button>
+        <button mat-stroked-button (click)="cambiarCamara()">
+          {{ camara() ? 'Apagar cámara' : 'Activar cámara' }}
+        </button>
+        <button mat-stroked-button (click)="activarSonido()">
+          Activar sonido
+        </button>
+        <button mat-flat-button class="colgar" (click)="salir()">
+          Salir de la llamada
+        </button>
+      </div>
+      }
+    </div>
+    <aside class="panel interpretacion">
+      <h2>Entendernos en dos idiomas</h2>
+      <p>
+        Traducción experimental por fragmentos. Puede equivocarse; confirma con
+        la otra persona lo que necesitas aclarar.
+      </p>
+      <label
+        >Yo hablo
+        <select [formControl]="idiomaOrigen">
+          <option value="es">Español</option>
+          <option value="quy">Quechua de Ayacucho</option>
+        </select>
+      </label>
+      <button
+        mat-flat-button
+        (click)="alternarTraduccion()"
+        [disabled]="!conectado() || !microfono() || !disponible()"
+      >
+        {{ traduciendo() ? 'Detener traducción de mi voz' : 'Compartir
+        traducción de mi voz' }}
+      </button>
+      @if (traduciendo()) {
+      <p class="capturando" role="status">
+        ● Traduciendo tu micrófono. {{ pendientes() }} fragmento(s) en proceso.
+      </p>
+      }
+      <label
+        >Quiero escuchar
+        <select [formControl]="idiomaEscucha">
+          <option value="es">Español</option>
+          <option value="quy">Quechua de Ayacucho</option>
+        </select>
+      </label>
+      <label class="opcion"
+        ><input type="checkbox" [formControl]="escucharVoz" /> Escuchar la voz
+        traducida</label
+      >
+      <label class="opcion"
+        ><input type="checkbox" [formControl]="escucharOriginal" /> Escuchar
+        también el audio original</label
+      >
+      <label class="opcion"
+        ><input type="checkbox" [formControl]="mostrarSubtitulos" /> Mostrar
+        subtítulos</label
+      >
+      @if (latencia()) {
+      <p class="tiempo">
+        Último fragmento procesado en {{ (latencia() / 1000).toFixed(1) }} s.
+      </p>
+      }
+      <p class="ayuda">
+        Cada participante activa la traducción de su propio micrófono. Usa
+        audífonos. Al activarla, los fragmentos se procesan para generar los
+        subtítulos y la voz compartidos con la sala.
+      </p>
+    </aside>
+  </div>
+  @if (mostrarSubtitulos.value) {
+  <section class="panel subtitulos" aria-label="Subtítulos de la llamada">
+    <h2>Subtítulos</h2>
+    @for (s of subtitulos(); track s.id) {
+    <article>
+      <strong>{{ s.participante }}</strong>
+      <p>
+        {{ s.idiomaDestino === idiomaEscucha.value ? s.traduccion :
+        s.transcripcion }}
+      </p>
+      <small
+        >{{ s.idiomaDestino === idiomaEscucha.value ? s.transcripcion :
+        s.traduccion }}</small
+      >
+    </article>
+    } @empty {
+    <p>
+      Los subtítulos aparecerán cuando un participante active la traducción y
+      hable.
+    </p>
+    }
+  </section>
+  }
+</section>

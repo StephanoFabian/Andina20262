@@ -16,3 +16,7 @@ La primera ejecución crea las tablas nuevas mediante la configuración `ddl-aut
 Consulta [la arquitectura y el alcance](docs/FRONTEND.md) y [los resultados de verificación](docs/VERIFICACION_FRONTEND.md).
 
 CORS se configura en `src/main/java/pe/edu/upc/demosm2/configs/CorsConfig.java`, conectado a Spring Security. El frontend usa la API directamente en localhost:8080.
+
+## Videollamadas e interpretación de voz
+
+El módulo de sesiones virtuales incluye una sala con LiveKit y traducción experimental español–quechua de Ayacucho, con subtítulos y voz. Consulta [preparación, modelos, límites y pruebas](integraciones/README.md).

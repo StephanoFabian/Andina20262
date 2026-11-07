@@ -423,6 +423,13 @@ export const routes: Routes = [
         (m) => m.SesionVirtualComponent,
       ),
     children: [
+      {
+        path: 'sala/:id',
+        loadComponent: () =>
+          import('./components/sesiones-virtualescomponent/videollamadacomponent/videollamadacomponent').then(
+            (m) => m.VideollamadaComponent,
+          ),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'listar' },
       {
         path: 'listar',

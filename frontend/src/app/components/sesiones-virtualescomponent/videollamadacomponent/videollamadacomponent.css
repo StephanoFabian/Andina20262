@@ -1,0 +1,127 @@
+.llamada-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
+  align-items: start;
+}
+.llamada {
+  overflow: hidden;
+  padding: 20px;
+  background: #10283a;
+  color: #fff;
+  min-height: 430px;
+}
+.videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.espera {
+  max-width: 540px;
+  margin: 70px auto;
+  text-align: center;
+}
+.espera p {
+  line-height: 1.7;
+  color: #d2e2ed;
+}
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.controles button {
+  color: #fff;
+  border-color: #89a3b5;
+}
+.controles .colgar {
+  background: #b53642;
+}
+.interpretacion {
+  padding: 24px;
+}
+.interpretacion h2 {
+  margin-top: 0;
+}
+.interpretacion p {
+  line-height: 1.6;
+  color: #506679;
+}
+.interpretacion label:not(.opcion) {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 12px;
+  font-weight: 600;
+}
+select {
+  padding: 12px;
+  border: 1px solid #c2d0d9;
+  border-radius: 8px;
+  background: white;
+  color: #153247;
+  font: inherit;
+  max-width: 100%;
+}
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+}
+.opcion input {
+  width: 18px;
+  height: 18px;
+  accent-color: #16786e;
+}
+.interpretacion .capturando {
+  color: #14705a;
+  font-weight: 600;
+}
+.ayuda,
+.tiempo {
+  font-size: 12px;
+}
+.subtitulos {
+  padding: 24px;
+  margin-top: 20px;
+}
+.subtitulos article {
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e8ed;
+}
+.subtitulos p {
+  margin: 8px 0;
+}
+.subtitulos small {
+  color: #617584;
+}
+@media (max-width: 960px) {
+  .llamada-layout {
+    grid-template-columns: 1fr;
+  }
+  .interpretacion {
+    width: auto;
+  }
+  .llamada {
+    min-height: 250px;
+  }
+  .espera {
+    margin: 24px auto;
+  }
+}
+.subtitulo-actual {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #061b2b;
+  color: white;
+}
+.subtitulo-actual p {
+  color: white;
+  margin: 6px 0;
+  line-height: 1.5;
+}
+.subtitulo-actual small {
+  color: #b9d6e6;
+}

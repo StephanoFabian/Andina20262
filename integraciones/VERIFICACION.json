@@ -1,0 +1,126 @@
+{
+  "fecha_local": "2026-11-06",
+  "alcance": "Prototipo local de videollamada e interpretación con pesos abiertos; sin evaluación lingüística humana ni prueba entre redes externas",
+  "hardware_inferencia": {
+    "gpu": "AMD Radeon RX 9060 XT",
+    "asr": "GPU FP32",
+    "traduccion": "GPU FP16",
+    "sintesis": "CPU, 6 hilos"
+  },
+  "java": {
+    "VideollamadaServiceTests": 4,
+    "CorsIntegrationTests": 5,
+    "fallos": 0
+  },
+  "python": {
+    "pruebas": 6,
+    "fallos": 0,
+    "cola_carga": {
+      "solicitudes_concurrentes": 30,
+      "aceptadas": 16,
+      "rechazadas_por_limite": 14
+    },
+    "limite_por_usuario": 2,
+    "reinicio_e_idempotencia": "verificados con SQLite temporal"
+  },
+  "angular": {
+    "pruebas": 9,
+    "fallos": 0,
+    "build": "correcto",
+    "advertencia": "Paquete inicial 707.46 kB, sobre el presupuesto de aviso de 700 kB; por debajo del límite de error de 1 MB. SDK de video en ruta de carga diferida."
+  },
+  "http": {
+    "checks": [
+      "Acceso de video exige JWT",
+      "Acceso autenticado devuelve sala",
+      "Sesión inexistente rechazada",
+      "UUID inválido rechazado",
+      "Fragmento ajeno o inexistente no se expone",
+      "Idioma no soportado rechazado",
+      "Base64 inválido rechazado",
+      "Cuerpo excesivo rechazado antes de deserializar"
+    ],
+    "passed": 8
+  },
+  "navegador": {
+    "participantes": 2,
+    "medios": "cámara y audio sintéticos; sin dispositivos personales",
+    "comprobaciones": [
+      "Dos participantes autenticados reciben cámara local y remota en una misma sala",
+      "El otro participante recibe los subtítulos del audio interpretado",
+      "La pista de voz traducida llega al receptor con señal de audio medible",
+      "Alternar cámara conserva una sola vista local",
+      "Ambos participantes salen y liberan cámara, micrófono y conexión"
+    ],
+    "voz_recibida_rms_max": 0.1574825712782395,
+    "subtitulo_prueba": "Participante 8a66\n\nAllin p'unchaykuna, kunanqa junt'aqmi yachananchis.\n\nbuenos días hoy vamos a aprender juntos",
+    "errores_navegador": []
+  },
+  "circuito_audio_sintetico": {
+    "tipo": "circuito técnico con audio sintético; sin evaluación de hablantes",
+    "resultados": [
+      {
+        "origen": "es",
+        "destino": "quy",
+        "transcripcion": "buenos días hoy vamos a aprender juntos",
+        "traduccion": "Allin p'unchaykuna, kunanqa junt'aqmi yachananchis.",
+        "audio_wav_bytes": 127020,
+        "encolado_ms": 11,
+        "inferencia_ms": 7977,
+        "total_ms": 16584
+      },
+      {
+        "origen": "quy",
+        "destino": "es",
+        "transcripcion": "allin punchaykuna kunanqa quntaqmi yachananchik",
+        "traduccion": "El punchaykuna es ahora un quntaqmi yachananchik.",
+        "audio_wav_bytes": 125484,
+        "encolado_ms": 13,
+        "inferencia_ms": 4027,
+        "total_ms": 4103
+      }
+    ]
+  },
+  "fragmentos_navegador_modelos_calientes": {
+    "muestras": 2,
+    "captura_segundos": 6,
+    "inferencia_ms": [
+      3382,
+      3366
+    ],
+    "no_incluye": [
+      "captura",
+      "cola",
+      "sondeo del cliente",
+      "entrega de medios"
+    ]
+  },
+  "limites_de_evidencia": [
+    "Dos participantes en navegadores de la misma PC; cámara y voz sintéticas",
+    "No demuestra precisión de quechua natural ni calidad de interpretación: hubo traducciones incorrectas",
+    "No demuestra capacidad para 20 participantes ni varias llamadas con IA simultáneas",
+    "Hace falta configurar HTTPS/WSS, ICE y TURN para otros dispositivos o redes"
+  ],
+  "pesos": {
+    "asr": {
+      "repo": "facebook/mms-1b-all",
+      "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd",
+      "licencia": "cc-by-nc-4.0"
+    },
+    "traduccion": {
+      "repo": "facebook/nllb-200-distilled-600M",
+      "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+      "licencia": "cc-by-nc-4.0"
+    },
+    "voz_es": {
+      "repo": "facebook/mms-tts-spa",
+      "revision": "833b96c0278c85cf09776d565ba8f1cb2819f7ec",
+      "licencia": "cc-by-nc-4.0"
+    },
+    "voz_quy": {
+      "repo": "facebook/mms-tts-quy",
+      "revision": "3fa7ac3f7bd06cd5ca8f33267a2744f0f397dc19",
+      "licencia": "cc-by-nc-4.0"
+    }
+  }
+}
