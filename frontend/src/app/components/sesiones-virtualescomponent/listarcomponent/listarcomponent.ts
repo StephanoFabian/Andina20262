@@ -38,6 +38,7 @@ export class SesionVirtualListarComponent implements OnInit {
   private readonly snack = inject(MatSnackBar);
   readonly dataSource = new MatTableDataSource<SesionVirtual>([]);
   readonly displayedColumns = [
+    'acciones',
     'idSesionVirtual',
     'titulo',
     'idAsignacion',
@@ -46,7 +47,6 @@ export class SesionVirtualListarComponent implements OnInit {
     'horaFin',
     'enlace',
     'estado',
-    'acciones',
   ];
   readonly busqueda = new FormControl('', { nonNullable: true });
   readonly cargando = signal(false);

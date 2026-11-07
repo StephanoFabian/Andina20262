@@ -7,7 +7,7 @@
     @if(puedeEscribir()){<a
       mat-flat-button
       routerLink="/sesiones-virtuales/insertar"
-      >Nuevo registro</a
+      >Crear sesión</a
     >}
   </div>
   <div class="panel">
@@ -79,10 +79,10 @@
           ><th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let row">
             <a
-              mat-icon-button
+              mat-flat-button
               [routerLink]="['/sesiones-virtuales/sala', row.idSesionVirtual]"
               aria-label="Entrar a la videollamada"
-              ><mat-icon>videocam</mat-icon></a
+              ><mat-icon>videocam</mat-icon> Entrar a videollamada</a
             >
             @if(puedeEscribir()){<a
               mat-icon-button
@@ -101,7 +101,19 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-row" *matNoDataRow>
-          <td class="mat-mdc-cell" colspan="9">No hay registros.</td>
+          <td class="mat-mdc-cell" colspan="9">
+            @if (puedeEscribir()) {
+            <p>Todavía no hay sesiones. Crea una para abrir su videollamada.</p>
+            <a mat-stroked-button routerLink="/sesiones-virtuales/insertar"
+              >Crear la primera sesión</a
+            >
+            } @else {
+            <p>
+              Todavía no hay sesiones disponibles. El docente debe crear una
+              para que puedas entrar.
+            </p>
+            }
+          </td>
         </tr>
       </table>
     </div>
