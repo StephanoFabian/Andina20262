@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Matricula } from '../models/Matricula';
+import { MatriculasPorColegio } from '../models/MatriculasPorColegio';
+import { EstudianteVariasMatriculas } from '../models/EstudianteVariasMatriculas';
 import { Pagina } from '../models/modulo';
 import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
@@ -28,5 +30,15 @@ export class MatriculaService {
     return this.http.delete(`${this.url}/${dto.idMatricula}`, {
       responseType: 'text',
     });
+  }
+  reportePorColegio() {
+    return this.http.get<MatriculasPorColegio[]>(
+      `${this.url}/reportes/por-colegio`,
+    );
+  }
+  reporteVariasMatriculas() {
+    return this.http.get<EstudianteVariasMatriculas[]>(
+      `${this.url}/reportes/estudiantes-varias-matriculas`,
+    );
   }
 }

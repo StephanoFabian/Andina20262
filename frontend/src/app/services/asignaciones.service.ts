@@ -29,4 +29,10 @@ export class AsignacionDocenteService {
       responseType: 'text',
     });
   }
+  /** Asignaciones cuyas horas semanales están entre min y max (ambos incluidos) */
+  porRangoHoras(min: number, max: number) {
+    return this.http.get<AsignacionDocente[]>(`${this.url}/horarios`, {
+      params: { min, max },
+    });
+  }
 }

@@ -1,9 +1,9 @@
 <div class="login-layout">
   <section class="login-story">
-    <div class="brand light">
+    <a routerLink="/" class="brand light">
       <span class="brand-icon">A</span
       ><span>andina<small>APRENDER NOS CONECTA</small></span>
-    </div>
+    </a>
     <div class="story-content">
       <p class="eyebrow">JUNTOS, MÁS LEJOS</p>
       <h1>La educación<br />nos conecta.</h1>
@@ -66,7 +66,9 @@
         >
       </button>
       <p class="login-help">
-        ¿Necesitas una cuenta? Contacta con el administrador de tu colegio.
+        ¿No tienes una cuenta?
+        <a class="login-help-link" routerLink="/registro">Regístrate</a><br />
+        <a class="login-help-link" routerLink="/">Volver al inicio</a>
       </p>
     </form>
     <span class="login-copyright">Andina · Gestión educativa</span>

@@ -1,15 +1,11 @@
 <section class="page">
-  <div class="page-heading">
-    <div>
-      <p class="eyebrow">GESTIÓN EDUCATIVA</p>
-      <h1>Sesiones virtuales</h1>
-    </div>
+  <app-encabezado modulo="sesiones-virtuales" [total]="total()">
     @if(puedeEscribir()){<a
       mat-flat-button
       routerLink="/sesiones-virtuales/insertar"
-      >Crear sesión</a
+      ><mat-icon aria-hidden="true">add</mat-icon>Crear sesión</a
     >}
-  </div>
+  </app-encabezado>
   <div class="panel">
     <form class="table-tools" (ngSubmit)="buscar()">
       <mat-form-field appearance="outline"
@@ -18,63 +14,115 @@
           matInput
           [formControl]="busqueda"
           maxlength="100" /></mat-form-field
-      ><button mat-stroked-button type="submit" [disabled]="cargando()">
-        Buscar
+      ><button mat-flat-button class="boton-buscar" type="submit" [disabled]="cargando()">
+        <mat-icon aria-hidden="true">search</mat-icon>Buscar
       </button>
     </form>
     @if(error()){
     <div class="notice error" role="alert">{{error()}}</div>
     }@if(cargando()){<mat-progress-bar mode="indeterminate" />}
+    @if(vistaEstudiante()){
+    <!-- Estudiante: tarjetas con fecha, hora, estado y botón para entrar -->
+    <div class="tarjeta-grid tarjeta-grid--panel">
+      @for(s of filas();track s.idSesionVirtual){
+      <article class="tarjeta">
+        <div class="tarjeta-cabecera">
+          <span class="sesion-fecha"
+            ><b>{{s.horaInicio | horaPe}}</b>{{s.fecha | fechaPe}}</span
+          >
+          <app-chip [valor]="s.estado" />
+        </div>
+        <div class="tarjeta-cuerpo">
+          <span class="tarjeta-meta">Hasta las {{s.horaFin | horaPe}}</span>
+          <h3>{{s.titulo}}</h3>
+          <p><app-nombre tipo="asignacion" [id]="s.idAsignacion" /></p>
+        </div>
+        <div class="tarjeta-pie">
+          @if(s.estado === 'PROGRAMADA' || s.estado === 'EN_CURSO'){<a
+            mat-flat-button
+            [routerLink]="['/sesiones-virtuales/sala', s.idSesionVirtual]"
+            ><mat-icon aria-hidden="true">videocam</mat-icon>Entrar<span
+              class="solo-lector"
+            >
+              a {{s.titulo}}</span
+            ></a
+          >}@else{<span class="tarjeta-sin-accion"
+            >{{s.estado === 'CANCELADA' ? 'Esta sesión se canceló.' : 'Esta
+            sesión ya terminó.'}}</span
+          >}
+        </div>
+      </article>
+      }
+    </div>
+    @if(!filas().length){
+    <app-estado-vacio
+      entidad="sesiones virtuales"
+      icono="videocam"
+      [cargando]="cargando()"
+      [busqueda]="busqueda.value"
+      titulo="Todavía no hay sesiones virtuales"
+      mensaje="Cuando tu docente programe una sesión, aparecerá aquí con el botón para entrar."
+    />
+    } }@else{
     <div class="table-scroll">
       <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="idSesionVirtual"
           ><th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let row">
+          <td mat-cell class="celda-id" *matCellDef="let row">
             {{row.idSesionVirtual ?? "—"}}
           </td></ng-container
         >
         <ng-container matColumnDef="titulo"
           ><th mat-header-cell *matHeaderCellDef>Título</th>
-          <td mat-cell *matCellDef="let row">
+          <td mat-cell class="celda-principal" *matCellDef="let row">
             {{row.titulo ?? "—"}}
           </td></ng-container
         >
         <ng-container matColumnDef="idAsignacion"
           ><th mat-header-cell *matHeaderCellDef>Asignación docente</th>
           <td mat-cell *matCellDef="let row">
-            {{row.idAsignacion ?? "—"}}
-          </td></ng-container
-        >
+            <app-nombre tipo="asignacion" [id]="row.idAsignacion" /></td
+        ></ng-container>
         <ng-container matColumnDef="fecha"
           ><th mat-header-cell *matHeaderCellDef>Fecha</th>
           <td mat-cell *matCellDef="let row">
-            {{row.fecha ?? "—"}}
+            {{row.fecha | fechaPe}}
           </td></ng-container
         >
         <ng-container matColumnDef="horaInicio"
           ><th mat-header-cell *matHeaderCellDef>Hora de inicio</th>
           <td mat-cell *matCellDef="let row">
-            {{row.horaInicio ?? "—"}}
+            {{row.horaInicio | horaPe}}
           </td></ng-container
         >
         <ng-container matColumnDef="horaFin"
           ><th mat-header-cell *matHeaderCellDef>Hora de fin</th>
           <td mat-cell *matCellDef="let row">
-            {{row.horaFin ?? "—"}}
+            {{row.horaFin | horaPe}}
           </td></ng-container
         >
         <ng-container matColumnDef="enlace"
           ><th mat-header-cell *matHeaderCellDef>Enlace de la sesión</th>
           <td mat-cell *matCellDef="let row">
-            {{row.enlace ?? "—"}}
+            @if(row.enlace){<a
+              mat-stroked-button
+              class="boton-abrir"
+              [href]="row.enlace"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><mat-icon aria-hidden="true">open_in_new</mat-icon>Abrir<span
+                class="solo-lector"
+              >
+                el enlace de {{row.titulo}} (pestaña nueva)</span
+              ></a
+            >}@else{—}
           </td></ng-container
         >
         <ng-container matColumnDef="estado"
           ><th mat-header-cell *matHeaderCellDef>Estado</th>
           <td mat-cell *matCellDef="let row">
-            {{row.estado ?? "—"}}
-          </td></ng-container
-        >
+            <app-chip [valor]="row.estado" /></td
+        ></ng-container>
         <ng-container matColumnDef="acciones"
           ><th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let row">
@@ -101,22 +149,27 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-row" *matNoDataRow>
-          <td class="mat-mdc-cell" colspan="9">
-            @if (puedeEscribir()) {
-            <p>Todavía no hay sesiones. Crea una para abrir su videollamada.</p>
-            <a mat-stroked-button routerLink="/sesiones-virtuales/insertar"
-              >Crear la primera sesión</a
+          <td class="mat-mdc-cell celda-vacia" colspan="9">
+            <app-estado-vacio
+              entidad="sesiones virtuales"
+              icono="videocam"
+              [cargando]="cargando()"
+              [busqueda]="busqueda.value"
+              titulo="Todavía no hay sesiones virtuales"
+              [mensaje]="puedeEscribir() ? 'Crea una sesión para abrir su videollamada.' : 'Cuando tu docente programe una sesión, aparecerá aquí con el botón para entrar.'"
             >
-            } @else {
-            <p>
-              Todavía no hay sesiones disponibles. El docente debe crear una
-              para que puedas entrar.
-            </p>
-            }
+              @if (puedeEscribir()) {
+              <a mat-flat-button routerLink="/sesiones-virtuales/insertar"
+                ><mat-icon aria-hidden="true">add</mat-icon>Crear la primera
+                sesión</a
+              >
+              }
+            </app-estado-vacio>
           </td>
         </tr>
       </table>
     </div>
+    }
     <mat-paginator
       [length]="total()"
       [pageIndex]="page"

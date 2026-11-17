@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { esEstudiante } from '../../../services/permisos';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -16,9 +17,20 @@ import { SesionVirtualService } from '../../../services/sesiones-virtuales.servi
 import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { mensajeError } from '../../../services/errores';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Nombre } from '../../compartido/nombre/nombre';
+import { Chip } from '../../compartido/chip/chip';
+import { FechaPePipe, HoraPePipe } from '../../compartido/formato';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
 @Component({
   selector: 'app-sesiones-virtuales-listar',
   imports: [
+    Encabezado,
+    EstadoVacio,
+    Nombre,
+    Chip,
+    FechaPePipe,
+    HoraPePipe,
     ReactiveFormsModule,
     RouterLink,
     MatTableModule,
@@ -54,6 +66,9 @@ export class SesionVirtualListarComponent implements OnInit {
   readonly total = signal(0);
   page = 0;
   size = 10;
+  /** El estudiante ve tarjetas en vez de la tabla; `filas` es la misma página de datos */
+  readonly vistaEstudiante = computed(() => esEstudiante(this.auth.roles()));
+  readonly filas = signal<SesionVirtual[]>([]);
   ngOnInit(): void {
     this.cargar();
   }
@@ -70,6 +85,7 @@ export class SesionVirtualListarComponent implements OnInit {
       .subscribe({
         next: (p) => {
           this.dataSource.data = p.content;
+          this.filas.set(p.content);
           this.total.set(p.totalElements);
           this.cargando.set(false);
           if (this.page > 0 && !p.content.length) {

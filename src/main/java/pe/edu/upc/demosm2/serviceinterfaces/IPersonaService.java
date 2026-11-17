@@ -15,4 +15,7 @@ public interface IPersonaService {
     public List<Object[]> reporteCuentasPorRol();
     java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
     long contarPagina(String texto);
+
+    // Registro público: cuántas personas ya usan ese correo
+    public long contarPorEmail(String email);
 }

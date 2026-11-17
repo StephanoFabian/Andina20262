@@ -99,6 +99,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Login: público (aún no hay token)
                         .requestMatchers("/login").permitAll()
+                        // Registro desde el landing page: público (crea solo cuentas ESTUDIANTE)
+                        .requestMatchers(HttpMethod.POST, "/registro").permitAll()
                         // Documentación Swagger: pública
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         // Peticiones OPTIONS (CORS): públicas

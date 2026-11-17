@@ -29,4 +29,8 @@ export class PerfilAcademicoService {
       responseType: 'text',
     });
   }
+  /** Perfiles con nota estrictamente menor a la indicada */
+  notaMenor(nota: number) {
+    return this.http.get<PerfilAcademico[]>(`${this.url}/nota-menor/${nota}`);
+  }
 }

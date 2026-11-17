@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Rol } from '../models/Rol';
+import { RolCantidad } from '../models/RolCantidad';
 import { Pagina } from '../models/modulo';
 import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
@@ -28,5 +29,10 @@ export class RolService {
     return this.http.delete(`${this.url}/${dto.idTipoPersona}`, {
       responseType: 'text',
     });
+  }
+  reporteCantidadPersonas() {
+    return this.http.get<RolCantidad[]>(
+      `${this.url}/reporte-cantidad-personas`,
+    );
   }
 }

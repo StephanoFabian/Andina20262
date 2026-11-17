@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DetalleMatricula } from '../models/DetalleMatricula';
+import { RetiroPorCurso } from '../models/RetiroPorCurso';
+import { AulasPorGrado } from '../models/AulasPorGrado';
+import { RetencionColegio } from '../models/RetencionColegio';
 import { Pagina } from '../models/modulo';
 import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
@@ -28,5 +31,20 @@ export class DetalleMatriculaService {
     return this.http.delete(`${this.url}/${dto.idDetalleMatricula}`, {
       responseType: 'text',
     });
+  }
+  reporteRetiroPorCurso() {
+    return this.http.get<RetiroPorCurso[]>(
+      `${this.url}/reporte-retiro-por-curso`,
+    );
+  }
+  reporteAulasPorGrado(idPeriodo: number) {
+    return this.http.get<AulasPorGrado[]>(
+      `${this.url}/reporte-aulas-por-grado/${idPeriodo}`,
+    );
+  }
+  reporteRetencion(idPeriodoAnterior: number, idPeriodoActual: number) {
+    return this.http.get<RetencionColegio[]>(
+      `${this.url}/reporte-retencion-colegio/${idPeriodoAnterior}/${idPeriodoActual}`,
+    );
   }
 }

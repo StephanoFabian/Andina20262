@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PeriodoAcademico } from '../models/PeriodoAcademico';
+import { EvolucionPeriodo } from '../models/EvolucionPeriodo';
+import { MatriculaTardia } from '../models/MatriculaTardia';
 import { Pagina } from '../models/modulo';
 import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
@@ -28,5 +30,15 @@ export class PeriodoAcademicoService {
     return this.http.delete(`${this.url}/${dto.idPeriodo}`, {
       responseType: 'text',
     });
+  }
+  reporteEvolucion() {
+    return this.http.get<EvolucionPeriodo[]>(
+      `${this.url}/reportes/evolucion-matricula`,
+    );
+  }
+  reporteMatriculaTardia() {
+    return this.http.get<MatriculaTardia[]>(
+      `${this.url}/reportes/matricula-tardia`,
+    );
   }
 }

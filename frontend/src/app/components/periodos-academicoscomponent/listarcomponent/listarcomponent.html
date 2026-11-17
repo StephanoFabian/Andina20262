@@ -1,15 +1,16 @@
 <section class="page">
-  <div class="page-heading">
+  <app-encabezado modulo="periodos-academicos" [total]="total()">
     <div>
-      <p class="eyebrow">GESTIÓN EDUCATIVA</p>
-      <h1>Periodos académicos</h1>
+      <a mat-stroked-button routerLink="/periodos-academicos/reportes"
+        ><mat-icon aria-hidden="true">bar_chart</mat-icon>Reportes</a
+      >
+      @if(puedeEscribir()){<a
+        mat-flat-button
+        routerLink="/periodos-academicos/insertar"
+        ><mat-icon aria-hidden="true">add</mat-icon>Nuevo registro</a
+      >}
     </div>
-    @if(puedeEscribir()){<a
-      mat-flat-button
-      routerLink="/periodos-academicos/insertar"
-      >Nuevo registro</a
-    >}
-  </div>
+  </app-encabezado>
   <div class="panel">
     <form class="table-tools" (ngSubmit)="buscar()">
       <mat-form-field appearance="outline"
@@ -18,8 +19,8 @@
           matInput
           [formControl]="busqueda"
           maxlength="100" /></mat-form-field
-      ><button mat-stroked-button type="submit" [disabled]="cargando()">
-        Buscar
+      ><button mat-flat-button class="boton-buscar" type="submit" [disabled]="cargando()">
+        <mat-icon aria-hidden="true">search</mat-icon>Buscar
       </button>
     </form>
     @if(error()){
@@ -29,34 +30,33 @@
       <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="idPeriodo"
           ><th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let row">
+          <td mat-cell class="celda-id" *matCellDef="let row">
             {{row.idPeriodo ?? "—"}}
           </td></ng-container
         >
         <ng-container matColumnDef="nombre"
           ><th mat-header-cell *matHeaderCellDef>Nombre</th>
-          <td mat-cell *matCellDef="let row">
+          <td mat-cell class="celda-principal" *matCellDef="let row">
             {{row.nombre ?? "—"}}
           </td></ng-container
         >
         <ng-container matColumnDef="fechaInicio"
           ><th mat-header-cell *matHeaderCellDef>Fecha de inicio</th>
           <td mat-cell *matCellDef="let row">
-            {{row.fechaInicio ?? "—"}}
+            {{row.fechaInicio | fechaPe}}
           </td></ng-container
         >
         <ng-container matColumnDef="fechaFin"
           ><th mat-header-cell *matHeaderCellDef>Fecha de fin</th>
           <td mat-cell *matCellDef="let row">
-            {{row.fechaFin ?? "—"}}
+            {{row.fechaFin | fechaPe}}
           </td></ng-container
         >
         <ng-container matColumnDef="estado"
           ><th mat-header-cell *matHeaderCellDef>Estado</th>
           <td mat-cell *matCellDef="let row">
-            {{row.estado ?? "—"}}
-          </td></ng-container
-        >
+            <app-chip [valor]="row.estado" /></td
+        ></ng-container>
         <ng-container matColumnDef="acciones"
           ><th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let row">
@@ -77,7 +77,14 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-row" *matNoDataRow>
-          <td class="mat-mdc-cell" colspan="6">No hay registros.</td>
+          <td class="mat-mdc-cell celda-vacia" colspan="6">
+            <app-estado-vacio
+              entidad="periodos académicos"
+              icono="date_range"
+              [cargando]="cargando()"
+              [busqueda]="busqueda.value"
+            />
+          </td>
         </tr>
       </table>
     </div>

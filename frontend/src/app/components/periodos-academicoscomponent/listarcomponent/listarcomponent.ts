@@ -16,9 +16,17 @@ import { PeriodoAcademicoService } from '../../../services/periodos-academicos.s
 import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { mensajeError } from '../../../services/errores';
+import { Chip } from '../../compartido/chip/chip';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { FechaPePipe } from '../../compartido/formato';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
 @Component({
   selector: 'app-periodos-academicos-listar',
   imports: [
+    Encabezado,
+    Chip,
+    EstadoVacio,
+    FechaPePipe,
     ReactiveFormsModule,
     RouterLink,
     MatTableModule,

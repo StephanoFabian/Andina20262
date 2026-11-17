@@ -7,7 +7,12 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +24,8 @@ import {
   ESTADOS_CONVENIO,
   TIPOS_ENTIDAD,
 } from '../../../models/convenio';
+import { Colegio } from '../../../models/Colegio';
+import { ColegioService } from '../../../services/colegios.service';
 import { Convenioservice } from '../../../services/convenioservice';
 import { mensajeError } from '../../../services/errores';
 import {
@@ -36,7 +43,8 @@ type Campo =
   | 'fechaInicio'
   | 'fechaFin'
   | 'presupuesto'
-  | 'estado';
+  | 'estado'
+  | 'idColegio';
 
 @Component({
   selector: 'app-convenio-insertar',
@@ -69,6 +77,12 @@ export class ConvenioInsertar implements OnInit {
   protected readonly cargaFallida = signal(false);
   protected readonly mensaje = signal<string | null>(null);
 
+  private readonly sIdColegio = inject(ColegioService);
+  protected readonly opcionesIdColegio = signal<Colegio[]>([]);
+  protected readonly busquedaIdColegio = new FormControl('', {
+    nonNullable: true,
+  });
+
   protected readonly form = inject(FormBuilder).group(
     {
       nombre: ['', [Validators.required, noVacio, Validators.maxLength(200)]],
@@ -82,11 +96,13 @@ export class ConvenioInsertar implements OnInit {
         [Validators.required, Validators.min(0), digitos(12, 2)],
       ],
       estado: ['VIGENTE'],
+      idColegio: [null as number | null],
     },
     { validators: rangoFechas('fechaInicio', 'fechaFin') },
   );
 
   ngOnInit(): void {
+    this.cargarIdColegio();
     const id = this.id();
     if (id) {
       this.cargando.set(true);
@@ -94,6 +110,18 @@ export class ConvenioInsertar implements OnInit {
         next: (c) => {
           this.cargando.set(false);
           this.form.patchValue(c);
+          // El colegio ya asociado puede no estar entre las 20 primeras opciones
+          if (c.idColegio)
+            this.sIdColegio.listId(Number(c.idColegio)).subscribe({
+              next: (r) => {
+                if (
+                  !this.opcionesIdColegio().some(
+                    (x) => x.idColegio === r.idColegio,
+                  )
+                )
+                  this.opcionesIdColegio.update((lista) => [r, ...lista]);
+              },
+            });
         },
         error: (err: unknown) => {
           this.cargando.set(false);
@@ -102,6 +130,25 @@ export class ConvenioInsertar implements OnInit {
         },
       });
     }
+  }
+
+  protected cargarIdColegio(): void {
+    const seleccionado = this.opcionesIdColegio().find(
+      (x) => x.idColegio === this.form.controls.idColegio.value,
+    );
+    this.sIdColegio
+      .pagina(0, 20, this.busquedaIdColegio.value.trim())
+      .subscribe({
+        // Se conserva el colegio elegido aunque no coincida con la búsqueda
+        next: (p) =>
+          this.opcionesIdColegio.set(
+            seleccionado &&
+              !p.content.some((x) => x.idColegio === seleccionado.idColegio)
+              ? [seleccionado, ...p.content]
+              : p.content,
+          ),
+        error: (err: unknown) => this.mensaje.set(mensajeError(err)),
+      });
   }
 
   protected error(campo: Campo): string {
@@ -128,6 +175,8 @@ export class ConvenioInsertar implements OnInit {
       fechaFin: v.fechaFin ?? '',
       presupuesto: Number(v.presupuesto),
       estado: v.estado || null,
+      // Sin colegio elegido se envía null: el backend no toca la asociación existente
+      idColegio: v.idColegio ? Number(v.idColegio) : null,
     };
     // El PUT /actualiza lleva el id en el cuerpo
     const peticion = this.edicion()

@@ -58,4 +58,9 @@ public class PersonaServiceImplement implements IPersonaService {
     }
     public java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento) {return pR.pagina(texto,limite,desplazamiento);}
     public long contarPagina(String texto) {return pR.contarPagina(texto);}
+
+    @Override
+    public long contarPorEmail(String email) {
+        return pR.contarPorEmail(email);
+    }
 }

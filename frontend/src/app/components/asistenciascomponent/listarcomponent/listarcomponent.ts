@@ -16,9 +16,17 @@ import { AsistenciaService } from '../../../services/asistencias.service';
 import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { mensajeError } from '../../../services/errores';
+import { Nombre } from '../../compartido/nombre/nombre';
+import { Chip } from '../../compartido/chip/chip';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
 @Component({
   selector: 'app-asistencias-listar',
   imports: [
+    Encabezado,
+    Nombre,
+    Chip,
+    EstadoVacio,
     ReactiveFormsModule,
     RouterLink,
     MatTableModule,

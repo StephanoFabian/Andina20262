@@ -2,8 +2,14 @@ import { OnInit, signal } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { mensajeError as errorPeticion } from '../../../services/errores';
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../core/auth.service';
+import { Avatar } from '../../compartido/avatar/avatar';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { FechaPePipe } from '../../compartido/formato';
+import { TipoMaterial } from '../../compartido/tipo-material/tipo-material';
+import { MaterialesEstudiante } from '../material-estudiante/material-estudiante';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,7 +32,11 @@ import { map } from 'rxjs';
 import { mensajeError } from '../../../services/errores';
 import { Loginservice } from '../../../services/loginservice';
 import { Materialservice } from '../../../services/materialservice';
-import { modulo, PERMISOS_EXTRA } from '../../../services/permisos';
+import {
+  esEstudiante,
+  modulo,
+  PERMISOS_EXTRA,
+} from '../../../services/permisos';
 
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { PaginadorIntl } from '../../compartido/paginador-intl';
@@ -38,6 +48,12 @@ interface FilaMaterial extends MaterialDTO {
 @Component({
   selector: 'app-material-listar',
   imports: [
+    Encabezado,
+    EstadoVacio,
+    TipoMaterial,
+    Avatar,
+    FechaPePipe,
+    MaterialesEstudiante,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
@@ -47,7 +63,6 @@ interface FilaMaterial extends MaterialDTO {
     MatFormFieldModule,
     MatInputModule,
     RouterLink,
-    DatePipe,
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: PaginadorIntl }],
   templateUrl: './material-listar.html',
@@ -57,6 +72,8 @@ export class MaterialListar implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snack = inject(MatSnackBar);
   private readonly loginService = inject(Loginservice);
+  /** El estudiante ve tarjetas agrupadas por curso en vez de la tabla */
+  protected readonly vistaEstudiante = esEstudiante(inject(AuthService).roles());
 
   private readonly permisos = modulo('material').permisos;
   protected readonly puedeInsertar = this.loginService.tieneRol(
@@ -136,7 +153,7 @@ export class MaterialListar implements OnInit {
   protected size = 10;
   protected q = '';
   ngOnInit(): void {
-    this.cargar();
+    if (!this.vistaEstudiante) this.cargar();
   }
   protected cargar(): void {
     this.cargando.set(true);

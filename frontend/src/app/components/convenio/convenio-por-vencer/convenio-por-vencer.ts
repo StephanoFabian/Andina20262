@@ -24,9 +24,11 @@ import { Convenioservice } from '../../../services/convenioservice';
 import { entero, mensajeCampo } from '../../compartido/validadores';
 
 /** Reporte: convenios vencidos y los que vencen en los próximos N días */
+import { Chip } from '../../compartido/chip/chip';
 @Component({
   selector: 'app-convenio-por-vencer',
   imports: [
+    Chip,
     ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,

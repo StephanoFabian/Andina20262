@@ -29,4 +29,8 @@ export class CursoService {
       responseType: 'text',
     });
   }
+  /** Cursos de un área (el backend compara el nombre exacto del área) */
+  porArea(a: string) {
+    return this.http.get<Curso[]>(`${this.url}/area`, { params: { a } });
+  }
 }

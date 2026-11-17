@@ -79,7 +79,8 @@
       <ng-container matColumnDef="situacion">
         <th mat-header-cell *matHeaderCellDef>Situación</th>
         <td mat-cell *matCellDef="let c">
-          {{ c.situacion }} · {{ estados[c.estado] ?? c.estado }}
+          {{ c.situacion }}
+          <app-chip [valor]="c.estado" [etiqueta]="estados[c.estado]" />
         </td>
       </ng-container>
 

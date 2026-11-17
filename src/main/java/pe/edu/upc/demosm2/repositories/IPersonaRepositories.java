@@ -29,4 +29,8 @@ public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
     java.util.List<Object[]> pagina(@Param("texto") String texto,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
     @Query(value="SELECT COUNT(*) FROM persona t WHERE (:texto = '%' OR LOWER(t.nombres_persona) LIKE :texto ESCAPE '!' OR LOWER(t.apellidos_persona) LIKE :texto ESCAPE '!' OR LOWER(t.email_persona) LIKE :texto ESCAPE '!')",nativeQuery=true)
     long contarPagina(@Param("texto") String texto);
+
+    // Registro público: evita dos cuentas con el mismo correo
+    @Query(value="SELECT COUNT(*) FROM persona t WHERE LOWER(t.email_persona) = LOWER(:email)",nativeQuery=true)
+    long contarPorEmail(@Param("email") String email);
 }

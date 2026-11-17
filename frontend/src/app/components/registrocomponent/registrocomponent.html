@@ -1,0 +1,128 @@
+<div class="login-layout registro">
+  <section class="login-story">
+    <a routerLink="/" class="brand light"
+      ><span class="brand-icon">A</span
+      ><span>andina<small>APRENDER NOS CONECTA</small></span></a
+    >
+    <div class="story-content">
+      <p class="eyebrow">JUNTOS, MÁS LEJOS</p>
+      <h1>Tu clase<br />te espera.</h1>
+      <p>
+        Regístrate para entrar a tus sesiones virtuales, materiales y horarios.
+      </p>
+      <div class="mountain-art" aria-hidden="true">
+        <i></i><i></i><i></i><span class="sun"></span>
+      </div>
+    </div>
+    <p class="story-footer">Comunidades conectadas. Futuros compartidos.</p>
+  </section>
+  <section class="login-form-section">
+    @if(idCreado(); as id){
+    <div class="login-form registro-listo" role="status">
+      <span class="login-badge"
+        ><mat-icon>check_circle</mat-icon>REGISTRO COMPLETADO</span
+      >
+      <h2>Este es tu ID de persona</h2>
+      <p class="registro-id">{{id}}</p>
+      <p>
+        Guárdalo. En Andina inicias sesión con este número y tu contraseña, no
+        con tu correo.
+      </p>
+      <a
+        mat-flat-button
+        class="login-submit"
+        routerLink="/login"
+        [queryParams]="{id: id}"
+        >Iniciar sesión</a
+      >
+    </div>
+    }@else{
+    <form class="login-form" [formGroup]="form" (ngSubmit)="registrar()">
+      <a class="registro-volver" routerLink="/">← Volver al inicio</a>
+      <h2>Regístrate en Andina</h2>
+      <p>Crea tu cuenta de estudiante. Todos los campos son obligatorios.</p>
+      @if(error()){
+      <div class="notice error" role="alert">{{error()}}</div>
+      }
+      <div class="registro-fila">
+        <mat-form-field appearance="outline"
+          ><mat-label>Nombres</mat-label
+          ><input
+            matInput
+            type="text"
+            formControlName="nombresPersona"
+            autocomplete="given-name"
+          /><mat-error>{{mensaje('nombresPersona')}}</mat-error></mat-form-field
+        ><mat-form-field appearance="outline"
+          ><mat-label>Apellidos</mat-label
+          ><input
+            matInput
+            type="text"
+            formControlName="apellidosPersona"
+            autocomplete="family-name"
+          /><mat-error
+            >{{mensaje('apellidosPersona')}}</mat-error
+          ></mat-form-field
+        >
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>Fecha de nacimiento</mat-label
+        ><input
+          matInput
+          type="date"
+          formControlName="fechaNacimientoPersona"
+          [max]="hoy"
+          autocomplete="bday"
+        /><mat-error
+          >{{mensaje('fechaNacimientoPersona')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Correo electrónico</mat-label
+        ><input
+          matInput
+          type="email"
+          formControlName="emailPersona"
+          autocomplete="email"
+        /><mat-error>{{mensaje('emailPersona')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Contraseña</mat-label
+        ><input
+          matInput
+          [type]="ocultar()?'password':'text'"
+          formControlName="passwordPersona"
+          autocomplete="new-password"
+        /><button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultar.set(!ocultar())"
+          [attr.aria-label]="ocultar()?'Mostrar contraseña':'Ocultar contraseña'"
+        >
+          <mat-icon
+            >{{ocultar()?'visibility_off':'visibility'}}</mat-icon
+          ></button
+        ><mat-hint>Mínimo 8 caracteres.</mat-hint
+        ><mat-error>{{mensaje('passwordPersona')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Repite la contraseña</mat-label
+        ><input
+          matInput
+          [type]="ocultar()?'password':'text'"
+          formControlName="repetirPassword"
+          autocomplete="new-password"
+        /><mat-error>{{mensaje('repetirPassword')}}</mat-error></mat-form-field
+      ><button
+        mat-flat-button
+        class="login-submit"
+        type="submit"
+        [disabled]="guardando()"
+      >
+        {{guardando()?'Registrando…':'Registrarme'}}
+      </button>
+      <p class="login-help">
+        ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión</a>
+      </p>
+    </form>
+    }
+  </section>
+</div>

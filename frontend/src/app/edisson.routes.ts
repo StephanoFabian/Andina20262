@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { authGuard, escrituraGuard } from './core/auth.guard';
+import { authGuard, escrituraGuard, lecturaGuard } from './core/auth.guard';
 export const rutasEdisson: Routes = [
   {
     path: 'materiales',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     children: [
       {
         path: 'crear-con-ia',
@@ -76,7 +76,7 @@ export const rutasEdisson: Routes = [
   },
   {
     path: 'materiales-cursos',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     children: [
       {
         path: '',
@@ -115,7 +115,7 @@ export const rutasEdisson: Routes = [
   },
   {
     path: 'convenios',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     children: [
       {
         path: '',

@@ -26,9 +26,18 @@ import { filter, switchMap } from 'rxjs';
 import { MaterialCursoDTO } from '../../../models/materialcurso';
 import { Loginservice } from '../../../services/loginservice';
 import { Materialcursoservice } from '../../../services/materialcursoservice';
-import { modulo, PERMISOS_EXTRA } from '../../../services/permisos';
+import {
+  esEstudiante,
+  modulo,
+  PERMISOS_EXTRA,
+} from '../../../services/permisos';
+import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
+import { CursoChip } from '../../compartido/curso-chip/curso-chip';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
 import { PaginadorIntl } from '../../compartido/paginador-intl';
+import { MaterialesEstudiante } from '../../material/material-estudiante/material-estudiante';
 interface FilaMaterialCurso extends MaterialCursoDTO {
   material: string;
   curso: string;
@@ -38,6 +47,10 @@ interface FilaMaterialCurso extends MaterialCursoDTO {
 @Component({
   selector: 'app-materialcurso-listar',
   imports: [
+    Encabezado,
+    EstadoVacio,
+    CursoChip,
+    MaterialesEstudiante,
     ReactiveFormsModule,
     MatInputModule,
     MatTableModule,
@@ -58,6 +71,8 @@ export class MaterialcursoListar implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snack = inject(MatSnackBar);
   private readonly loginService = inject(Loginservice);
+  /** El estudiante ve tarjetas agrupadas por curso en vez de la tabla */
+  protected readonly vistaEstudiante = esEstudiante(inject(AuthService).roles());
 
   private readonly permisos = modulo('materialcurso').permisos;
   protected readonly puedeInsertar = this.loginService.tieneRol(
@@ -85,6 +100,7 @@ export class MaterialcursoListar implements OnInit {
     );
   }
   constructor() {
+    if (this.vistaEstudiante) return;
     this.cargarIdMaterial();
     this.idMaterial.valueChanges.subscribe(() => {
       this.page = 0;
@@ -125,7 +141,7 @@ export class MaterialcursoListar implements OnInit {
   protected size = 10;
   protected q = '';
   ngOnInit(): void {
-    this.cargar();
+    if (!this.vistaEstudiante) this.cargar();
   }
   protected cargar(): void {
     this.cargando.set(true);

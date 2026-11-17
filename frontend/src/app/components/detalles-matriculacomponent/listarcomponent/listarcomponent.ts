@@ -16,9 +16,21 @@ import { DetalleMatriculaService } from '../../../services/detalles-matricula.se
 import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { mensajeError } from '../../../services/errores';
+import { Nombre } from '../../compartido/nombre/nombre';
+import { Chip } from '../../compartido/chip/chip';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { FechaPePipe } from '../../compartido/formato';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
+import { CursoChip } from '../../compartido/curso-chip/curso-chip';
 @Component({
   selector: 'app-detalles-matricula-listar',
   imports: [
+    Encabezado,
+    CursoChip,
+    Nombre,
+    Chip,
+    EstadoVacio,
+    FechaPePipe,
     ReactiveFormsModule,
     RouterLink,
     MatTableModule,

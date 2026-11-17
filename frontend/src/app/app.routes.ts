@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { rutasEdisson } from './edisson.routes';
-import { authGuard, escrituraGuard } from './core/auth.guard';
+import { authGuard, escrituraGuard, lecturaGuard } from './core/auth.guard';
 export const routes: Routes = [
   ...rutasEdisson,
   {
@@ -10,90 +10,32 @@ export const routes: Routes = [
         (m) => m.LoginComponent,
       ),
   },
-  { path: '', pathMatch: 'full', redirectTo: 'inicio' },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./components/landingcomponent/landingcomponent').then(
+        (m) => m.LandingComponent,
+      ),
+  },
+  {
+    path: 'registro',
+    loadComponent: () =>
+      import('./components/registrocomponent/registrocomponent').then(
+        (m) => m.RegistroComponent,
+      ),
+  },
   {
     path: 'inicio',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/homecomponent/homecomponent').then(
         (m) => m.HomeComponent,
       ),
   },
   {
-    path: 'colegios',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/colegioscomponent/colegioscomponent').then(
-        (m) => m.ColegioComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/colegioscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.ColegioListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'colegios' },
-        loadComponent: () =>
-          import('./components/colegioscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.ColegioInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'colegios' },
-        loadComponent: () =>
-          import('./components/colegioscomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.ColegioActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'aulas',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/aulascomponent/aulascomponent').then(
-        (m) => m.AulaComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/aulascomponent/listarcomponent/listarcomponent').then(
-            (m) => m.AulaListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'aulas' },
-        loadComponent: () =>
-          import('./components/aulascomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.AulaInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'aulas' },
-        loadComponent: () =>
-          import('./components/aulascomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.AulaActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
     path: 'grados',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/gradoscomponent/gradoscomponent').then(
         (m) => m.GradoComponent,
@@ -128,44 +70,8 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'cursos',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/cursoscomponent/cursoscomponent').then(
-        (m) => m.CursoComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/cursoscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.CursoListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'cursos' },
-        loadComponent: () =>
-          import('./components/cursoscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.CursoInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'cursos' },
-        loadComponent: () =>
-          import('./components/cursoscomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.CursoActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
     path: 'periodos-academicos',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/periodos-academicoscomponent/periodos-academicoscomponent').then(
         (m) => m.PeriodoAcademicoComponent,
@@ -177,6 +83,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/periodos-academicoscomponent/listarcomponent/listarcomponent').then(
             (m) => m.PeriodoAcademicoListarComponent,
+          ),
+      },
+      {
+        path: 'reportes',
+        loadComponent: () =>
+          import('./components/periodos-academicoscomponent/reportecomponent/reportecomponent').then(
+            (m) => m.PeriodoAcademicoReporteComponent,
           ),
       },
       {
@@ -201,7 +114,7 @@ export const routes: Routes = [
   },
   {
     path: 'matriculas',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/matriculascomponent/matriculascomponent').then(
         (m) => m.MatriculaComponent,
@@ -213,6 +126,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/matriculascomponent/listarcomponent/listarcomponent').then(
             (m) => m.MatriculaListarComponent,
+          ),
+      },
+      {
+        path: 'reportes',
+        loadComponent: () =>
+          import('./components/matriculascomponent/reportecomponent/reportecomponent').then(
+            (m) => m.MatriculaReporteComponent,
           ),
       },
       {
@@ -237,7 +157,7 @@ export const routes: Routes = [
   },
   {
     path: 'detalles-matricula',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/detalles-matriculacomponent/detalles-matriculacomponent').then(
         (m) => m.DetalleMatriculaComponent,
@@ -249,6 +169,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/detalles-matriculacomponent/listarcomponent/listarcomponent').then(
             (m) => m.DetalleMatriculaListarComponent,
+          ),
+      },
+      {
+        path: 'reportes',
+        loadComponent: () =>
+          import('./components/detalles-matriculacomponent/reportecomponent/reportecomponent').then(
+            (m) => m.DetalleMatriculaReporteComponent,
           ),
       },
       {
@@ -272,152 +199,8 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'personas',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/personascomponent/personascomponent').then(
-        (m) => m.PersonaComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/personascomponent/listarcomponent/listarcomponent').then(
-            (m) => m.PersonaListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'personas' },
-        loadComponent: () =>
-          import('./components/personascomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.PersonaInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'personas' },
-        loadComponent: () =>
-          import('./components/personascomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.PersonaActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'roles',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/rolescomponent/rolescomponent').then(
-        (m) => m.RolComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/rolescomponent/listarcomponent/listarcomponent').then(
-            (m) => m.RolListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'roles' },
-        loadComponent: () =>
-          import('./components/rolescomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.RolInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'roles' },
-        loadComponent: () =>
-          import('./components/rolescomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.RolActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'perfiles-academicos',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/perfiles-academicoscomponent/perfiles-academicoscomponent').then(
-        (m) => m.PerfilAcademicoComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/perfiles-academicoscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.PerfilAcademicoListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'perfiles-academicos' },
-        loadComponent: () =>
-          import('./components/perfiles-academicoscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.PerfilAcademicoInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'perfiles-academicos' },
-        loadComponent: () =>
-          import('./components/perfiles-academicoscomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.PerfilAcademicoActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'asignaciones',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/asignacionescomponent/asignacionescomponent').then(
-        (m) => m.AsignacionDocenteComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/asignacionescomponent/listarcomponent/listarcomponent').then(
-            (m) => m.AsignacionDocenteListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'asignaciones' },
-        loadComponent: () =>
-          import('./components/asignacionescomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.AsignacionDocenteInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'asignaciones' },
-        loadComponent: () =>
-          import('./components/asignacionescomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.AsignacionDocenteActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
     path: 'sesiones-virtuales',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/sesiones-virtualescomponent/sesiones-virtualescomponent').then(
         (m) => m.SesionVirtualComponent,
@@ -460,7 +243,7 @@ export const routes: Routes = [
   },
   {
     path: 'asistencias',
-    canActivate: [authGuard],
+    canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
       import('./components/asistenciascomponent/asistenciascomponent').then(
         (m) => m.AsistenciaComponent,
@@ -494,77 +277,5 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'horarios',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/horarioscomponent/horarioscomponent').then(
-        (m) => m.HorarioComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/horarioscomponent/listarcomponent/listarcomponent').then(
-            (m) => m.HorarioListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'horarios' },
-        loadComponent: () =>
-          import('./components/horarioscomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.HorarioInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'horarios' },
-        loadComponent: () =>
-          import('./components/horarioscomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.HorarioActualizarComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: 'incidencias',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/incidenciascomponent/incidenciascomponent').then(
-        (m) => m.IncidenciaComponent,
-      ),
-    children: [
-      { path: '', pathMatch: 'full', redirectTo: 'listar' },
-      {
-        path: 'listar',
-        loadComponent: () =>
-          import('./components/incidenciascomponent/listarcomponent/listarcomponent').then(
-            (m) => m.IncidenciaListarComponent,
-          ),
-      },
-      {
-        path: 'insertar',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'incidencias' },
-        loadComponent: () =>
-          import('./components/incidenciascomponent/insertarcomponent/insertarcomponent').then(
-            (m) => m.IncidenciaInsertarComponent,
-          ),
-      },
-      {
-        path: 'editar/:id',
-        canActivate: [escrituraGuard],
-        data: { modulo: 'incidencias' },
-        loadComponent: () =>
-          import('./components/incidenciascomponent/actualizarcomponent/actualizarcomponent').then(
-            (m) => m.IncidenciaActualizarComponent,
-          ),
-      },
-    ],
-  },
-  { path: '**', redirectTo: 'inicio' },
+  { path: '**', redirectTo: '' },
 ];

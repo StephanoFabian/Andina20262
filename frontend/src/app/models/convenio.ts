@@ -12,6 +12,8 @@ export interface ConvenioDTO {
   presupuesto: number;
   /** VIGENTE, EN_RENOVACION, VENCIDO o FINALIZADO */
   estado?: string | null;
+  /** Colegio asociado (opcional). El backend conserva el anterior si no se envía. */
+  idColegio?: number | null;
 }
 
 export const TIPOS_ENTIDAD: Record<string, string | undefined> = {
@@ -24,5 +26,6 @@ export const ESTADOS_CONVENIO: Record<string, string | undefined> = {
   VIGENTE: 'Vigente',
   EN_RENOVACION: 'En renovación',
   VENCIDO: 'Vencido',
+  CANCELADO: 'Cancelado',
   FINALIZADO: 'Finalizado',
 };

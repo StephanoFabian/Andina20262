@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Persona } from '../models/Persona';
+import { CuentasPorRol } from '../models/CuentasPorRol';
 import { Pagina } from '../models/modulo';
 import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
@@ -28,5 +29,11 @@ export class PersonaService {
     return this.http.delete(`${this.url}/${dto.idPersona}`, {
       responseType: 'text',
     });
+  }
+  /** Solo ADMIN (@PreAuthorize en el backend) */
+  reporteCuentasPorRol() {
+    return this.http.get<CuentasPorRol[]>(
+      `${this.url}/reporte-cuentas-por-rol`,
+    );
   }
 }

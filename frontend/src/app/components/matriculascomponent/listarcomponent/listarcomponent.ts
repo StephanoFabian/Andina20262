@@ -16,9 +16,15 @@ import { MatriculaService } from '../../../services/matriculas.service';
 import { AuthService } from '../../../core/auth.service';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 import { mensajeError } from '../../../services/errores';
+import { Nombre } from '../../compartido/nombre/nombre';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
 @Component({
   selector: 'app-matriculas-listar',
   imports: [
+    Encabezado,
+    Nombre,
+    EstadoVacio,
     ReactiveFormsModule,
     RouterLink,
     MatTableModule,

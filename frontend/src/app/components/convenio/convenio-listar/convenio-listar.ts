@@ -2,7 +2,10 @@ import { OnInit, signal } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { mensajeError as errorPeticion } from '../../../services/errores';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
+import { Encabezado } from '../../compartido/encabezado/encabezado';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { FechaPePipe } from '../../compartido/formato';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,15 +28,18 @@ import {
   ESTADOS_CONVENIO,
   TIPOS_ENTIDAD,
 } from '../../../models/convenio';
+import { ColegioService } from '../../../services/colegios.service';
 import { Convenioservice } from '../../../services/convenioservice';
 import { mensajeError } from '../../../services/errores';
 import { Loginservice } from '../../../services/loginservice';
 import { modulo, PERMISOS_EXTRA } from '../../../services/permisos';
 import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo';
 
+import { Chip } from '../../compartido/chip/chip';
 @Component({
   selector: 'app-convenio-listar',
   imports: [
+    Chip,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
@@ -43,7 +49,9 @@ import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo'
     MatFormFieldModule,
     MatInputModule,
     RouterLink,
-    DatePipe,
+    Encabezado,
+    EstadoVacio,
+    FechaPePipe,
     CurrencyPipe,
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: PaginadorIntl }],
@@ -51,6 +59,9 @@ import { confirmar } from '../../compartido/confirmar-dialogo/confirmar-dialogo'
 })
 export class ConvenioListar implements OnInit {
   private readonly cS = inject(Convenioservice);
+  private readonly colegioService = inject(ColegioService);
+  /** Nombre de cada colegio ya consultado, por id (la página solo trae idColegio) */
+  protected readonly colegios = signal<Record<number, string | undefined>>({});
   private readonly dialog = inject(MatDialog);
   private readonly snack = inject(MatSnackBar);
   private readonly loginService = inject(Loginservice);
@@ -77,6 +88,7 @@ export class ConvenioListar implements OnInit {
     'entidad',
     'tipoEntidad',
     'region',
+    'colegio',
     'fechaInicio',
     'fechaFin',
     'presupuesto',
@@ -136,6 +148,7 @@ export class ConvenioListar implements OnInit {
         this.dataSource.data = p.content;
         this.total.set(p.totalElements);
         this.cargando.set(false);
+        this.cargarColegios(p.content);
         if (this.page > 0 && !p.content.length) {
           this.page--;
           this.cargar();
@@ -146,6 +159,21 @@ export class ConvenioListar implements OnInit {
         this.error.set(errorPeticion(err));
       },
     });
+  }
+  /** Consulta el nombre de los colegios de la página que aún no se conocen */
+  private cargarColegios(convenios: ConvenioDTO[]): void {
+    const ids = new Set(
+      convenios
+        .map((c) => c.idColegio)
+        .filter((id): id is number => !!id && !(id in this.colegios())),
+    );
+    for (const id of ids) {
+      this.colegioService.listId(id).subscribe({
+        next: (r) => this.colegios.update((m) => ({ ...m, [id]: r.nombre })),
+        // Si falla, la celda sigue mostrando el id
+        error: () => undefined,
+      });
+    }
   }
   protected paginar(e: PageEvent): void {
     this.page = e.pageIndex;
