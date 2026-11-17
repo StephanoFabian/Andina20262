@@ -1,6 +1,6 @@
 # Salidas de compilación (se generan solas al compilar; no se suben)
-target/
-out/
+back/target/
+back/out/
 
 # IntelliJ
 .idea/
@@ -11,16 +11,16 @@ out/
 *.log
 
 # Angular
-frontend/node_modules/
-frontend/.angular/
-frontend/dist/
-frontend/coverage/
+front/node_modules/
+front/.angular/
+front/dist/
+front/coverage/
 
 # Herramientas Python
 __pycache__/
 *.pyc
 
 # Servicios locales: modelos, audio temporal, claves y dependencias
-integraciones/.local/
-integraciones/ia/.deps/
+back/integraciones/.local/
+back/integraciones/ia/.deps/
 .env
