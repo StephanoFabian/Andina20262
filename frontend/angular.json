@@ -59,6 +59,27 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "servidor": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "700kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.servidor.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
