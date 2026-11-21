@@ -1,0 +1,37 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/grados">← Volver a grados</a>
+  <h1>Grados</h1>
+  <div class="panel form-panel">
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Nombre</mat-label
+        ><input matInput type="text" formControlName="nombre" /><mat-error
+          >{{error('nombre')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Nivel</mat-label
+        ><mat-select formControlName="nivel"
+          ><mat-option [value]="'Inicial'">Inicial</mat-option
+          ><mat-option [value]="'Primaria'">Primaria</mat-option
+          ><mat-option [value]="'Secundaria'"
+            >Secundaria</mat-option
+          ></mat-select
+        ><mat-error>{{error('nivel')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
+      }
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/grados">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>

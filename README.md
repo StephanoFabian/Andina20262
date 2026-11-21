@@ -1,64 +1,26 @@
-# Andina API
+# Andina · Gestión educativa
 
-Backend Spring Boot con Java 21, PostgreSQL y autenticación JWT.
+Backend Spring Boot (carpeta `back/`) y frontend Angular 21 con Angular Material (carpeta `front/`), en la rama `stephano_01`.
 
-## Configuración
+El frontend sigue la separación del ejemplo `sm2-s11.rar`: **models → services → components**, con componentes contenedores y rutas hijas `listar`, `insertar` y `editar/:id`. Incluye login JWT, navegación adaptable a móvil, formularios reactivos, confirmación de eliminación y listados con paginación en el servidor.
 
-Define las variables de `.env.example` en tu terminal, IDE o en Railway → Variables.
-Spring Boot no carga archivos `.env` automáticamente. No subas credenciales a Git.
-Usa el **Session pooler** de Supabase (puerto 5432, SSL) para conexiones IPv4.
-`JWT_SECRET` debe ser una cadena aleatoria de al menos 64 bytes para HS512.
+## Ejecutar
 
-El esquema existente se valida al arrancar (`ddl-auto=validate`); los cambios de
-esquema requieren una migración previa. El proceso no crea ni borra tablas.
-Cada réplica utiliza hasta cinco conexiones a PostgreSQL; revisa el límite del
-pooler antes de aumentar réplicas. Este valor no constituye una prueba de capacidad.
+1. La rama usa PostgreSQL local en `localhost:5432/andina`. Configura tus credenciales en `back/src/main/resources/application.properties` o con `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME` y `SPRING_DATASOURCE_PASSWORD`. Requiere Java 21.
+2. Abre la carpeta `back/` en IntelliJ e inicia el backend, o en una terminal `cd back` y `mvn spring-boot:run`, en el puerto 8080.
+3. En otra terminal: `cd front`, `npm ci`, `npm start`. Usa Node 22.12+ y npm 10+.
+4. Abre http://localhost:4200 e ingresa el ID de persona y su contraseña ya registrada. No se crean administradores ni contraseñas de demostración en la base de trabajo.
 
-## Ejecutar y probar
+La primera ejecución crea las tablas nuevas mediante la configuración `ddl-auto=update` existente. No borra tablas de módulos anteriores. Para búsquedas en tablas grandes, aplica después los índices de [docs/sql/indices_busqueda.sql](docs/sql/indices_busqueda.sql) con `psql -f` fuera de una transacción.
 
-Con JDK 21 y Maven instalados, y las variables de aplicación exportadas:
+Consulta [la arquitectura y el alcance](docs/FRONTEND.md) y [los resultados de verificación](docs/VERIFICACION_FRONTEND.md).
 
-```sh
-mvn -DskipTests package
-java -jar target/demoSM2-0.0.1-SNAPSHOT.jar
-```
+CORS se configura en `back/src/main/java/pe/edu/upc/demosm2/configs/CorsConfig.java` (orígenes extra con la variable `ANDINA_CORS_ORIGINS`), conectado a Spring Security. El frontend usa la API directamente en localhost:8080.
 
-Las pruebas de integración usan una base PostgreSQL **descartable**, independiente
-de la aplicación. Crean y eliminan su esquema. Configura `ANDINA_TEST_DB_URL`,
-`ANDINA_TEST_DB_USERNAME` y `ANDINA_TEST_DB_PASSWORD`, y ejecuta `mvn clean verify`.
-Por defecto conectan a `jdbc:postgresql://127.0.0.1:55439/andina_test`, usuario
-`andina_test`. Las pruebas no usan `SPRING_DATASOURCE_URL` de producción.
+## Videollamadas e interpretación de voz
 
-## Colegios y aulas
+El módulo de sesiones virtuales incluye una sala con LiveKit y traducción experimental español–quechua de Ayacucho, con subtítulos y voz. Consulta [preparación, modelos, límites y pruebas](back/integraciones/README.md).
 
-Ambos recursos permiten GET de colección, GET por ID, POST, PUT por ID y DELETE
-por ID, en `/api/colegios` y `/api/aula`. Crear, actualizar y eliminar requiere
-`ADMIN` o `ADMIN_ESCUELA`. Las consultas requieren autenticación.
+## Materiales con IA
 
-Los listados conservan la respuesta como arreglo JSON, pero ahora son paginados:
-`?page=0&size=20`, con un máximo de 100 elementos por página y page de 0 a 10000.
-Las cabeceras `X-Has-Next`, `X-Page` y `X-Page-Size` permiten recorrer la colección.
-El cliente debe avanzar mientras `X-Has-Next` sea `true`; no asumir que la primera
-respuesta contiene todos los registros. El orden es ascendente por ID.
-
-`GET /api/aula?idColegio=1000&page=0&size=20` filtra aulas por colegio en la base
-de datos. Un colegio inexistente devuelve 404. Al crear un aula, `numero` se acepta
-como alias de `nombre`; las respuestas conservan el campo `nombre`.
-
-Los IDs de creación los genera el servidor. Un ID enviado en POST se rechaza con
-400. En PUT, el ID opcional del cuerpo debe coincidir con la ruta. Capacidad debe
-ser positiva, el colegio debe existir y los campos de texto no pueden quedar vacíos
-ni superar sus longitudes. Eliminar un colegio con relaciones existentes devuelve
-409 y conserva sus dependencias.
-
-La [revisión de historias](docs/revision-historias.md) detalla el alcance y los pendientes.
-
-## Railway
-
-Conecta `StephanoFabian/Andina20262`, rama `main`, usando Railpack y la raíz del
-repositorio. Configura las variables anteriores en el servicio. El servidor escucha
-`PORT` (8080 por defecto). Inicio: `java -jar target/demoSM2-0.0.1-SNAPSHOT.jar`.
-Usa `/v3/api-docs` como comprobación HTTP de arranque y genera un dominio público.
-Esta comprobación verifica que el servidor responde; no es un monitor continuo de
-la base de datos. Swagger está en `/swagger-ui/index.html`; los endpoints de negocio
-requieren un JWT obtenido mediante `/login`.
+En **Materiales → Crear con IA**, Qwen3.5 122B (IQ1_M) o Llama 3.3 70B IQ1_S (variable `ANDINA_MATERIAL_MODEL`) redacta el contenido y una segunda IA revisa el texto y propone figuras geométricas. Se descargan el borrador original, la revisión, imágenes PNG/SVG, PDF y Word. La generación conserva su progreso al reiniciar y requiere revisión docente. Consulta [inicio, permisos, límites y verificaciones](back/integraciones/materiales/README.md) y [la investigación de modelos para voz y traducción](back/integraciones/MODELOS_CANDIDATOS.md).

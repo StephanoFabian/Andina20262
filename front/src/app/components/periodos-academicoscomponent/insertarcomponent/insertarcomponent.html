@@ -1,0 +1,47 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/periodos-academicos"
+    >← Volver a periodos académicos</a
+  >
+  <h1>Periodos académicos</h1>
+  <div class="panel form-panel">
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Nombre</mat-label
+        ><input matInput type="text" formControlName="nombre" /><mat-error
+          >{{error('nombre')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Fecha de inicio</mat-label
+        ><input matInput type="date" formControlName="fechaInicio" /><mat-error
+          >{{error('fechaInicio')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Fecha de fin</mat-label
+        ><input matInput type="date" formControlName="fechaFin" /><mat-error
+          >{{error('fechaFin')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estado"
+          ><mat-option [value]="'ACTIVO'">ACTIVO</mat-option
+          ><mat-option [value]="'INACTIVO'">INACTIVO</mat-option
+          ><mat-option [value]="'CERRADO'">CERRADO</mat-option></mat-select
+        ><mat-error>{{error('estado')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
+      }
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/periodos-academicos">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>

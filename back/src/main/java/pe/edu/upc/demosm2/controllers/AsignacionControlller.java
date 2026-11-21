@@ -1,0 +1,199 @@
+package pe.edu.upc.demosm2.controllers;
+
+import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pe.edu.upc.demosm2.dtos.AsignacionDTOInsert;
+import pe.edu.upc.demosm2.dtos.AsignacionDTOList;
+import pe.edu.upc.demosm2.entities.AsignacionDocente;
+import pe.edu.upc.demosm2.entities.Colegio;
+import pe.edu.upc.demosm2.entities.Curso;
+import pe.edu.upc.demosm2.entities.PeriodoAcademico;
+import pe.edu.upc.demosm2.entities.Persona;
+import pe.edu.upc.demosm2.exceptions.ResourceNotFoundException;
+import pe.edu.upc.demosm2.serviceinterfaces.IAsignacionDocenteService;
+import pe.edu.upc.demosm2.serviceinterfaces.ICursoService;
+import pe.edu.upc.demosm2.serviceinterfaces.IPersonaService;
+import pe.edu.upc.demosm2.serviceinterfaces.PeriodoAcademicoServiceInterface;
+import pe.edu.upc.demosm2.serviceimplements.ColegioServiceImplement;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/asignacion")
+public class AsignacionControlller {
+    public final IAsignacionDocenteService aS;
+    public final ICursoService cs;
+    public final ColegioServiceImplement coS;
+    public final PeriodoAcademicoServiceInterface peS;
+    public final IPersonaService pS;
+    public final ModelMapper modelMapper;
+
+    public AsignacionControlller(IAsignacionDocenteService aS, ICursoService cs, ColegioServiceImplement coS,
+                                 PeriodoAcademicoServiceInterface peS, IPersonaService pS, ModelMapper modelMapper) {
+        this.aS = aS;
+        this.cs = cs;
+        this.coS = coS;
+        this.peS = peS;
+        this.pS = pS;
+        this.modelMapper = modelMapper;
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<AsignacionDTOInsert> registrar (@Valid @RequestBody AsignacionDTOInsert dto){
+        Curso q = cs.listId(dto.getId_curso())
+        .orElseThrow(()->
+                new ResourceNotFoundException(
+                        "No existe el Curso: "+dto.getId_curso()
+                ));
+
+        PeriodoAcademico pe=peS.listId(dto.getId_periodo())
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "No existe el Periodo Academico: "+dto.getId_curso()
+                        ));
+
+        Persona per= pS.listId(dto.getId_persona())
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "No existe el Periodo Academico: "+dto.getId_curso()
+                        ));
+
+       Colegio cole = coS.listId(dto.getId_colegio())
+              .orElseThrow(()->
+                      new ResourceNotFoundException(
+                              "No existe el Periodo Academico: "+dto.getId_curso()
+                      ));
+
+        AsignacionDocente ag=modelMapper.map(dto, AsignacionDocente.class);
+        ag.setId_asignacion(null);
+        ag.setCurso(q);
+        ag.setPeriodoAcademico(pe);
+        ag.setPersona(per);
+        ag.setColegio(cole);
+        aS.insert(ag);
+
+        AsignacionDTOInsert registro = modelMapper.map(ag,AsignacionDTOInsert.class);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(ag.getId_asignacion())
+                .toUri();
+        return ResponseEntity.created(location).body(registro);
+    }
+
+    @GetMapping
+    public ResponseEntity <List<AsignacionDTOList>> listar(){
+        List<AsignacionDTOList> lista= aS.list()
+                .stream()
+                .map(docente -> modelMapper.map(docente, AsignacionDTOList.class))
+                .toList();
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AsignacionDTOList> buscarasignacion(@PathVariable Long id){
+       AsignacionDocente asignacionDocente = aS.listId(id)
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "Docente no encontrado, intente de nuevo: "+ id
+                        ));
+        AsignacionDTOList respuesta = modelMapper.map(asignacionDocente,AsignacionDTOList.class);
+        return ResponseEntity.ok(respuesta);
+    }
+
+@PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<AsignacionDTOInsert> actualizar (@Valid @RequestBody AsignacionDTOInsert dto){
+        Optional<AsignacionDocente> existente =aS.listId(dto.getId_asignacion());
+        if(existente.isEmpty()){
+            throw new ResourceNotFoundException( "No existe la asignación con id: " + dto.getId_asignacion()
+            );
+        }
+
+        Optional<Curso> qurso =cs.listId(dto.getId_curso());
+        if(qurso.isEmpty()){
+            throw new ResourceNotFoundException( "No existe el curso con id: " + dto.getId_curso()
+            );
+        }
+
+        Optional<PeriodoAcademico> periodo = peS.listId(dto.getId_periodo());
+        if(periodo.isEmpty()){
+            throw new ResourceNotFoundException( "No existe el periodo academico con id: " + dto.getId_periodo()
+            );
+        }
+
+        Optional<Persona> persona = pS.listId(dto.getId_persona());
+        if(persona.isEmpty()){
+            throw new ResourceNotFoundException( "No existe una persona con id: " + dto.getId_persona()
+            );
+        }
+
+        Optional<Colegio> cole = coS.listId(dto.getId_colegio());
+        if(cole.isEmpty()){
+            throw new ResourceNotFoundException( "No existe un colegio con id: " + dto.getId_colegio()
+            );
+        }
+
+        AsignacionDocente ad= existente.get();
+        ad.setHorassemanales(dto.getHorassemanales());
+        ad.setModalidad(dto.getModalidad());
+        ad.setId_aula(dto.getId_aula());
+        ad.setCurso(qurso.get());
+        ad.setPeriodoAcademico(periodo.get());
+        ad.setPersona(persona.get());
+        ad.setColegio(cole.get());
+
+        aS.update(ad);
+
+        AsignacionDTOInsert actualizado = modelMapper.map(ad, AsignacionDTOInsert.class);
+        return ResponseEntity.ok(actualizado);
+    }
+    
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ADMIN_ESCUELA','ESPECIALISTA','LOCAL')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+        AsignacionDocente docente = aS.listId(id)
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "Docente no encontrado, intente de nuevo: "+ id
+                        ));
+        aS.delete(docente.getId_asignacion());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/horarios")
+    public ResponseEntity<List<AsignacionDTOList>> ObtenerRangoSegunHoras(@RequestParam Long min, @RequestParam Long max){
+        List<AsignacionDTOList> filtro= aS.ObtenerPorRangoHoras(min,max)
+                .stream()
+                .map(docente -> modelMapper.map(docente, AsignacionDTOList.class))
+                .toList();
+        return ResponseEntity.ok(filtro);
+    }
+    @GetMapping("/pagina")
+    public pe.edu.upc.demosm2.dtos.PaginaDTO<pe.edu.upc.demosm2.dtos.AsignacionDTOList> pagina(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size,@RequestParam(defaultValue="") String q) {
+        if(page<0 || page>10000 || size<1 || size>100 || q.length()>100) throw new IllegalArgumentException("Página: 0–10000; tamaño: 1–100; búsqueda: hasta 100 caracteres");
+        String texto=q.trim().toLowerCase(java.util.Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        java.util.List<pe.edu.upc.demosm2.dtos.AsignacionDTOList> respuesta=new java.util.ArrayList<>();
+        for(Object[] fila:aS.pagina(texto,size,page*size)) respuesta.add(filaPagina(fila));
+        return new pe.edu.upc.demosm2.dtos.PaginaDTO<>(respuesta,aS.contarPagina(texto),page,size);
+    }
+    private pe.edu.upc.demosm2.dtos.AsignacionDTOList filaPagina(Object[] fila) {
+        pe.edu.upc.demosm2.dtos.AsignacionDTOList dto=new pe.edu.upc.demosm2.dtos.AsignacionDTOList();
+        dto.setId_asignacion((fila[0] == null ? null : ((Number)fila[0]).longValue()));
+        dto.setId_aula((fila[1] == null ? null : (String)fila[1]));
+        dto.setId_curso((fila[2] == null ? null : ((Number)fila[2]).longValue()));
+        dto.setId_periodo((fila[3] == null ? null : ((Number)fila[3]).longValue()));
+        dto.setId_persona((fila[4] == null ? null : ((Number)fila[4]).longValue()));
+        dto.setId_colegio((fila[5] == null ? null : ((Number)fila[5]).longValue()));
+        dto.setModalidad((fila[6] == null ? null : (String)fila[6]));
+        dto.setHorassemanales((fila[7] == null ? null : ((Number)fila[7]).longValue()));
+        return dto;
+    }
+}

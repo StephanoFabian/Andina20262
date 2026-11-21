@@ -1,0 +1,76 @@
+.introduccion {
+  max-width: 820px;
+  color: #5a7165;
+  line-height: 1.7;
+}
+.generador-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.formulario,
+.progreso,
+.borrador,
+.figura,
+.vacio {
+  padding: 24px;
+}
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+.formulario h2 {
+  margin: 0 0 12px;
+}
+.formulario mat-form-field {
+  width: 100%;
+}
+.ayuda {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #607568;
+  margin: 0;
+}
+.resultado {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.progreso h2,
+.borrador h2 {
+  margin-top: 8px;
+}
+.progreso p,
+.vacio p {
+  line-height: 1.7;
+}
+.contenido {
+  white-space: pre-wrap;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+  color: #2d4638;
+}
+.descargas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.figura img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e5ece6;
+  border-radius: 10px;
+}
+.vacio {
+  min-height: 280px;
+  display: grid;
+  align-content: center;
+}
+@media (max-width: 960px) {
+  .generador-layout {
+    grid-template-columns: 1fr;
+  }
+}

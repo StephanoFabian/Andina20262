@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "Convenio de Edisson sin colegio: crear, paginar, editar y leer sin perder campos",
+    "Reporte paginado de vencimientos con días y presupuesto",
+    "Validaciones de presupuesto y plazo",
+    "Contrato anterior compatible y colegio conservado al editar con el nuevo formulario",
+    "Asociación material-curso y nombres obtenidos en la misma página",
+    "Búsquedas paginadas por título y por curso",
+    "Sugerencias de tipos limitadas a 20 resultados",
+    "Reportes de material por tipo y cantidad por curso",
+    "Límite de página aplicado a búsquedas y reportes",
+    "Eliminación y protección de referencias sin cascada"
+  ],
+  "passed": 10
+}

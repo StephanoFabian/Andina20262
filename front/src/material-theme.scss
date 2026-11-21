@@ -1,0 +1,25 @@
+@use "@angular/material" as mat;
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$green-palette,
+        tertiary: mat.$yellow-palette,
+      ),
+      typography: "DM Sans",
+      density: 0,
+    )
+  );
+  --mat-sys-primary: #21664b;
+  --mat-sys-on-primary: #fff;
+  --mat-sys-surface: #fff;
+  --mat-sys-surface-container: #f5f8f2;
+  --mat-sys-on-surface: #22372f;
+  --mat-sys-outline: #b7c4b6;
+  --mat-sys-outline-variant: #e4e9e4;
+}
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "DM Sans", sans-serif;
+}
