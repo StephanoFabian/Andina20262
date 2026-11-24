@@ -194,6 +194,21 @@ export class HomeComponent implements OnInit {
       titulo: 'Materiales por curso',
       roles: PERMISOS_EXTRA.materialCursoReporte,
     },
+    {
+      ruta: '/convenios/dashboard',
+      titulo: 'Dashboard de convenios',
+      roles: PERMISOS_EXTRA.conveniosPorVencer,
+    },
+    {
+      ruta: '/materiales/dashboard',
+      titulo: 'Dashboard de materiales',
+      roles: PERMISOS_EXTRA.materialReporte,
+    },
+    {
+      ruta: '/materiales-cursos/dashboard',
+      titulo: 'Dashboard de materiales por curso',
+      roles: PERMISOS_EXTRA.materialCursoReporte,
+    },
   ];
   readonly reportes = computed(() =>
     this.compacto()
