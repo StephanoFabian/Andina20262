@@ -4,6 +4,10 @@
 <section class="page">
   <app-encabezado modulo="materiales-cursos" [total]="total()">
     @if (puedeVerReporte) {
+    <a mat-stroked-button routerLink="/materiales-cursos/dashboard">
+      <mat-icon aria-hidden="true">insights</mat-icon>
+      Dashboard
+    </a>
     <a mat-stroked-button routerLink="/materiales-cursos/reporte">
       <mat-icon aria-hidden="true">bar_chart</mat-icon>
       Cantidad por curso
