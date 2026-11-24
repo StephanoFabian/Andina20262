@@ -297,3 +297,25 @@
   position: relative;
   height: 300px;
 }
+@media (max-width: 480px) {
+  .pagina.dashboard .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--espacio-1);
+  }
+  .pagina.dashboard .kpi {
+    padding: 12px;
+  }
+  .pagina.dashboard .kpi-valor {
+    font-size: 1.25rem;
+  }
+  .pagina.dashboard .panel {
+    padding: 12px;
+  }
+  /* La leyenda pasa debajo del gráfico: necesita más alto */
+  .pagina.dashboard .grafico-lienzo {
+    height: 340px;
+  }
+  .pagina.dashboard .acciones {
+    flex-wrap: wrap;
+  }
+}
