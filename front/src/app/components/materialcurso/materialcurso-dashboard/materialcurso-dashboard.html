@@ -27,15 +27,7 @@
   }
 
   @if (cursos().length > 0) {
-  <div class="kpis" role="list" aria-label="Indicadores de materiales por curso">
-    @for (k of kpis(); track k.etiqueta) {
-    <article class="kpi" [class.kpi--alerta]="k.alerta" role="listitem">
-      <p class="kpi-etiqueta">{{ k.etiqueta }}</p>
-      <p class="kpi-valor">{{ k.valor }}</p>
-      <p class="kpi-detalle">{{ k.detalle }}</p>
-    </article>
-    }
-  </div>
+  <app-tarjetas-kpi titulo="Indicadores de materiales por curso" [kpis]="kpis()" />
 
   <div class="paneles">
     <figure class="panel">
