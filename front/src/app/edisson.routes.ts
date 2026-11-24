@@ -72,6 +72,13 @@ export const rutasEdisson: Routes = [
             (m) => m.MaterialReporteTipo,
           ),
       },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./components/material/material-dashboard/material-dashboard').then(
+            (m) => m.MaterialDashboard,
+          ),
+      },
     ],
   },
   {
