@@ -204,6 +204,7 @@ export const rutasEdisson: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [rolesGuard(PERMISOS_EXTRA.conveniosPorVencer)],
         loadComponent: () =>
           import('./components/convenio/convenio-dashboard/convenio-dashboard').then(
             (m) => m.ConvenioDashboard,
