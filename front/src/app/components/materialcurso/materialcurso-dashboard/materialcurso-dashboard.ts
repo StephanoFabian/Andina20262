@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
   BarController,
@@ -31,7 +32,7 @@ const porcentaje = new Intl.NumberFormat('es-PE', {
 /** Dashboard: cuántos materiales tiene cada curso y cuáles no tienen ninguno */
 @Component({
   selector: 'app-materialcurso-dashboard',
-  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  imports: [MatButtonModule, MatTableModule, RouterLink, BaseChartDirective],
   providers: [
     provideCharts({
       registerables: [
@@ -93,6 +94,7 @@ export class MaterialcursoDashboard {
     ];
   });
 
+  protected readonly columnas = ['curso', 'cantidadMateriales'];
   protected readonly limite = LIMITE_BARRAS;
   protected readonly visibles = computed(() =>
     this.cursos().slice(0, LIMITE_BARRAS),
