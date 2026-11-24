@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
 import {
   ArcElement,
   ChartConfiguration,
-  Colors,
   DoughnutController,
   Legend,
   Tooltip,
@@ -18,6 +17,11 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+import {
+  FUENTE_GRAFICOS,
+  GRIS_OTROS,
+  VERDES_ANDINA,
+} from '../../compartido/paleta-andina';
 
 const numero = new Intl.NumberFormat('es-PE');
 const porcentaje = new Intl.NumberFormat('es-PE', {
@@ -44,7 +48,7 @@ function nombreTipo(tipo: string | null): string {
   imports: [MatButtonModule, MatTableModule, RouterLink, BaseChartDirective],
   providers: [
     provideCharts({
-      registerables: [DoughnutController, ArcElement, Tooltip, Legend, Colors],
+      registerables: [DoughnutController, ArcElement, Tooltip, Legend],
     }),
   ],
   templateUrl: './material-dashboard.html',
@@ -113,11 +117,12 @@ export class MaterialDashboard {
   /** Más de 6 porciones no se distinguen: los 5 tipos principales y el resto como «Otros» */
   protected readonly porciones = computed(() => {
     const tipos = this.tipos();
-    if (tipos.length <= 6) return tipos;
+    if (tipos.length <= 6) return tipos.map((t) => ({ ...t, otros: false }));
     const resto = tipos.slice(5);
     return [
-      ...tipos.slice(0, 5),
+      ...tipos.slice(0, 5).map((t) => ({ ...t, otros: false })),
       {
+        otros: true,
         tipo: `Otros (${resto.length} tipos)`,
         cantidad: resto.reduce((s, r) => s + r.cantidad, 0),
         participacion: resto.reduce((s, r) => s + r.participacion, 0),
@@ -132,6 +137,12 @@ export class MaterialDashboard {
         {
           label: 'Materiales',
           data: this.porciones().map((p) => p.cantidad),
+          backgroundColor: this.porciones().map((p, i) =>
+            p.otros ? GRIS_OTROS : VERDES_ANDINA[i % VERDES_ANDINA.length],
+          ),
+          borderColor: '#fff',
+          borderWidth: 2,
+          hoverOffset: 6,
         },
       ],
     }),
@@ -142,7 +153,16 @@ export class MaterialDashboard {
     maintainAspectRatio: false,
     cutout: '60%',
     plugins: {
-      legend: { position: 'right' },
+      legend: {
+        position: 'right',
+        labels: {
+          font: FUENTE_GRAFICOS,
+          color: '#22372f',
+          usePointStyle: true,
+          pointStyle: 'circle',
+          boxWidth: 10,
+        },
+      },
       tooltip: {
         callbacks: {
           label: (ctx) => {
