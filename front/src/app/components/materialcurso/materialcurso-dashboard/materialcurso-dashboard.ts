@@ -18,7 +18,14 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
-import { VERDES_ANDINA } from '../../compartido/paleta-andina';
+import {
+  AMBAR_ANDINA,
+  FUENTE_GRAFICOS,
+  LINEA_REJILLA,
+  ROJO_ALERTA,
+  TEXTO_SECUNDARIO,
+  VERDES_ANDINA,
+} from '../../compartido/paleta-andina';
 
 /** Más de ~12 barras dejan de leerse: el gráfico muestra los 12 cursos con menos materiales */
 const LIMITE_BARRAS = 12;
@@ -106,12 +113,21 @@ export class MaterialcursoDashboard {
 
   protected readonly datosBarras = computed<ChartConfiguration<'bar'>['data']>(
     () => ({
-      labels: this.visibles().map((c) => c.curso),
+      /* Un curso sin materiales no tiene barra: su nombre lo marca */
+      labels: this.visibles().map((c) =>
+        c.cantidadMateriales === 0 ? `${c.curso} (sin materiales)` : c.curso,
+      ),
       datasets: [
         {
           label: 'Materiales',
           data: this.visibles().map((c) => c.cantidadMateriales),
-          backgroundColor: VERDES_ANDINA[1],
+          /* Un solo material: ámbar (atención); dos o más: verde Andina */
+          backgroundColor: this.visibles().map((c) =>
+            c.cantidadMateriales <= 1 ? AMBAR_ANDINA : VERDES_ANDINA[1],
+          ),
+          hoverBackgroundColor: this.visibles().map((c) =>
+            c.cantidadMateriales <= 1 ? '#975f12' : VERDES_ANDINA[0],
+          ),
           borderRadius: 4,
           maxBarThickness: 20,
         },
@@ -126,10 +142,27 @@ export class MaterialcursoDashboard {
     scales: {
       x: {
         beginAtZero: true,
-        ticks: { precision: 0 },
-        title: { display: true, text: 'Materiales' },
+        ticks: { precision: 0, color: TEXTO_SECUNDARIO, font: FUENTE_GRAFICOS },
+        grid: { color: LINEA_REJILLA },
+        border: { display: false },
+        title: {
+          display: true,
+          text: 'Materiales',
+          color: TEXTO_SECUNDARIO,
+          font: FUENTE_GRAFICOS,
+        },
       },
-      y: { grid: { display: false } },
+      y: {
+        grid: { display: false },
+        border: { color: LINEA_REJILLA },
+        ticks: {
+          font: FUENTE_GRAFICOS,
+          color: (ctx) =>
+            this.visibles()[ctx.index]?.cantidadMateriales === 0
+              ? ROJO_ALERTA
+              : '#22372f',
+        },
+      },
     },
     plugins: {
       tooltip: {
