@@ -1,6 +1,10 @@
 <section class="page">
   <app-encabezado modulo="convenios" [total]="total()">
     @if (puedeVerPorVencer) {
+    <a mat-stroked-button routerLink="/convenios/dashboard">
+      <mat-icon aria-hidden="true">insights</mat-icon>
+      Dashboard
+    </a>
     <a mat-stroked-button routerLink="/convenios/por-vencer">
       <mat-icon aria-hidden="true">event_busy</mat-icon>
       Por vencer
