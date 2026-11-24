@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
@@ -11,6 +11,13 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+
+const numero = new Intl.NumberFormat('es-PE');
+const soles = new Intl.NumberFormat('es-PE', {
+  style: 'currency',
+  currency: 'PEN',
+  maximumFractionDigits: 0,
+});
 
 /** Plazo del KPI y de la tabla de próximos vencimientos (el mismo valor inicial que el reporte por vencer) */
 const PLAZO_DIAS = 90;
@@ -40,6 +47,45 @@ export class ConvenioDashboard {
 
   protected readonly cargando = signal(0);
   protected readonly error = signal<string | null>(null);
+
+  protected readonly estados = computed(() => this.resumen().datos ?? []);
+
+  private delEstado(estado: string) {
+    return this.estados().find((e) => e.estado === estado);
+  }
+
+  protected readonly kpis = computed(() => {
+    const total = this.estados().reduce((s, e) => s + e.cantidad, 0);
+    const vigentes = this.delEstado('VIGENTE');
+    const enRenovacion = this.delEstado('EN_RENOVACION');
+    const proximos = this.totalProximos();
+    return [
+      {
+        etiqueta: 'Convenios registrados',
+        valor: numero.format(total),
+        detalle: `En ${numero.format(this.estados().length)} estado(s)`,
+        alerta: false,
+      },
+      {
+        etiqueta: 'Vigentes',
+        valor: numero.format(vigentes?.cantidad ?? 0),
+        detalle: `${numero.format(enRenovacion?.cantidad ?? 0)} más en renovación`,
+        alerta: false,
+      },
+      {
+        etiqueta: 'Presupuesto vigente',
+        valor: soles.format(vigentes?.presupuesto ?? 0),
+        detalle: 'Suma de los convenios vigentes',
+        alerta: false,
+      },
+      {
+        etiqueta: `Vencidos o por vencer (${PLAZO_DIAS} días)`,
+        valor: numero.format(proximos),
+        detalle: proximos > 0 ? 'Revisar su renovación' : 'Ninguno requiere atención',
+        alerta: proximos > 0,
+      },
+    ];
+  });
 
   constructor() {
     this.cargar();

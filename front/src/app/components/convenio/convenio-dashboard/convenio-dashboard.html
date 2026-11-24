@@ -5,6 +5,18 @@
     meses, para planificar las renovaciones.
   </p>
 
+  @if (estados().length > 0) {
+  <div class="kpis" role="list" aria-label="Indicadores de convenios">
+    @for (k of kpis(); track k.etiqueta) {
+    <article class="kpi" [class.kpi--alerta]="k.alerta" role="listitem">
+      <p class="kpi-etiqueta">{{ k.etiqueta }}</p>
+      <p class="kpi-valor">{{ k.valor }}</p>
+      <p class="kpi-detalle">{{ k.detalle }}</p>
+    </article>
+    }
+  </div>
+  }
+
   <div class="acciones">
     <a mat-button routerLink="/convenios/por-vencer">Ver convenios por vencer</a>
     <a mat-button routerLink="/convenios">Volver a convenios</a>
