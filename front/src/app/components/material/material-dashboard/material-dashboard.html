@@ -5,6 +5,18 @@
     conviene producir.
   </p>
 
+  @if (tipos().length > 0) {
+  <div class="kpis" role="list" aria-label="Indicadores de materiales">
+    @for (k of kpis(); track k.etiqueta) {
+    <article class="kpi" role="listitem">
+      <p class="kpi-etiqueta">{{ k.etiqueta }}</p>
+      <p class="kpi-valor">{{ k.valor }}</p>
+      <p class="kpi-detalle">{{ k.detalle }}</p>
+    </article>
+    }
+  </div>
+  }
+
   <div class="acciones">
     <a mat-button routerLink="/materiales/reporte-tipo">Ver reporte por tipo</a>
     <a mat-button routerLink="/materiales">Volver a materiales</a>
