@@ -137,6 +137,13 @@ export const rutasEdisson: Routes = [
             (m) => m.MaterialcursoReporte,
           ),
       },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./components/materialcurso/materialcurso-dashboard/materialcurso-dashboard').then(
+            (m) => m.MaterialcursoDashboard,
+          ),
+      },
     ],
   },
   {
