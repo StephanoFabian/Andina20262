@@ -54,4 +54,5 @@ public class ConvenioServiceImplement implements IConvenioService {
     public java.util.List<Object[]> vencimientosPagina(int dias,int limite,int desplazamiento) {return repo.vencimientosPagina(dias,limite,desplazamiento);}
     public long contarVencimientos(int dias) {return repo.contarVencimientos(dias);}
     public java.util.Optional<Convenio> listId(Long id) {return repo.findById(id);}
+    public java.util.List<Object[]> resumenPorEstado() {return repo.resumenPorEstado();}
 }
