@@ -15,6 +15,30 @@
     </article>
     }
   </div>
+
+  <div class="paneles">
+    <figure class="panel">
+      <h2>Cursos con menos materiales</h2>
+      @if (cursos().length > limite) {
+      <p class="nota">
+        Se muestran los {{ limite }} cursos con menos materiales de
+        {{ cursos().length }}; la tabla tiene todos.
+      </p>
+      }
+      <div class="grafico-lienzo" [style.height]="altoGrafico()">
+        <canvas
+          baseChart
+          type="bar"
+          [data]="datosBarras()"
+          [options]="opcionesBarras"
+          role="img"
+          [attr.aria-label]="
+            'Gráfico de barras: materiales de los ' + visibles().length + ' cursos con menos materiales. ' + sinMateriales() + ' curso(s) sin materiales. El detalle está en la tabla.'
+          "
+        ></canvas>
+      </div>
+    </figure>
+  </div>
   }
 
   <div class="acciones">

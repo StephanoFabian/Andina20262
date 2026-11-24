@@ -1,6 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  ChartConfiguration,
+  LinearScale,
+  Tooltip,
+} from 'chart.js';
+import { BaseChartDirective, provideCharts } from 'ng2-charts';
 import { CursoMaterialesDTO } from '../../../models/curso-materiales';
 import { Materialcursoservice } from '../../../services/materialcursoservice';
 import {
@@ -8,6 +17,10 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+import { VERDES_ANDINA } from '../../compartido/paleta-andina';
+
+/** Más de ~12 barras dejan de leerse: el gráfico muestra los 12 cursos con menos materiales */
+const LIMITE_BARRAS = 12;
 
 const numero = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1 });
 const porcentaje = new Intl.NumberFormat('es-PE', {
@@ -18,7 +31,18 @@ const porcentaje = new Intl.NumberFormat('es-PE', {
 /** Dashboard: cuántos materiales tiene cada curso y cuáles no tienen ninguno */
 @Component({
   selector: 'app-materialcurso-dashboard',
-  imports: [MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  providers: [
+    provideCharts({
+      registerables: [
+        BarController,
+        BarElement,
+        CategoryScale,
+        LinearScale,
+        Tooltip,
+      ],
+    }),
+  ],
   templateUrl: './materialcurso-dashboard.html',
 })
 export class MaterialcursoDashboard {
@@ -68,6 +92,51 @@ export class MaterialcursoDashboard {
       },
     ];
   });
+
+  protected readonly limite = LIMITE_BARRAS;
+  protected readonly visibles = computed(() =>
+    this.cursos().slice(0, LIMITE_BARRAS),
+  );
+  /** 28 px por barra más el eje: el gráfico crece con las barras */
+  protected readonly altoGrafico = computed(
+    () => Math.max(160, this.visibles().length * 28 + 48) + 'px',
+  );
+
+  protected readonly datosBarras = computed<ChartConfiguration<'bar'>['data']>(
+    () => ({
+      labels: this.visibles().map((c) => c.curso),
+      datasets: [
+        {
+          label: 'Materiales',
+          data: this.visibles().map((c) => c.cantidadMateriales),
+          backgroundColor: VERDES_ANDINA[1],
+          borderRadius: 4,
+          maxBarThickness: 20,
+        },
+      ],
+    }),
+  );
+
+  protected readonly opcionesBarras: ChartConfiguration<'bar'>['options'] = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        beginAtZero: true,
+        ticks: { precision: 0 },
+        title: { display: true, text: 'Materiales' },
+      },
+      y: { grid: { display: false } },
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${numero.format(ctx.parsed.x ?? 0)} material(es)`,
+        },
+      },
+    },
+  };
 
   constructor() {
     this.cargar();
