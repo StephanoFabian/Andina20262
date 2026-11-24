@@ -19,6 +19,7 @@ import {
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
 import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Kpi, TarjetasKpi } from '../../compartido/tarjetas-kpi/tarjetas-kpi';
 import {
   FUENTE_GRAFICOS,
   GRIS_OTROS,
@@ -54,6 +55,7 @@ function nombreTipo(tipo: string | null): string {
     RouterLink,
     BaseChartDirective,
     EstadoVacio,
+    TarjetasKpi,
   ],
   providers: [
     provideCharts({
@@ -87,7 +89,7 @@ export class MaterialDashboard {
     this.tipos().reduce((s, r) => s + r.cantidad, 0),
   );
 
-  protected readonly kpis = computed(() => {
+  protected readonly kpis = computed<Kpi[]>(() => {
     const tipos = this.tipos();
     const mayor = tipos[0];
     const menor = tipos[tipos.length - 1];

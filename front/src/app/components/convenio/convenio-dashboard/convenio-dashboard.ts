@@ -29,6 +29,7 @@ import {
 } from '../../compartido/consulta';
 import { Chip } from '../../compartido/chip/chip';
 import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Kpi, TarjetasKpi } from '../../compartido/tarjetas-kpi/tarjetas-kpi';
 import { FechaPePipe, textoLegible } from '../../compartido/formato';
 import {
   AMBAR_ANDINA,
@@ -98,6 +99,7 @@ const MESES = 12;
     MatProgressBarModule,
     MatTableModule,
     EstadoVacio,
+    TarjetasKpi,
     RouterLink,
     BaseChartDirective,
     Chip,
@@ -151,7 +153,7 @@ export class ConvenioDashboard {
     return this.estados().find((e) => e.estado === estado);
   }
 
-  protected readonly kpis = computed(() => {
+  protected readonly kpis = computed<Kpi[]>(() => {
     const total = this.estados().reduce((s, e) => s + e.cantidad, 0);
     const vigentes = this.delEstado('VIGENTE');
     const enRenovacion = this.delEstado('EN_RENOVACION');

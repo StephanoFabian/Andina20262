@@ -20,6 +20,7 @@ import {
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
 import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
+import { Kpi, TarjetasKpi } from '../../compartido/tarjetas-kpi/tarjetas-kpi';
 import {
   AMBAR_ANDINA,
   FUENTE_GRAFICOS,
@@ -48,6 +49,7 @@ const porcentaje = new Intl.NumberFormat('es-PE', {
     RouterLink,
     BaseChartDirective,
     EstadoVacio,
+    TarjetasKpi,
   ],
   providers: [
     provideCharts({
@@ -77,7 +79,7 @@ export class MaterialcursoDashboard {
     () => this.cursos().filter((c) => c.cantidadMateriales === 0).length,
   );
 
-  protected readonly kpis = computed(() => {
+  protected readonly kpis = computed<Kpi[]>(() => {
     const cursos = this.cursos();
     const total = cursos.length;
     const materiales = cursos.reduce((s, c) => s + c.cantidadMateriales, 0);
