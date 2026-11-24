@@ -319,3 +319,7 @@
     flex-wrap: wrap;
   }
 }
+/* Tablas de detalle largas: se desplazan dentro del panel con el encabezado fijo */
+.pagina.dashboard .tabla-dashboard {
+  max-height: 420px;
+}
