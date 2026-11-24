@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
   BarController,
@@ -25,7 +26,8 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
-import { textoLegible } from '../../compartido/formato';
+import { Chip } from '../../compartido/chip/chip';
+import { FechaPePipe, textoLegible } from '../../compartido/formato';
 import { VERDES_ANDINA } from '../../compartido/paleta-andina';
 
 const numero = new Intl.NumberFormat('es-PE');
@@ -57,7 +59,14 @@ const MESES = 12;
 /** Dashboard: convenios por estado, presupuesto y vencimientos de los próximos meses */
 @Component({
   selector: 'app-convenio-dashboard',
-  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  imports: [
+    MatButtonModule,
+    MatTableModule,
+    RouterLink,
+    BaseChartDirective,
+    Chip,
+    FechaPePipe,
+  ],
   providers: [
     provideCharts({
       registerables: [
@@ -78,6 +87,13 @@ const MESES = 12;
 export class ConvenioDashboard {
   private readonly cS = inject(Convenioservice);
 
+  protected readonly columnas = [
+    'nombre',
+    'entidad',
+    'fechaFin',
+    'diasRestantes',
+    'estado',
+  ];
   protected readonly plazo = PLAZO_DIAS;
   protected readonly meses = MESES;
 
