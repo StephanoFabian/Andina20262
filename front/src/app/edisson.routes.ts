@@ -139,6 +139,7 @@ export const rutasEdisson: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [rolesGuard(PERMISOS_EXTRA.materialCursoReporte)],
         loadComponent: () =>
           import('./components/materialcurso/materialcurso-dashboard/materialcurso-dashboard').then(
             (m) => m.MaterialcursoDashboard,
