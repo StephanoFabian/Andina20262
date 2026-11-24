@@ -6,7 +6,11 @@ import {
   BarElement,
   CategoryScale,
   ChartConfiguration,
+  Filler,
   LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
   Tooltip,
 } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
@@ -31,6 +35,20 @@ const soles = new Intl.NumberFormat('es-PE', {
   maximumFractionDigits: 0,
 });
 
+const nombreMes = new Intl.DateTimeFormat('es-PE', {
+  month: 'short',
+  year: 'numeric',
+});
+
+/** "2026-12" → "dic 2026" (sin Date en UTC: evita desfases de zona horaria) */
+function mesLegible(mes: string): string {
+  const m = /^(\d{4})-(\d{2})$/.exec(mes);
+  if (!m) return mes;
+  return nombreMes
+    .format(new Date(Number(m[1]), Number(m[2]) - 1, 1))
+    .replace('.', '');
+}
+
 /** Plazo del KPI y de la tabla de próximos vencimientos (el mismo valor inicial que el reporte por vencer) */
 const PLAZO_DIAS = 90;
 /** Meses del gráfico de línea */
@@ -47,6 +65,10 @@ const MESES = 12;
         BarElement,
         CategoryScale,
         LinearScale,
+        LineController,
+        LineElement,
+        PointElement,
+        Filler,
         Tooltip,
       ],
     }),
@@ -144,6 +166,48 @@ export class ConvenioDashboard {
             const e = this.estados()[ctx.dataIndex];
             return e
               ? ` ${numero.format(e.cantidad)} convenio(s) · ${soles.format(e.presupuesto)}`
+              : '';
+          },
+        },
+      },
+    },
+  };
+
+  protected readonly meses12 = computed(() => this.porMes().datos ?? []);
+  protected readonly totalMeses = computed(() =>
+    this.meses12().reduce((s, m) => s + m.cantidad, 0),
+  );
+
+  protected readonly datosMeses = computed<ChartConfiguration<'line'>['data']>(
+    () => ({
+      labels: this.meses12().map((m) => mesLegible(m.mes)),
+      datasets: [
+        {
+          label: 'Convenios que vencen',
+          data: this.meses12().map((m) => m.cantidad),
+          borderColor: VERDES_ANDINA[1],
+          backgroundColor: VERDES_ANDINA[1],
+          tension: 0.25,
+          pointRadius: 4,
+        },
+      ],
+    }),
+  );
+
+  protected readonly opcionesMeses: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true, ticks: { precision: 0 } },
+      x: { grid: { display: false } },
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const m = this.meses12()[ctx.dataIndex];
+            return m
+              ? ` ${numero.format(m.cantidad)} convenio(s) · ${soles.format(m.presupuesto)}`
               : '';
           },
         },

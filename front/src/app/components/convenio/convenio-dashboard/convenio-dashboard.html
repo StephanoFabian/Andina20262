@@ -30,6 +30,23 @@
         ></canvas>
       </div>
     </figure>
+
+    @if (meses12().length > 0) {
+    <figure class="panel">
+      <h2>Vencimientos en los próximos {{ meses }} meses</h2>
+      <p class="nota">Convenios vigentes o en renovación, por mes de fin.</p>
+      <div class="grafico-lienzo">
+        <canvas
+          baseChart
+          type="line"
+          [data]="datosMeses()"
+          [options]="opcionesMeses"
+          role="img"
+          [attr.aria-label]="'Gráfico de línea: ' + totalMeses() + ' convenios vencen en los próximos ' + meses + ' meses.'"
+        ></canvas>
+      </div>
+    </figure>
+    }
   </div>
   }
 
