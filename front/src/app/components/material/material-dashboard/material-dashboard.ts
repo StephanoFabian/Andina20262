@@ -1,6 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import {
+  ArcElement,
+  ChartConfiguration,
+  Colors,
+  DoughnutController,
+  Legend,
+  Tooltip,
+} from 'chart.js';
+import { BaseChartDirective, provideCharts } from 'ng2-charts';
 import { MaterialPorTipoDTO } from '../../../models/material-por-tipo';
 import { Materialservice } from '../../../services/materialservice';
 import {
@@ -31,7 +40,12 @@ function nombreTipo(tipo: string | null): string {
 /** Dashboard: distribución de los materiales por tipo (KPI, gráfico y detalle) */
 @Component({
   selector: 'app-material-dashboard',
-  imports: [MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  providers: [
+    provideCharts({
+      registerables: [DoughnutController, ArcElement, Tooltip, Legend, Colors],
+    }),
+  ],
   templateUrl: './material-dashboard.html',
 })
 export class MaterialDashboard {
@@ -90,6 +104,52 @@ export class MaterialDashboard {
       },
     ];
   });
+
+  /** Más de 6 porciones no se distinguen: los 5 tipos principales y el resto como «Otros» */
+  protected readonly porciones = computed(() => {
+    const tipos = this.tipos();
+    if (tipos.length <= 6) return tipos;
+    const resto = tipos.slice(5);
+    return [
+      ...tipos.slice(0, 5),
+      {
+        tipo: `Otros (${resto.length} tipos)`,
+        cantidad: resto.reduce((s, r) => s + r.cantidad, 0),
+        participacion: resto.reduce((s, r) => s + r.participacion, 0),
+      },
+    ];
+  });
+
+  protected readonly datosDona = computed<ChartConfiguration<'doughnut'>['data']>(
+    () => ({
+      labels: this.porciones().map((p) => p.tipo),
+      datasets: [
+        {
+          label: 'Materiales',
+          data: this.porciones().map((p) => p.cantidad),
+        },
+      ],
+    }),
+  );
+
+  protected readonly opcionesDona: ChartConfiguration<'doughnut'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'right' },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const p = this.porciones()[ctx.dataIndex];
+            return p
+              ? ` ${numero.format(p.cantidad)} material(es) · ${porcentaje.format(p.participacion)}`
+              : '';
+          },
+        },
+      },
+    },
+  };
 
   constructor() {
     this.cargar();

@@ -15,6 +15,24 @@
     </article>
     }
   </div>
+
+  <div class="paneles">
+    <figure class="panel">
+      <h2>Materiales por tipo</h2>
+      <div class="grafico-lienzo">
+        <canvas
+          baseChart
+          type="doughnut"
+          [data]="datosDona()"
+          [options]="opcionesDona"
+          role="img"
+          [attr.aria-label]="
+            'Gráfico de dona: ' + total() + ' materiales en ' + tipos().length + ' tipos. El detalle está en la tabla.'
+          "
+        ></canvas>
+      </div>
+    </figure>
+  </div>
   }
 
   <div class="acciones">
