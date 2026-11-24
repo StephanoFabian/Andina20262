@@ -21,6 +21,12 @@ export class Materialcursoservice {
       responseType: 'text',
     });
   }
+  /** Reporte completo (sin paginar) para el dashboard; menos materiales primero. 404 con texto si no hay cursos. */
+  reporteCompletoMaterialesPorCurso() {
+    return this.http.get<CursoMaterialesDTO[]>(
+      `${this.url}/reporte-materiales-por-curso`,
+    );
+  }
   reporteMaterialesPorCurso(page = 0, size = 10) {
     return this.http.get<Pagina<CursoMaterialesDTO>>(
       `${this.url}/reporte-materiales-por-curso/pagina`,
