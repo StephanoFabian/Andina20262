@@ -11,4 +11,13 @@ public interface IConvenioRepository extends JpaRepository<Convenio,Long> {     
     java.util.List<Object[]> vencimientosPagina(@Param("dias") int dias,@Param("limite") int limite,@Param("desplazamiento") int desplazamiento);
     @Query(value="SELECT COUNT(*) FROM convenios WHERE fecha_fin <= CURRENT_DATE + CAST(:dias AS INTEGER) AND estado IN ('VIGENTE','EN_RENOVACION','VENCIDO')",nativeQuery=true)
     long contarVencimientos(@Param("dias") int dias);
+
+    // Dashboard: cuántos convenios hay en cada estado y cuánto presupuesto suman
+    @Query(value = """
+            SELECT estado, COUNT(id_convenio) AS cantidad, COALESCE(SUM(presupuesto), 0) AS presupuesto
+            FROM convenios
+            GROUP BY estado
+            ORDER BY cantidad DESC, estado
+            """, nativeQuery = true)
+    java.util.List<Object[]> resumenPorEstado();
 }
