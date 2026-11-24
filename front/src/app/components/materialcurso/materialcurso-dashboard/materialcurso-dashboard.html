@@ -5,6 +5,27 @@
     materiales primero.
   </p>
 
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando dashboard" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">
+    {{ error() }}
+    <button mat-button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+  } @if (resultado().datos?.length === 0) {
+  <app-estado-vacio
+    entidad="cursos"
+    icono="menu_book"
+    titulo="Todavía no hay cursos para el dashboard"
+    [mensaje]="
+      (resultado().aviso ?? '') +
+      ' Cuando se registren cursos, aquí verás cuántos materiales tiene cada uno.'
+    "
+  >
+    <a mat-stroked-button routerLink="/materiales-cursos">Ir a materiales por curso</a>
+  </app-estado-vacio>
+  }
+
   @if (cursos().length > 0) {
   <div class="kpis" role="list" aria-label="Indicadores de materiales por curso">
     @for (k of kpis(); track k.etiqueta) {
