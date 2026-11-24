@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
@@ -27,6 +28,7 @@ import {
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
 import { Chip } from '../../compartido/chip/chip';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
 import { FechaPePipe, textoLegible } from '../../compartido/formato';
 import {
   AMBAR_ANDINA,
@@ -93,7 +95,9 @@ const MESES = 12;
   selector: 'app-convenio-dashboard',
   imports: [
     MatButtonModule,
+    MatProgressBarModule,
     MatTableModule,
+    EstadoVacio,
     RouterLink,
     BaseChartDirective,
     Chip,
@@ -271,6 +275,7 @@ export class ConvenioDashboard {
   }
 
   protected cargar(): void {
+    if (this.cargando() > 0) return;
     ejecutarConsulta(
       this.cS.resumenPorEstado(),
       this.resumen,
