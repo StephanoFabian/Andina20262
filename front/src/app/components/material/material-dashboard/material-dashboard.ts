@@ -161,6 +161,11 @@ export class MaterialDashboard {
     responsive: true,
     maintainAspectRatio: false,
     cutout: '60%',
+    /* En pantallas angostas (≤ 480 px) la leyenda va debajo para no aplastar la dona */
+    onResize: (chart, size) => {
+      const legend = chart.options.plugins?.legend;
+      if (legend) legend.position = size.width < 480 ? 'bottom' : 'right';
+    },
     plugins: {
       legend: {
         position: 'right',
