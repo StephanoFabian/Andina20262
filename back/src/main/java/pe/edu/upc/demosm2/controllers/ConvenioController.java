@@ -77,4 +77,19 @@ public class ConvenioController {
         }
         return ResponseEntity.ok(respuesta);
     }
+
+    // Query nativo: vencimientos por mes de los próximos N meses, incluidos los meses en 0 (dashboard)
+    @GetMapping("/reportes/vencimientos-por-mes")
+    public java.util.List<pe.edu.upc.demosm2.dtos.ConvenioVencimientoMesDTO> vencimientosPorMes(@RequestParam(defaultValue = "12") int meses) {
+        if (meses < 1 || meses > 36) throw new IllegalArgumentException("Meses permitidos: 1 a 36");
+        java.util.List<pe.edu.upc.demosm2.dtos.ConvenioVencimientoMesDTO> respuesta = new java.util.ArrayList<>();
+        for (Object[] fila : service.vencimientosPorMes(meses)) {
+            pe.edu.upc.demosm2.dtos.ConvenioVencimientoMesDTO dto = new pe.edu.upc.demosm2.dtos.ConvenioVencimientoMesDTO();
+            dto.setMes((String) fila[0]);
+            dto.setCantidad(((Number) fila[1]).longValue());
+            dto.setPresupuesto(fila[2] == null ? java.math.BigDecimal.ZERO : new java.math.BigDecimal(fila[2].toString()));
+            respuesta.add(dto);
+        }
+        return respuesta;
+    }
 }

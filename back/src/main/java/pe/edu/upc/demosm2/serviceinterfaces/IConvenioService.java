@@ -10,4 +10,5 @@ public interface IConvenioService {
     long contarVencimientos(int dias);
     java.util.Optional<pe.edu.upc.demosm2.entities.Convenio> listId(Long id);
     java.util.List<Object[]> resumenPorEstado();
+    java.util.List<Object[]> vencimientosPorMes(int meses);
 }

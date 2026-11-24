@@ -20,4 +20,19 @@ public interface IConvenioRepository extends JpaRepository<Convenio,Long> {     
             ORDER BY cantidad DESC, estado
             """, nativeQuery = true)
     java.util.List<Object[]> resumenPorEstado();
+
+    // Dashboard: convenios vigentes o en renovación que vencen en cada uno de los próximos :meses meses
+    // (generate_series incluye los meses sin vencimientos, con cantidad 0)
+    @Query(value = """
+            SELECT TO_CHAR(m.mes, 'YYYY-MM') AS mes, COUNT(c.id_convenio) AS cantidad,
+                   COALESCE(SUM(c.presupuesto), 0) AS presupuesto
+            FROM generate_series(DATE_TRUNC('month', CURRENT_DATE),
+                                 DATE_TRUNC('month', CURRENT_DATE) + (CAST(:meses AS INTEGER) - 1) * INTERVAL '1 month',
+                                 INTERVAL '1 month') AS m(mes)
+            LEFT JOIN convenios c ON DATE_TRUNC('month', c.fecha_fin) = m.mes
+                                 AND c.estado IN ('VIGENTE', 'EN_RENOVACION')
+            GROUP BY m.mes
+            ORDER BY m.mes
+            """, nativeQuery = true)
+    java.util.List<Object[]> vencimientosPorMes(@Param("meses") int meses);
 }
