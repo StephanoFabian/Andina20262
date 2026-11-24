@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
@@ -17,6 +18,7 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
 import {
   FUENTE_GRAFICOS,
   GRIS_OTROS,
@@ -45,7 +47,14 @@ function nombreTipo(tipo: string | null): string {
 /** Dashboard: distribución de los materiales por tipo (KPI, gráfico y detalle) */
 @Component({
   selector: 'app-material-dashboard',
-  imports: [MatButtonModule, MatTableModule, RouterLink, BaseChartDirective],
+  imports: [
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTableModule,
+    RouterLink,
+    BaseChartDirective,
+    EstadoVacio,
+  ],
   providers: [
     provideCharts({
       registerables: [DoughnutController, ArcElement, Tooltip, Legend],
@@ -181,6 +190,7 @@ export class MaterialDashboard {
   }
 
   protected cargar(): void {
+    if (this.cargando() > 0) return;
     ejecutarConsulta(
       this.mS.reporteCompletoPorTipo(),
       this.resultado,
