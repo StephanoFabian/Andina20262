@@ -202,6 +202,13 @@ export const rutasEdisson: Routes = [
             (m) => m.ConvenioPorVencer,
           ),
       },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./components/convenio/convenio-dashboard/convenio-dashboard').then(
+            (m) => m.ConvenioDashboard,
+          ),
+      },
     ],
   },
 ];
