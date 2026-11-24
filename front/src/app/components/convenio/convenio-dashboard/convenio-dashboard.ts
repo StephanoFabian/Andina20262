@@ -1,7 +1,17 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  ChartConfiguration,
+  LinearScale,
+  Tooltip,
+} from 'chart.js';
+import { BaseChartDirective, provideCharts } from 'ng2-charts';
 import { map } from 'rxjs';
+import { ESTADOS_CONVENIO } from '../../../models/convenio';
 import { ConvenioPorVencerDTO } from '../../../models/convenio-por-vencer';
 import { ConvenioResumenEstadoDTO } from '../../../models/convenio-resumen-estado';
 import { ConvenioVencimientoMesDTO } from '../../../models/convenio-vencimiento-mes';
@@ -11,6 +21,8 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+import { textoLegible } from '../../compartido/formato';
+import { VERDES_ANDINA } from '../../compartido/paleta-andina';
 
 const numero = new Intl.NumberFormat('es-PE');
 const soles = new Intl.NumberFormat('es-PE', {
@@ -27,7 +39,18 @@ const MESES = 12;
 /** Dashboard: convenios por estado, presupuesto y vencimientos de los próximos meses */
 @Component({
   selector: 'app-convenio-dashboard',
-  imports: [MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  providers: [
+    provideCharts({
+      registerables: [
+        BarController,
+        BarElement,
+        CategoryScale,
+        LinearScale,
+        Tooltip,
+      ],
+    }),
+  ],
   templateUrl: './convenio-dashboard.html',
 })
 export class ConvenioDashboard {
@@ -86,6 +109,47 @@ export class ConvenioDashboard {
       },
     ];
   });
+
+  /** "EN_RENOVACION" → "En renovación" */
+  protected nombreEstado(estado: string): string {
+    return ESTADOS_CONVENIO[estado] ?? textoLegible(estado);
+  }
+
+  protected readonly datosEstados = computed<ChartConfiguration<'bar'>['data']>(
+    () => ({
+      labels: this.estados().map((e) => this.nombreEstado(e.estado)),
+      datasets: [
+        {
+          label: 'Convenios',
+          data: this.estados().map((e) => e.cantidad),
+          backgroundColor: VERDES_ANDINA[1],
+          borderRadius: 4,
+          maxBarThickness: 48,
+        },
+      ],
+    }),
+  );
+
+  protected readonly opcionesEstados: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true, ticks: { precision: 0 } },
+      x: { grid: { display: false } },
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const e = this.estados()[ctx.dataIndex];
+            return e
+              ? ` ${numero.format(e.cantidad)} convenio(s) · ${soles.format(e.presupuesto)}`
+              : '';
+          },
+        },
+      },
+    },
+  };
 
   constructor() {
     this.cargar();
