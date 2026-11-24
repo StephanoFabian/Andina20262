@@ -166,6 +166,12 @@ export class MaterialcursoDashboard {
         border: { color: LINEA_REJILLA },
         ticks: {
           font: FUENTE_GRAFICOS,
+          /* En celular (≤ 480 px) los nombres largos se recortan; el tooltip y la tabla los muestran completos */
+          callback: function (valor) {
+            const texto = this.getLabelForValue(Number(valor));
+            const max = this.chart.width < 480 ? 18 : 40;
+            return texto.length > max ? texto.slice(0, max - 1) + '…' : texto;
+          },
           color: (ctx) =>
             this.visibles()[ctx.index]?.cantidadMateriales === 0
               ? ROJO_ALERTA
