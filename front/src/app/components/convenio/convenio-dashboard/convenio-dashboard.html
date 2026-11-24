@@ -5,6 +5,27 @@
     meses, para planificar las renovaciones.
   </p>
 
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando dashboard" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">
+    {{ error() }}
+    <button mat-button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+  } @if (resumen().datos?.length === 0) {
+  <app-estado-vacio
+    entidad="convenios"
+    icono="handshake"
+    titulo="Todavía no hay convenios para el dashboard"
+    [mensaje]="
+      (resumen().aviso ?? '') +
+      ' Cuando se registren convenios, aquí verás su estado y sus vencimientos.'
+    "
+  >
+    <a mat-stroked-button routerLink="/convenios">Ir a convenios</a>
+  </app-estado-vacio>
+  }
+
   @if (estados().length > 0) {
   <div class="kpis" role="list" aria-label="Indicadores de convenios">
     @for (k of kpis(); track k.etiqueta) {
@@ -50,7 +71,7 @@
   </div>
   }
 
-  @if (proximos().datos; as filas) {
+  @if (estados().length > 0 && proximos().datos; as filas) {
   <section class="panel panel-ancho" aria-labelledby="detalle-proximos">
     <h2 id="detalle-proximos">
       Vencidos o por vencer en {{ plazo }} días
