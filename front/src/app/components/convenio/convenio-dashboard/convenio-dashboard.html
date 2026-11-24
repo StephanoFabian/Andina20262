@@ -15,6 +15,22 @@
     </article>
     }
   </div>
+
+  <div class="paneles">
+    <figure class="panel">
+      <h2>Convenios por estado</h2>
+      <div class="grafico-lienzo">
+        <canvas
+          baseChart
+          type="bar"
+          [data]="datosEstados()"
+          [options]="opcionesEstados"
+          role="img"
+          [attr.aria-label]="'Gráfico de barras: cantidad de convenios en cada uno de ' + estados().length + ' estados.'"
+        ></canvas>
+      </div>
+    </figure>
+  </div>
   }
 
   <div class="acciones">
