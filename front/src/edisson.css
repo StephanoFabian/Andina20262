@@ -323,3 +323,7 @@
 .pagina.dashboard .tabla-dashboard {
   max-height: 420px;
 }
+/* Panel que ocupa todo el ancho (tabla de próximos vencimientos) */
+.pagina.dashboard .panel-ancho {
+  margin-bottom: var(--espacio-3);
+}

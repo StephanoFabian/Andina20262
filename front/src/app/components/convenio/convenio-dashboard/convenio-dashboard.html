@@ -50,6 +50,64 @@
   </div>
   }
 
+  @if (proximos().datos; as filas) {
+  <section class="panel panel-ancho" aria-labelledby="detalle-proximos">
+    <h2 id="detalle-proximos">
+      Vencidos o por vencer en {{ plazo }} días
+    </h2>
+    @if (totalProximos() > filas.length) {
+    <p class="nota">
+      Se muestran los {{ filas.length }} más próximos de {{ totalProximos() }}.
+      <a routerLink="/convenios/por-vencer">Ver todos</a>
+    </p>
+    }
+    <div class="tabla-contenedor">
+      <table mat-table [dataSource]="filas">
+        <caption class="solo-lector">
+          Convenios vencidos o que vencen en los próximos {{ plazo }} días
+        </caption>
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>Convenio</th>
+          <td mat-cell *matCellDef="let c">{{ c.nombre }}</td>
+        </ng-container>
+        <ng-container matColumnDef="entidad">
+          <th mat-header-cell *matHeaderCellDef>Entidad</th>
+          <td mat-cell *matCellDef="let c">{{ c.entidad }}</td>
+        </ng-container>
+        <ng-container matColumnDef="fechaFin">
+          <th mat-header-cell *matHeaderCellDef>Fin</th>
+          <td mat-cell *matCellDef="let c">{{ c.fechaFin | fechaPe }}</td>
+        </ng-container>
+        <ng-container matColumnDef="diasRestantes">
+          <th mat-header-cell *matHeaderCellDef class="numero">Días</th>
+          <td mat-cell *matCellDef="let c" class="numero">
+            <span
+              class="estado"
+              [class.estado-alerta]="c.diasRestantes <= 30"
+              [class.estado-neutro]="c.diasRestantes > 30"
+            >
+              {{ c.diasRestantes < 0 ? 'Vencido hace ' + -c.diasRestantes + ' d' : c.diasRestantes + ' d' }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let c">
+            <app-chip [valor]="c.estado" [etiqueta]="nombreEstado(c.estado)" />
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        <tr class="mat-mdc-row" *matNoDataRow>
+          <td class="mat-mdc-cell sin-datos" [attr.colspan]="columnas.length">
+            {{ proximos().aviso }}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </section>
+  }
+
   <div class="acciones">
     <a mat-button routerLink="/convenios/por-vencer">Ver convenios por vencer</a>
     <a mat-button routerLink="/convenios">Volver a convenios</a>
