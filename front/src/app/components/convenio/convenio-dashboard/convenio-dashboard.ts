@@ -255,7 +255,14 @@ export class ConvenioDashboard {
   protected readonly opcionesMeses: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: EJES,
+    scales: {
+      ...EJES,
+      x: {
+        ...EJES.x,
+        /* En celular no caben 12 meses: se muestran en horizontal y se saltan algunos */
+        ticks: { ...EJES.x.ticks, maxRotation: 0, autoSkip: true, autoSkipPadding: 12 },
+      },
+    },
     plugins: {
       tooltip: {
         callbacks: {

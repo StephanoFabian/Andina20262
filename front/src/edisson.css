@@ -327,3 +327,12 @@
 .pagina.dashboard .panel-ancho {
   margin-bottom: var(--espacio-3);
 }
+@media (max-width: 480px) {
+  /* Tabla de próximos vencimientos: en celular se oculta la entidad (sigue en el reporte por vencer) */
+  .pagina.dashboard .panel-ancho .mat-column-entidad {
+    display: none;
+  }
+  .pagina.dashboard .tabla-dashboard {
+    max-height: 360px;
+  }
+}
