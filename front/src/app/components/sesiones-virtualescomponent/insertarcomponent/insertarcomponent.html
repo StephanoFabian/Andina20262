@@ -1,0 +1,84 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/sesiones-virtuales"
+    >← Volver a sesiones virtuales</a
+  >
+  <h1>Sesiones virtuales</h1>
+  <div class="panel form-panel">
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline"
+        ><mat-label>Título</mat-label
+        ><input matInput type="text" formControlName="titulo" /><mat-error
+          >{{error('titulo')}}</mat-error
+        ></mat-form-field
+      >
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar asignación docente</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdAsignacion"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdAsignacion()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdAsignacion()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Asignación docente</mat-label
+          ><mat-select formControlName="idAsignacion"
+            >@for(r of opcionesIdAsignacion();track r.id_asignacion){<mat-option
+              [value]="r.id_asignacion"
+              >{{r.id_aula}} · #{{r.id_asignacion}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idAsignacion')}}</mat-error></mat-form-field
+        >
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>Fecha</mat-label
+        ><input matInput type="date" formControlName="fecha" /><mat-error
+          >{{error('fecha')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Hora de inicio</mat-label
+        ><input matInput type="time" formControlName="horaInicio" /><mat-error
+          >{{error('horaInicio')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Hora de fin</mat-label
+        ><input matInput type="time" formControlName="horaFin" /><mat-error
+          >{{error('horaFin')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Enlace de la sesión</mat-label
+        ><input matInput type="url" formControlName="enlace" /><mat-error
+          >{{error('enlace')}}</mat-error
+        ></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estado"
+          ><mat-option [value]="'PROGRAMADA'">PROGRAMADA</mat-option
+          ><mat-option [value]="'EN_CURSO'">EN CURSO</mat-option
+          ><mat-option [value]="'FINALIZADA'">FINALIZADA</mat-option
+          ><mat-option [value]="'CANCELADA'">CANCELADA</mat-option></mat-select
+        ><mat-error>{{error('estado')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
+      }
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/sesiones-virtuales">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,94 @@
+<section class="page">
+  <app-encabezado
+    [modulo]="modulo()"
+    [titulo]="modulo() === 'materiales' ? 'Mis materiales' : 'Materiales por curso'"
+    descripcion="Lecturas, guías y videos de tus cursos. Pulsa «Abrir» para verlos."
+    [total]="cargando() ? null : total()"
+  />
+
+  <div class="barra-tarjetas">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Buscar por título, tipo o curso</mat-label>
+      <input
+        matInput
+        maxlength="100"
+        #busqueda
+        (input)="filtro.set(busqueda.value)"
+      />
+      <mat-icon matSuffix aria-hidden="true">search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  @if (cargando()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando materiales" />
+  } @if (error()) {
+  <div class="notice error" role="alert">{{ error() }}</div>
+  } @if (incompleto()) {
+  <p class="nota-tarjetas">
+    Se muestran los primeros 100 materiales. Usa la búsqueda para encontrar uno
+    en particular.
+  </p>
+  } @for (g of visibles(); track g.curso) {
+  <section class="grupo-curso" [attr.aria-label]="'Materiales de ' + g.curso">
+    <h2 class="grupo-curso-titulo">
+      @if (g.color >= 0) {
+      <app-curso-chip [nombre]="g.curso" />
+      } @else {
+      <span class="chip chip--neutro">{{ g.curso }}</span>
+      }
+      <span class="grupo-curso-cuenta"
+        >{{ g.materiales.length }} {{ g.materiales.length === 1 ? 'material' :
+        'materiales' }}</span
+      >
+    </h2>
+    <div class="tarjeta-grid">
+      @for (m of g.materiales; track m.idMaterial) {
+      <article class="tarjeta">
+        <span
+          class="tarjeta-icono"
+          [class]="g.color >= 0 ? 'tarjeta-icono chip-curso--' + g.color : 'tarjeta-icono'"
+          aria-hidden="true"
+          ><mat-icon>{{ m.icono }}</mat-icon></span
+        >
+        <div class="tarjeta-cuerpo">
+          <span class="tarjeta-meta"
+            >{{ m.tipoTexto }} @if (m.fechaPublicacion) { · {{
+            m.fechaPublicacion | fechaPe }} }</span
+          >
+          <h3>{{ m.titulo }}</h3>
+          @if (m.descripcion) {
+          <p>{{ m.descripcion }}</p>
+          }
+        </div>
+        @if (m.urlArchivo) {
+        <a
+          mat-flat-button
+          class="tarjeta-accion"
+          [href]="m.urlArchivo"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><mat-icon aria-hidden="true">open_in_new</mat-icon>Abrir<span
+            class="solo-lector"
+          >
+            {{ m.titulo }} (se abre en una pestaña nueva)</span
+          ></a
+        >
+        } @else {
+        <span class="tarjeta-sin-accion">Sin archivo adjunto</span>
+        }
+      </article>
+      }
+    </div>
+  </section>
+  } @empty { @if (!cargando() && !error()) {
+  <div class="panel">
+    <app-estado-vacio
+      entidad="materiales"
+      icono="folder_open"
+      [busqueda]="filtro()"
+      titulo="Todavía no hay materiales"
+      mensaje="Cuando tus docentes publiquen materiales, aparecerán aquí ordenados por curso."
+    />
+  </div>
+  } }
+</section>

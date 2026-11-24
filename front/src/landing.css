@@ -1,0 +1,493 @@
+/* Portada pública de Andina. Usa la paleta y las tipografías de styles.css. */
+.lp {
+  --bosque: #174c38;
+  --bosque-hondo: #103a2a;
+  --lima: #e1edbc;
+  --salvia: #b3cbbb;
+  --lp-pad: clamp(20px, 5vw, 72px);
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* ---------- Botones ---------- */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.lp-btn-lg {
+  height: 50px;
+  padding: 0 26px;
+  font-size: 15px;
+}
+.lp-btn-solid {
+  background: var(--lima);
+  color: var(--bosque);
+}
+.lp-btn-solid:hover {
+  background: #eef5d3;
+}
+.lp-btn-ghost {
+  color: #f1f7ec;
+  border-color: #4d7f68;
+}
+.lp-btn-ghost:hover {
+  background: #1f5a44;
+  border-color: #7fa892;
+}
+.lp-btn:focus-visible {
+  outline-color: var(--lima);
+}
+
+/* ---------- Hero ---------- */
+.lp-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--bosque);
+  color: #f1f7ec;
+  padding: 28px var(--lp-pad) 0;
+}
+.lp-nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.lp-brand {
+  margin: 0;
+}
+.lp-nav-actions {
+  display: flex;
+  gap: 10px;
+}
+.lp-hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 80px);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 104px) 0 clamp(150px, 17vw, 230px);
+}
+.lp-hero-copy h1 {
+  font-size: clamp(44px, 6.4vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  margin: 0 0 26px;
+}
+.lp-hero-copy p {
+  color: var(--salvia);
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.65;
+  max-width: 50ch;
+  margin-bottom: 34px;
+}
+.lp-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Sala de clase en vivo: la escena que resume el producto */
+.lp-clase {
+  background: var(--bosque-hondo);
+  border: 1px solid #2c6048;
+  border-radius: 22px;
+  padding: 18px;
+  max-width: 470px;
+  width: 100%;
+  justify-self: end;
+}
+.lp-clase-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--salvia);
+  margin-bottom: 14px;
+}
+.lp-vivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #f1f7ec;
+  font-weight: 600;
+}
+.lp-vivo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f0876f;
+}
+.lp-clase-aulas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.lp-aula {
+  position: relative;
+  aspect-ratio: 4 / 3.3;
+  border-radius: 14px;
+  background: #2a6a50;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
+}
+.lp-aula-rural {
+  background: #7d9a66;
+}
+.lp-aula-figura {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--lima);
+  transform: translateX(-50%);
+}
+.lp-aula-figura::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 112%;
+  width: 190%;
+  aspect-ratio: 1.5;
+  border-radius: 50% 50% 0 0;
+  background: var(--lima);
+  transform: translateX(-50%);
+}
+.lp-aula-nombre {
+  position: relative;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f1f7ec;
+  background: #0d2f22cc;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.lp-subtitulos {
+  margin-top: 12px;
+  background: #0b2c20;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.lp-subtitulos p {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #f1f7ec;
+}
+.lp-subtitulos p + p {
+  color: var(--lima);
+}
+.lp-subtitulos b {
+  flex: 0 0 62px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--salvia);
+}
+
+/* Cordillera: el mismo motivo de la pantalla de inicio de sesión, a lo ancho */
+.lp-cordillera {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: clamp(120px, 15vw, 200px);
+  z-index: 1;
+}
+.lp-cordillera i {
+  position: absolute;
+  bottom: 0;
+  width: clamp(190px, 26vw, 380px);
+  aspect-ratio: 1;
+  border-radius: 12%;
+  background: #326a48;
+  transform: translateY(62%) rotate(45deg);
+}
+.lp-cordillera i:nth-child(1) {
+  left: -6%;
+  background: #8fa776;
+  transform: translateY(72%) rotate(45deg);
+}
+.lp-cordillera i:nth-child(2) {
+  left: 12%;
+}
+.lp-cordillera i:nth-child(3) {
+  left: 34%;
+  background: #518057;
+  transform: translateY(74%) rotate(45deg);
+}
+.lp-cordillera i:nth-child(4) {
+  left: 56%;
+  background: #2a5f43;
+  transform: translateY(58%) rotate(45deg);
+}
+.lp-cordillera i:nth-child(5) {
+  left: 80%;
+  background: #6f9163;
+  transform: translateY(70%) rotate(45deg);
+}
+.lp-cordillera span {
+  position: absolute;
+  left: 49%;
+  bottom: 62%;
+  width: clamp(34px, 4vw, 56px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #d1dea2;
+}
+
+/* ---------- Secciones ---------- */
+.lp-section {
+  max-width: calc(1240px + 2 * var(--lp-pad));
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 104px) var(--lp-pad) 0;
+}
+.lp-section > h2,
+.lp-cierre h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 clamp(28px, 4vw, 48px);
+}
+.lp-funciones {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 0 clamp(28px, 4vw, 64px);
+}
+.lp-funcion {
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+.lp-funcion mat-icon {
+  color: var(--green);
+}
+.lp-funcion h3 {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  margin: 12px 0 8px;
+}
+.lp-funcion p {
+  font-size: 15px;
+  max-width: 52ch;
+  margin-bottom: 0;
+}
+.lp-funcion-principal {
+  grid-row: span 2;
+  background: var(--mint);
+  border-top: 0;
+  border-radius: 22px;
+  padding: clamp(24px, 3vw, 40px);
+}
+.lp-funcion-principal h3 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+.lp-funcion-principal p {
+  color: #4f6258;
+}
+.lp-funcion-principal ul {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+}
+.lp-funcion-principal li {
+  position: relative;
+  padding: 11px 0 11px 22px;
+  border-top: 1px solid #d3e0d2;
+  font-size: 14px;
+  font-weight: 500;
+}
+.lp-funcion-principal li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--green);
+  transform: rotate(45deg);
+}
+
+/* Pasos: es una secuencia real, por eso van numerados */
+.lp-pasos {
+  list-style: none;
+  counter-reset: paso;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 48px);
+  margin: 0;
+  padding: 0;
+}
+.lp-pasos li {
+  counter-increment: paso;
+  border-top: 2px solid var(--ink);
+  padding-top: 16px;
+}
+.lp-pasos li::before {
+  content: counter(paso);
+  display: block;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--green);
+}
+.lp-pasos h3 {
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  margin: 14px 0 6px;
+}
+.lp-pasos p {
+  font-size: 15px;
+  margin: 0;
+}
+.lp-nota {
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 14px;
+  max-width: 78ch;
+}
+
+.lp-cierre {
+  max-width: 1240px;
+  margin: clamp(56px, 8vw, 104px) max(var(--lp-pad), calc((100% - 1240px) / 2)) 0;
+  padding: clamp(36px, 5vw, 64px);
+  border-radius: 26px;
+  background: var(--bosque);
+  color: #f1f7ec;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.lp-cierre h2 {
+  margin: 0;
+}
+.lp-footer {
+  padding: 34px clamp(20px, 5vw, 72px);
+  font-size: 12px;
+  color: #8a968c;
+  text-align: center;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 900px) {
+  .lp-hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-clase {
+    justify-self: start;
+  }
+  .lp-funciones,
+  .lp-pasos {
+    grid-template-columns: 1fr;
+  }
+  .lp-funcion-principal {
+    margin-bottom: 8px;
+  }
+}
+@media (max-width: 520px) {
+  .lp-hero {
+    padding-top: 18px;
+  }
+  .lp-brand {
+    font-size: 24px;
+  }
+  .lp-brand small {
+    display: none;
+  }
+  .lp-nav-actions .lp-btn {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  .lp-hero-actions .lp-btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------- Registro: reutiliza el diseño del inicio de sesión (styles.css) ---------- */
+.registro .registro-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.registro .login-form {
+  max-width: 430px;
+}
+.registro .login-form h2 {
+  margin-top: 14px;
+}
+.registro .login-form > p {
+  margin-bottom: 22px;
+}
+.registro .registro-volver {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+}
+.registro .login-help a {
+  color: var(--green);
+  font-weight: 700;
+}
+.registro .registro-listo h2 {
+  margin-top: 22px;
+}
+.registro .registro-listo .registro-id {
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: clamp(56px, 9vw, 88px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--green);
+  margin: 18px 0;
+}
+.registro .registro-listo > p {
+  font-size: 14px;
+}
+.registro .registro-listo .login-submit {
+  display: inline-flex;
+}
+@media (max-width: 480px) {
+  .registro .registro-fila {
+    grid-template-columns: 1fr;
+  }
+}
+.registro .login-form mat-form-field {
+  margin-bottom: 14px;
+}
+
+/* Enlaces de ayuda bajo el formulario de inicio de sesión */
+.login-help-link {
+  color: var(--green);
+  font-weight: 700;
+}

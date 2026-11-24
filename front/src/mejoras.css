@@ -1,0 +1,1259 @@
+/*
+ * mejoras.css — capa de presentación sobre styles.css y edisson.css.
+ * Reutiliza las variables de styles.css (--ink, --muted, --green, --line, --bg, --mint).
+ * Secciones:
+ *   1. Variables       5. Estado vacío            9. Vista de inicio
+ *   2. Encabezados     6. Nombres y enlaces      10. Foco de teclado
+ *   3. Tablas          7. Menú lateral           11. Pantallas grandes y celular
+ *   4. Chips           8. Barra superior
+ */
+
+/* 1. Variables ----------------------------------------------------------- */
+:root {
+  --green-dark: #174c38;
+  --green-mid: #387654;
+  --lime: #e1edbc;
+  --cream: #f5f7e4;
+  --row-hover: #f4f9f2;
+  --head-bg: #f1f6ef;
+  --head-ink: #4a5d52;
+}
+
+/* 2. Encabezados de página ----------------------------------------------- */
+.page,
+.pagina {
+  max-width: 1840px;
+}
+.page-heading {
+  align-items: flex-end;
+  flex-wrap: wrap;
+  row-gap: 14px;
+}
+.page-heading h1 {
+  margin-bottom: 0;
+}
+.page-heading .eyebrow {
+  margin-bottom: 4px;
+}
+/* Botones del encabezado (Reportes, Nuevo registro): misma altura y separación */
+.page-heading > div + div,
+.pagina .acciones-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.page-heading > a,
+.page-heading > div + div > a,
+.pagina .acciones-encabezado > a {
+  flex-shrink: 0;
+}
+.pagina h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--ink);
+}
+.pagina h2 {
+  font-weight: 700;
+  color: var(--ink);
+}
+.pagina .encabezado {
+  margin-bottom: 22px;
+}
+.table-tools {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-top: 20px;
+}
+.table-tools > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 3. Tablas --------------------------------------------------------------- */
+.panel {
+  box-shadow: 0 1px 2px rgba(23, 76, 56, 0.04);
+}
+.table-scroll,
+.pagina .tabla-contenedor {
+  container-type: inline-size;
+}
+.mat-mdc-table {
+  --mat-table-row-item-container-height: 54px;
+  --mat-table-header-container-height: 46px;
+  --mat-table-row-item-outline-color: #edf1ec;
+}
+.mat-mdc-header-cell,
+.pagina .tabla-contenedor th.mat-mdc-header-cell {
+  background: var(--head-bg) !important;
+  color: var(--head-ink) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom-color: var(--line) !important;
+}
+.mat-mdc-cell {
+  font-size: 13.5px !important;
+  color: var(--ink) !important;
+  max-width: 320px;
+}
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+tr.mat-mdc-row {
+  transition: background-color 0.12s;
+}
+tr.mat-mdc-row:not(:has(> .celda-vacia, > .sin-datos)):hover > td {
+  background: var(--row-hover);
+}
+/* Botones de acción de cada fila: menos presencia hasta que se usan */
+.mat-mdc-cell .mat-mdc-icon-button {
+  --mat-icon-button-icon-color: #6b7b71;
+}
+.mat-mdc-cell .mat-mdc-icon-button:hover,
+.mat-mdc-cell .mat-mdc-icon-button:focus-visible {
+  --mat-icon-button-icon-color: var(--green);
+}
+.mat-mdc-cell .mat-mdc-icon-button mat-icon {
+  font-size: 20px;
+}
+.mat-mdc-paginator {
+  border-top: 1px solid var(--line);
+  color: var(--head-ink);
+}
+
+/* 4. Chips de estado y prioridad ----------------------------------------- */
+.chip,
+.pagina .estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px 3px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.chip-punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+/* Texto oscuro sobre fondo claro: contraste mínimo 5.5:1 en todos los tonos */
+.chip--verde,
+.pagina .estado-ok {
+  background: #e1f1e3;
+  border-color: #c3dec7;
+  color: #174c38;
+}
+.chip--ambar {
+  background: #fdf1cf;
+  border-color: #f0dc9d;
+  color: #744e00;
+}
+.chip--azul {
+  background: #e4eefb;
+  border-color: #c6d9f2;
+  color: #1f4e86;
+}
+.chip--gris,
+.pagina .estado-neutro {
+  background: #eef0ee;
+  border-color: #dce1dc;
+  color: #4b5850;
+}
+.chip--rojo,
+.pagina .estado-alerta {
+  background: #fde8e4;
+  border-color: #f4c9c1;
+  color: #93271b;
+}
+.chip--naranja {
+  background: #ffe7d3;
+  border-color: #f7caa5;
+  color: #8a3d08;
+}
+.chip--salvia {
+  background: #eaf2e9;
+  border-color: #d2e1d2;
+  color: #45604e;
+}
+.chip--neutro {
+  background: #f2f4f2;
+  border-color: #e0e5e0;
+  color: #3f4d45;
+}
+/* Prioridad crítica: la única etiqueta de fondo lleno, para que destaque */
+.chip--critico {
+  background: #b3261e;
+  border-color: #b3261e;
+  color: #fff;
+}
+
+/* 5. Estado vacío ---------------------------------------------------------- */
+.mat-mdc-cell.celda-vacia,
+.mat-mdc-cell.sin-datos {
+  max-width: none;
+  padding: 0 !important;
+  white-space: normal;
+  overflow: visible;
+}
+.mat-mdc-cell.sin-datos {
+  padding: 40px 20px !important;
+  font-size: 13.5px !important;
+  color: var(--muted) !important;
+}
+.tabla-vacia {
+  /* Se mantiene centrado en lo visible aunque la tabla sea más ancha que la pantalla */
+  position: sticky;
+  left: 0;
+  width: min(100%, 100cqw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 44px 20px 48px;
+  text-align: center;
+}
+.tabla-vacia-icono {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 8px;
+  border-radius: 16px;
+  background: var(--mint);
+  color: var(--green);
+}
+.tabla-vacia-icono mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+.tabla-vacia-titulo {
+  margin: 0;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+.tabla-vacia-texto {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.tabla-vacia-acciones {
+  margin-top: 12px;
+}
+.tabla-vacia-acciones:empty {
+  display: none;
+}
+
+/* 6. Nombres resueltos y enlaces dentro de tablas ------------------------ */
+.ref--cargando {
+  color: #a3b0a6;
+}
+.ref--falta {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.enlace-tabla {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.enlace-tabla mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* 7. Menú lateral ---------------------------------------------------------- */
+.nav-link {
+  font-size: 13px;
+  padding: 9px 12px;
+}
+.nav-link mat-icon {
+  flex-shrink: 0;
+  color: #8a9a8f;
+  transition: color 0.12s;
+}
+.nav-link:hover mat-icon {
+  color: var(--green-mid);
+}
+.nav-link.active mat-icon {
+  color: var(--green);
+}
+.nav-caption {
+  font-size: 10px;
+}
+.sidebar-footer {
+  font-size: 11px;
+}
+
+/* 8. Barra superior -------------------------------------------------------- */
+.topbar-title {
+  font-size: 13px;
+}
+.avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+.session-name {
+  font-size: 13px;
+  line-height: 1.25;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.session-name small {
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-footer {
+  font-size: 11px;
+}
+.saltar {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 600;
+  transition: top 0.15s;
+}
+.saltar:focus {
+  top: 12px;
+}
+main:focus {
+  outline: none;
+}
+
+/* 9. Vista de inicio ------------------------------------------------------- */
+.inicio-hero {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 34px 38px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--green-dark);
+  color: #f1f7ec;
+}
+.inicio-hero::after {
+  /* Montañas del login, en pequeño */
+  content: "";
+  position: absolute;
+  right: -70px;
+  bottom: -150px;
+  width: 300px;
+  height: 250px;
+  border-radius: 28px;
+  background: #326a48;
+  transform: rotate(45deg);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.inicio-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.inicio-hero .eyebrow {
+  color: #b7c999;
+  font-size: 11px;
+}
+.inicio-hero h1 {
+  margin: 4px 0 10px;
+  font-size: clamp(27px, 3.4vw, 40px);
+  color: #fff;
+}
+.inicio-hero p {
+  max-width: 52ch;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #c3d8c9;
+}
+.inicio-rol {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--lime);
+  color: #245c3f;
+  font-size: 12px;
+  font-weight: 700;
+}
+.inicio-rol mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+.inicio-hero .banner-graphic {
+  flex-shrink: 0;
+}
+.inicio .section-heading {
+  margin-top: 36px;
+}
+.inicio .section-heading > span {
+  font-size: 12px;
+}
+
+/* Accesos: un solo estilo para todos los roles (fondo claro, icono en verde) */
+.acceso-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+.acceso {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 168px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  color: var(--ink);
+  overflow: hidden;
+  transition:
+    transform 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.acceso:hover {
+  transform: translateY(-3px);
+  border-color: #a4bba7;
+  box-shadow: 0 14px 28px -18px rgba(23, 76, 56, 0.45);
+}
+.acceso-icono {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: auto;
+  border-radius: 14px;
+  background: var(--mint);
+  color: var(--green);
+}
+.acceso-icono mat-icon {
+  font-size: 27px;
+  width: 27px;
+  height: 27px;
+}
+.acceso strong {
+  margin-top: 18px;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.acceso-detalle {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.acceso-flecha {
+  position: absolute;
+  top: 22px;
+  right: 20px;
+  color: #a7b2a5;
+  transition:
+    transform 0.15s,
+    color 0.15s;
+}
+.acceso:hover .acceso-flecha {
+  transform: translateX(4px);
+  color: var(--green);
+}
+/* Variante compacta (roles de gestión): más accesos, menos altura */
+.acceso-grid--compacto .acceso {
+  min-height: 132px;
+  padding: 18px;
+}
+.acceso-grid--compacto .acceso strong {
+  font-size: 16px;
+  margin-top: 14px;
+}
+.acceso-grid--compacto .acceso-icono {
+  width: 42px;
+  height: 42px;
+}
+
+/* Próximas sesiones */
+.sesion-lista {
+  display: grid;
+  gap: 10px;
+}
+.sesion-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.sesion-fecha {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  min-width: 92px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.sesion-fecha b {
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+.sesion-info {
+  flex: 1;
+  min-width: 0;
+}
+.sesion-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  color: var(--ink);
+}
+.sesion-info span {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* Reportes: 4 columnas en pantalla grande, 2 en tablet y 1 en celular */
+.reporte-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 1180px) {
+  .reporte-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.reporte-link {
+  min-width: 0;
+}
+.reporte-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+.reporte-link:hover {
+  border-color: #a4bba7;
+  background: var(--row-hover);
+}
+.reporte-link mat-icon:first-child {
+  color: var(--green);
+}
+.reporte-link mat-icon:last-child {
+  margin-left: auto;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #a7b2a5;
+}
+.module-card h3 {
+  font-size: 15px;
+}
+.module-card p {
+  font-size: 12px;
+}
+.module-card-link {
+  font-size: 12px;
+}
+
+/* 10. Foco de teclado (solo dentro de la aplicación; landing y login conservan el suyo) */
+.app-layout a:focus-visible,
+.app-layout button:focus-visible,
+.app-layout [tabindex]:not([tabindex="-1"]):not(.mat-mdc-select):focus-visible,
+.cdk-overlay-container button:focus-visible,
+.cdk-overlay-container a:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 2px;
+}
+.app-layout .nav-link:focus-visible {
+  outline-offset: -2px;
+  background: #f5f8f3;
+}
+.app-layout .acceso:focus-visible,
+.app-layout .module-card:focus-visible,
+.app-layout .reporte-link:focus-visible {
+  outline-offset: 3px;
+}
+/* Fila que contiene el foco: ayuda a no perderse al tabular por las acciones */
+tr.mat-mdc-row:focus-within > td {
+  background: var(--row-hover);
+}
+
+/* 11. Pantallas grandes y celular ---------------------------------------- */
+@media (min-width: 1500px) {
+  .mat-mdc-cell {
+    max-width: 440px;
+  }
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+  }
+  .acceso-grid {
+    gap: 20px;
+  }
+}
+@media (min-width: 1800px) {
+  .page,
+  .pagina {
+    padding-left: 56px;
+    padding-right: 56px;
+  }
+}
+@media (max-width: 760px) {
+  .page-heading {
+    align-items: stretch;
+  }
+  .page-heading > a,
+  .page-heading > div + div,
+  .pagina .acciones-encabezado {
+    width: 100%;
+  }
+  .page-heading > div + div > a,
+  .pagina .acciones-encabezado > a {
+    flex: 1 1 auto;
+  }
+  .pagina h1 {
+    font-size: 26px;
+  }
+  .table-tools > button,
+  .table-tools > div {
+    width: 100%;
+  }
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  .session-name {
+    max-width: 150px;
+  }
+  .inicio-hero {
+    padding: 26px 22px;
+    border-radius: 16px;
+  }
+  .inicio-hero .banner-graphic {
+    display: none;
+  }
+  .inicio .section-heading {
+    margin-top: 28px;
+  }
+  /* En celular las tarjetas pasan a filas: icono a la izquierda, texto a la derecha */
+  .acceso-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .acceso,
+  .acceso-grid--compacto .acceso {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    align-items: center;
+    min-height: 0;
+    padding: 16px 44px 16px 16px;
+  }
+  .acceso-icono {
+    grid-row: span 2;
+    margin-bottom: 0;
+  }
+  .acceso strong,
+  .acceso-grid--compacto .acceso strong {
+    margin-top: 0;
+    font-size: 16px;
+    align-self: end;
+  }
+  .acceso-detalle {
+    align-self: start;
+  }
+  .acceso-flecha {
+    top: 50%;
+    right: 14px;
+    margin-top: -12px;
+  }
+  .sesion-item {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    padding: 14px;
+  }
+  .sesion-info {
+    flex-basis: calc(100% - 110px);
+  }
+  .sesion-item > a {
+    width: 100%;
+  }
+  .reporte-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acceso:hover,
+  .acceso:hover .acceso-flecha {
+    transform: none;
+  }
+}
+
+/* 12. Listados: el mismo diseño en todos los módulos ---------------------- */
+/* Texto solo para lectores de pantalla (antes existía solo dentro de .pagina) */
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Encabezado: icono, título, descripción, total y botones (app-encabezado) */
+.lista-cabecera-host {
+  display: block;
+  margin-bottom: 22px;
+}
+.lista-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 16px;
+}
+.lista-icono {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: var(--mint);
+  color: var(--green);
+}
+.lista-icono mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+.lista-titulo {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.lista-titulo h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.lista-titulo p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.lista-total {
+  flex-shrink: 0;
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12.5px;
+  color: var(--head-ink);
+  white-space: nowrap;
+}
+.lista-total b {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.lista-acciones,
+.lista-acciones > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.lista-acciones:empty {
+  display: none;
+}
+
+/* Barra de búsqueda: campo con borde, botón lleno y filtros en la misma fila */
+.panel {
+  border-radius: 16px;
+}
+.panel > form.table-tools {
+  display: inline-flex;
+  vertical-align: top;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 100%;
+  padding: 20px 24px 2px;
+}
+.panel > form.table-tools + form.table-tools {
+  padding-left: 0;
+}
+.table-tools .mat-mdc-form-field {
+  width: 300px;
+  max-width: 100%;
+}
+/* Los botones miden lo mismo que el campo con borde (56px) */
+.table-tools > button,
+.table-tools > div > button {
+  height: 56px;
+  flex-shrink: 0;
+}
+.boton-buscar.mat-mdc-button-base {
+  padding: 0 22px;
+  border-radius: 10px;
+}
+
+/* El ID, discreto (.celda-id); el nombre o título, en negrita (.celda-principal) */
+td.mat-mdc-cell.celda-id {
+  width: 1%;
+  white-space: nowrap;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted) !important;
+}
+td.mat-mdc-cell.celda-id::before {
+  content: "#";
+  opacity: 0.6;
+}
+td.mat-mdc-cell.celda-principal,
+/* Tablas sin columna de ID (materiales, materiales por curso, convenios): la primera es el nombre */
+.tabla-sin-id td.mat-mdc-cell:first-child:not(.celda-vacia) {
+  font-weight: 700;
+}
+.celda-detalle {
+  display: block;
+  max-width: 52ch;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--muted);
+  white-space: normal;
+}
+.mat-mdc-cell.numero,
+.mat-mdc-header-cell.numero {
+  text-align: right;
+}
+
+/* Curso como etiqueta: un color fijo por curso (colorCurso en iconos.ts).
+   Texto oscuro sobre fondo claro, contraste mínimo 6:1. */
+.chip-curso {
+  padding: 3px 11px;
+  font-weight: 700;
+}
+.chip-curso--0 {
+  background: #e1f1e3;
+  border-color: #c3dec7;
+  color: #174c38;
+}
+.chip-curso--1 {
+  background: #e4eefb;
+  border-color: #c6d9f2;
+  color: #1f4e86;
+}
+.chip-curso--2 {
+  background: #fdf1cf;
+  border-color: #f0dc9d;
+  color: #744e00;
+}
+.chip-curso--3 {
+  background: #f1e8fb;
+  border-color: #dccdf2;
+  color: #563a86;
+}
+.chip-curso--4 {
+  background: #ddf3f1;
+  border-color: #b9e0dc;
+  color: #0f524c;
+}
+.chip-curso--5 {
+  background: #ffe7d3;
+  border-color: #f7caa5;
+  color: #8a3d08;
+}
+.chip-curso--6 {
+  background: #fde6ef;
+  border-color: #f3c4d6;
+  color: #8a2552;
+}
+.chip-curso--7 {
+  background: #ecefd2;
+  border-color: #d6dca6;
+  color: #4c5412;
+}
+
+/* Tipo de material con su icono */
+.tipo-material {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tipo-material mat-icon {
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+  color: var(--green);
+}
+
+/* Avatar con iniciales junto al nombre de una persona */
+.persona-celda {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 100%;
+}
+.avatar-mini {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* Enlaces de una fila como botón "Abrir" */
+.boton-abrir.mat-mdc-button-base {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+}
+.boton-abrir mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* 13. Vistas del estudiante: tarjetas y horario semanal ------------------- */
+.barra-tarjetas {
+  margin-bottom: 14px;
+}
+.barra-tarjetas .mat-mdc-form-field {
+  width: min(420px, 100%);
+}
+.nota-tarjetas {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.grupo-curso {
+  margin-top: 28px;
+}
+.grupo-curso:first-of-type {
+  margin-top: 10px;
+}
+.grupo-curso-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.grupo-curso-titulo .chip {
+  padding: 5px 14px;
+  font-size: 13.5px;
+}
+.grupo-curso-cuenta {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.tarjeta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+/* Tarjetas dentro de una tarjeta de listado (sesiones del estudiante) */
+.tarjeta-grid--panel {
+  padding: 10px 24px 22px;
+}
+.tarjeta-grid--panel .tarjeta {
+  background: #fbfcfa;
+}
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+.tarjeta-icono {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: var(--mint);
+  color: var(--green);
+}
+.tarjeta-cuerpo {
+  flex: 1;
+  min-width: 0;
+}
+.tarjeta-meta {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--head-ink);
+}
+.tarjeta h3 {
+  margin: 4px 0 0;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.tarjeta p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tarjeta-accion {
+  align-self: flex-start;
+}
+.tarjeta-sin-accion {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+/* Tarjeta de sesión: fecha y hora arriba, estado al lado */
+.tarjeta-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.tarjeta-cabecera .sesion-fecha {
+  min-width: 0;
+  padding: 8px 14px;
+}
+.tarjeta-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.panel > .mat-mdc-paginator:only-child {
+  border-top: 0;
+}
+
+/* Horario semanal: una columna por día */
+.horario-semana {
+  display: grid;
+  grid-template-columns: repeat(var(--dias, 5), minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px;
+}
+.horario-dia {
+  min-width: 0;
+}
+.horario-dia h2 {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--head-ink);
+}
+.horario-dia--hoy h2 {
+  border-bottom-color: var(--green);
+  color: var(--green);
+}
+.horario-bloque {
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+.horario-bloque b {
+  display: block;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+.horario-bloque strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.horario-bloque small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+.horario-bloque--neutro {
+  background: #f2f4f2;
+  border-color: #e0e5e0;
+  color: #3f4d45;
+}
+.horario-vacio {
+  margin: 0;
+  padding: 6px 0;
+  font-size: 12.5px;
+  color: #8a9a8f;
+}
+
+.app-layout .tarjeta a:focus-visible {
+  outline-offset: 3px;
+}
+
+/* 14. Celular (390 px) y tablet ------------------------------------------- */
+@media (max-width: 1100px) {
+  /* Tablet: los días del horario pasan a filas */
+  .horario-semana {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .horario-dia > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .horario-bloque {
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 760px) {
+  .lista-cabecera-host {
+    margin-bottom: 16px;
+  }
+  .lista-icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+  .lista-icono mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  .lista-titulo {
+    flex-basis: calc(100% - 64px);
+  }
+  .lista-titulo h1 {
+    font-size: 23px;
+    letter-spacing: -0.5px;
+  }
+  .lista-acciones,
+  .lista-acciones > div {
+    width: 100%;
+  }
+  .lista-acciones a,
+  .lista-acciones button {
+    flex: 1 1 auto;
+  }
+  .panel > form.table-tools {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px 14px 0;
+  }
+  .panel > form.table-tools + form.table-tools {
+    padding-left: 14px;
+    padding-top: 4px;
+  }
+  .table-tools .mat-mdc-form-field {
+    width: 100%;
+  }
+  .table-tools > button,
+  .table-tools > div > button {
+    height: 48px;
+    flex: 1 1 auto;
+  }
+  .tarjeta-grid {
+    grid-template-columns: 1fr;
+  }
+  .tarjeta-accion {
+    align-self: stretch;
+  }
+  .tarjeta-pie > a {
+    flex: 1 1 auto;
+  }
+  .horario-semana {
+    padding: 16px 14px;
+  }
+  .mat-mdc-paginator .mat-mdc-paginator-container {
+    justify-content: center;
+    padding: 4px 8px;
+  }
+}

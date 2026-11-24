@@ -1,0 +1,21 @@
+package pe.edu.upc.demosm2.serviceinterfaces;
+
+import pe.edu.upc.demosm2.entities.Persona;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface IPersonaService {
+    public List<Persona> list();
+    public Persona insert(Persona p);
+    public Optional<Persona> listId(Long id);
+    public void update(Persona p);
+    public void delete(Long id);
+
+    public List<Object[]> reporteCuentasPorRol();
+    java.util.List<Object[]> pagina(String texto,int limite,int desplazamiento);
+    long contarPagina(String texto);
+
+    // Registro público: cuántas personas ya usan ese correo
+    public long contarPorEmail(String email);
+}
