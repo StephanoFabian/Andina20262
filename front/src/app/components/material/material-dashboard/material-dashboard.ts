@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
   ArcElement,
@@ -40,7 +41,7 @@ function nombreTipo(tipo: string | null): string {
 /** Dashboard: distribución de los materiales por tipo (KPI, gráfico y detalle) */
 @Component({
   selector: 'app-material-dashboard',
-  imports: [MatButtonModule, RouterLink, BaseChartDirective],
+  imports: [MatButtonModule, MatTableModule, RouterLink, BaseChartDirective],
   providers: [
     provideCharts({
       registerables: [DoughnutController, ArcElement, Tooltip, Legend, Colors],
@@ -104,6 +105,10 @@ export class MaterialDashboard {
       },
     ];
   });
+
+  protected readonly columnas = ['tipo', 'cantidad', 'participacion'];
+  protected readonly formatoNumero = (n: number) => numero.format(n);
+  protected readonly formatoPorcentaje = (n: number) => porcentaje.format(n);
 
   /** Más de 6 porciones no se distinguen: los 5 tipos principales y el resto como «Otros» */
   protected readonly porciones = computed(() => {
