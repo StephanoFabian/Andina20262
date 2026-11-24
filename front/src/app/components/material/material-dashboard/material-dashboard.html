@@ -5,6 +5,27 @@
     conviene producir.
   </p>
 
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando dashboard" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">
+    {{ error() }}
+    <button mat-button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+  } @if (resultado().datos?.length === 0) {
+  <app-estado-vacio
+    entidad="materiales"
+    icono="donut_large"
+    titulo="Todavía no hay materiales para el dashboard"
+    [mensaje]="
+      (resultado().aviso ?? '') +
+      ' Cuando se registren materiales, aquí verás su distribución por tipo.'
+    "
+  >
+    <a mat-stroked-button routerLink="/materiales">Ir a materiales</a>
+  </app-estado-vacio>
+  }
+
   @if (tipos().length > 0) {
   <div class="kpis" role="list" aria-label="Indicadores de materiales">
     @for (k of kpis(); track k.etiqueta) {
