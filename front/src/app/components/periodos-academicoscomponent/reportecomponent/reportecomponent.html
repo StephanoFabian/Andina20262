@@ -1,0 +1,158 @@
+<section class="pagina">
+  <h1>Reportes de periodos académicos</h1>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando reportes" />
+  }
+
+  <h2>Evolución de la matrícula</h2>
+  <p class="nota">
+    Matriculados de cada periodo y su variación frente al periodo anterior.
+  </p>
+  @if (errorEvolucion()) {
+  <div class="mensaje-error" role="alert">{{ errorEvolucion() }}</div>
+  } @if (evolucion().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Matriculados por periodo"
+    [datos]="barrasEvolucion()"
+    digitos="1.0-0"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Evolución de la matrícula por periodo
+      </caption>
+      <ng-container matColumnDef="periodo">
+        <th mat-header-cell *matHeaderCellDef>Periodo</th>
+        <td mat-cell *matCellDef="let r">{{ r.periodo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fechaInicio">
+        <th mat-header-cell *matHeaderCellDef>Inicio</th>
+        <td mat-cell *matCellDef="let r">
+          {{ r.fechaInicio | date: 'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let r"><app-chip [valor]="r.estado" /></td>
+      </ng-container>
+      <ng-container matColumnDef="matriculados">
+        <th mat-header-cell *matHeaderCellDef class="numero">Matriculados</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.matriculados }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="periodoAnterior">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Periodo anterior
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.periodoAnterior ?? '—' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="variacionPorcentual">
+        <th mat-header-cell *matHeaderCellDef class="numero">Variación</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          @if (r.variacionPorcentual === null) { — } @else {
+          <span
+            class="estado"
+            [class]="r.variacionPorcentual < 0 ? 'estado-alerta' : 'estado-ok'"
+            >{{ r.variacionPorcentual | number: '1.0-2' }} %</span
+          >
+          }
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasEvolucion"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasEvolucion"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasEvolucion.length"
+        >
+          {{ evolucion().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <h2>Matrícula tardía</h2>
+  <p class="nota">
+    Matrículas anticipadas, tardías y fuera del periodo, para ajustar las fechas
+    de la campaña de matrícula.
+  </p>
+  @if (errorTardia()) {
+  <div class="mensaje-error" role="alert">{{ errorTardia() }}</div>
+  } @if (tardia().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Porcentaje de matrículas tardías por periodo"
+    [datos]="barrasTardia()"
+    [maximo]="100"
+    sufijo=" %"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Matrículas anticipadas y tardías por periodo
+      </caption>
+      <ng-container matColumnDef="periodo">
+        <th mat-header-cell *matHeaderCellDef>Periodo</th>
+        <td mat-cell *matCellDef="let r">{{ r.periodo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fechaInicio">
+        <th mat-header-cell *matHeaderCellDef>Inicio</th>
+        <td mat-cell *matCellDef="let r">
+          {{ r.fechaInicio | date: 'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalMatriculas">
+        <th mat-header-cell *matHeaderCellDef class="numero">Total</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.totalMatriculas }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="anticipadas">
+        <th mat-header-cell *matHeaderCellDef class="numero">Anticipadas</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.anticipadas }}</td>
+      </ng-container>
+      <ng-container matColumnDef="tardias">
+        <th mat-header-cell *matHeaderCellDef class="numero">Tardías</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.tardias }}</td>
+      </ng-container>
+      <ng-container matColumnDef="fueraDelPeriodo">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Fuera del periodo
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.fueraDelPeriodo }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="porcentajeTardias">
+        <th mat-header-cell *matHeaderCellDef class="numero">% tardías</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          @if (r.porcentajeTardias === null) { — } @else { {{
+          r.porcentajeTardias | number: '1.0-2' }} % }
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasTardia"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasTardia"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasTardia.length"
+        >
+          {{ tardia().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <div class="acciones">
+    <a mat-button routerLink="/periodos-academicos"
+      >Volver a periodos académicos</a
+    >
+  </div>
+</section>

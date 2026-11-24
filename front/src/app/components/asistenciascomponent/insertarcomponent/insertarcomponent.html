@@ -1,0 +1,87 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/asistencias">← Volver a asistencias</a>
+  <h1>Asistencias</h1>
+  <div class="panel form-panel">
+    @if(mensaje()){
+    <p class="notice error" role="alert">{{mensaje()}}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar sesión virtual</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdSesionVirtual"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdSesionVirtual()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdSesionVirtual()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Sesión virtual</mat-label
+          ><mat-select formControlName="idSesionVirtual"
+            >@for(r of opcionesIdSesionVirtual();track
+            r.idSesionVirtual){<mat-option [value]="r.idSesionVirtual"
+              >{{r.titulo}} · #{{r.idSesionVirtual}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idSesionVirtual')}}</mat-error></mat-form-field
+        >
+      </div>
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline"
+            ><mat-label>Buscar estudiante</mat-label
+            ><input
+              matInput
+              [formControl]="busquedaIdPersona"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault();cargarIdPersona()" /></mat-form-field
+          ><button mat-button type="button" (click)="cargarIdPersona()">
+            Buscar
+          </button>
+        </div>
+        <mat-form-field appearance="outline"
+          ><mat-label>Estudiante</mat-label
+          ><mat-select formControlName="idPersona"
+            >@for(r of opcionesIdPersona();track r.idPersona){<mat-option
+              [value]="r.idPersona"
+              >{{r.nombresPersona}} · #{{r.idPersona}}</mat-option
+            >}</mat-select
+          ><mat-hint
+            >Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint
+          ><mat-error>{{error('idPersona')}}</mat-error></mat-form-field
+        >
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>Estado</mat-label
+        ><mat-select formControlName="estado"
+          ><mat-option [value]="'PRESENTE'">PRESENTE</mat-option
+          ><mat-option [value]="'AUSENTE'">AUSENTE</mat-option
+          ><mat-option [value]="'TARDANZA'">TARDANZA</mat-option
+          ><mat-option [value]="'JUSTIFICADA'"
+            >JUSTIFICADA</mat-option
+          ></mat-select
+        ><mat-error>{{error('estado')}}</mat-error></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>Observación</mat-label
+        ><textarea matInput rows="3" formControlName="observacion"></textarea
+        ><mat-error>{{error('observacion')}}</mat-error></mat-form-field
+      >@if(form.hasError('rangoFechas')){
+      <p class="notice error full-width">Revisa el rango de fechas.</p>
+      }
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro</button
+        ><a mat-stroked-button routerLink="/asistencias">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>

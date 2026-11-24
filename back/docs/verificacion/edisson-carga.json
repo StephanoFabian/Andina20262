@@ -1,0 +1,17 @@
+{
+  "recordsPerModule": 10000,
+  "modules": [
+    "materiales",
+    "convenios",
+    "materiales-cursos"
+  ],
+  "requests": 200,
+  "concurrency": 20,
+  "pageSize": 50,
+  "elapsedSeconds": 0.322,
+  "p50Ms": 28.36,
+  "p95Ms": 49.25,
+  "maxMs": 65.49,
+  "errors": 0,
+  "scope": "PostgreSQL 18.6 y API en localhost; caché caliente; una instancia; no garantiza capacidad de producción."
+}

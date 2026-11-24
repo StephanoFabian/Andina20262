@@ -1,0 +1,58 @@
+@if(auth.valid()){
+<div class="app-layout">
+  <a class="saltar" href="#contenido" (click)="irAlContenido($event)"
+    >Saltar al contenido</a
+  >
+  @if(abierto()){<button
+    class="nav-backdrop"
+    (click)="abierto.set(false)"
+    aria-label="Cerrar menú"
+  ></button
+  >}
+  <aside class="sidebar" [class.is-open]="abierto()">
+    <a routerLink="/inicio" class="brand"
+      ><span class="brand-icon">A</span
+      ><span>andina<small>APRENDER NOS CONECTA</small></span></a
+    >
+    <p class="nav-caption">PRINCIPAL</p>
+    <nav aria-label="Navegación principal">
+      <a routerLink="/inicio" routerLinkActive="active" class="nav-link"
+        ><mat-icon>space_dashboard</mat-icon>Vista general</a
+      >
+      @if(modulos().length){
+      <p class="nav-caption">{{tituloMenu()}}</p>
+      } @for(m of modulos();track m.key){<a
+        [routerLink]="['/',m.key]"
+        routerLinkActive="active"
+        class="nav-link"
+        ><mat-icon aria-hidden="true">{{icono(m.key)}}</mat-icon>{{m.label}}</a
+      >}
+    </nav>
+    <div class="sidebar-footer">
+      <span class="connection-dot"></span>Plataforma educativa Andina
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <button
+        mat-icon-button
+        class="mobile-menu"
+        (click)="abierto.set(!abierto())"
+        aria-label="Abrir menú"
+      >
+        <mat-icon>menu</mat-icon></button
+      ><span class="topbar-title">Espacio académico</span>
+      <div class="session-info">
+        <span class="avatar" aria-hidden="true">{{usuario.iniciales()}}</span
+        ><span class="session-name" [attr.title]="usuario.nombre()"
+          >{{usuario.nombre()}}<small>{{usuario.rol()}}</small></span
+        ><button mat-icon-button (click)="salir()" aria-label="Cerrar sesión">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </header>
+    <main id="contenido" tabindex="-1"><router-outlet /></main>
+    <footer class="app-footer">Andina · Educación que llega más lejos</footer>
+  </div>
+</div>
+}@else {<router-outlet />}
