@@ -1,5 +1,23 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router, Routes } from '@angular/router';
 import { authGuard, escrituraGuard, lecturaGuard } from './core/auth.guard';
+import { AuthService } from './core/auth.service';
+import { PERMISOS_EXTRA } from './services/permisos';
+
+/**
+ * Los dashboards solo los abren los roles que pueden ver el reporte
+ * (PERMISOS_EXTRA en permisos.ts); el resto vuelve al inicio.
+ */
+const rolesGuard =
+  (roles: readonly string[]): CanActivateFn =>
+  () => {
+    const actuales = inject(AuthService).roles();
+    return (
+      roles.some((r) => actuales.includes(r)) ||
+      inject(Router).createUrlTree(['/inicio'])
+    );
+  };
+
 export const rutasEdisson: Routes = [
   {
     path: 'materiales',
@@ -74,6 +92,7 @@ export const rutasEdisson: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [rolesGuard(PERMISOS_EXTRA.materialReporte)],
         loadComponent: () =>
           import('./components/material/material-dashboard/material-dashboard').then(
             (m) => m.MaterialDashboard,
