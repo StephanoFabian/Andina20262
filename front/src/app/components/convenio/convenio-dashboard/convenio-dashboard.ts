@@ -28,7 +28,39 @@ import {
 } from '../../compartido/consulta';
 import { Chip } from '../../compartido/chip/chip';
 import { FechaPePipe, textoLegible } from '../../compartido/formato';
-import { VERDES_ANDINA } from '../../compartido/paleta-andina';
+import {
+  AMBAR_ANDINA,
+  FUENTE_GRAFICOS,
+  GRIS_OTROS,
+  LINEA_REJILLA,
+  ROJO_ALERTA,
+  TEXTO_SECUNDARIO,
+  VERDES_ANDINA,
+} from '../../compartido/paleta-andina';
+
+/** Mismo significado que los chips de estado (formato.ts): verde, ámbar, rojo y gris */
+const COLOR_ESTADO: Record<string, string> = {
+  VIGENTE: VERDES_ANDINA[1],
+  EN_RENOVACION: AMBAR_ANDINA,
+  VENCIDO: ROJO_ALERTA,
+  CANCELADO: GRIS_OTROS,
+  FINALIZADO: GRIS_OTROS,
+};
+
+/** Ejes con la tipografía y los grises de la app */
+const EJES = {
+  y: {
+    beginAtZero: true,
+    ticks: { precision: 0, color: TEXTO_SECUNDARIO, font: FUENTE_GRAFICOS },
+    grid: { color: LINEA_REJILLA },
+    border: { display: false },
+  },
+  x: {
+    grid: { display: false },
+    ticks: { color: '#22372f', font: FUENTE_GRAFICOS },
+    border: { color: LINEA_REJILLA },
+  },
+};
 
 const numero = new Intl.NumberFormat('es-PE');
 const soles = new Intl.NumberFormat('es-PE', {
@@ -160,7 +192,9 @@ export class ConvenioDashboard {
         {
           label: 'Convenios',
           data: this.estados().map((e) => e.cantidad),
-          backgroundColor: VERDES_ANDINA[1],
+          backgroundColor: this.estados().map(
+            (e) => COLOR_ESTADO[e.estado] ?? VERDES_ANDINA[3],
+          ),
           borderRadius: 4,
           maxBarThickness: 48,
         },
@@ -171,10 +205,7 @@ export class ConvenioDashboard {
   protected readonly opcionesEstados: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, ticks: { precision: 0 } },
-      x: { grid: { display: false } },
-    },
+    scales: EJES,
     plugins: {
       tooltip: {
         callbacks: {
@@ -202,9 +233,16 @@ export class ConvenioDashboard {
           label: 'Convenios que vencen',
           data: this.meses12().map((m) => m.cantidad),
           borderColor: VERDES_ANDINA[1],
-          backgroundColor: VERDES_ANDINA[1],
+          borderWidth: 2,
+          /* Área suave en --mint bajo la línea */
+          backgroundColor: 'rgba(234, 242, 233, 0.7)',
+          fill: 'origin',
           tension: 0.25,
           pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: VERDES_ANDINA[1],
+          pointBorderWidth: 2,
         },
       ],
     }),
@@ -213,10 +251,7 @@ export class ConvenioDashboard {
   protected readonly opcionesMeses: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, ticks: { precision: 0 } },
-      x: { grid: { display: false } },
-    },
+    scales: EJES,
     plugins: {
       tooltip: {
         callbacks: {
