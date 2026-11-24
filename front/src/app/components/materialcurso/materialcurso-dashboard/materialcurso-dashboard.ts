@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import {
@@ -18,6 +19,7 @@ import {
   ejecutarConsulta,
   SIN_CONSULTAR,
 } from '../../compartido/consulta';
+import { EstadoVacio } from '../../compartido/estado-vacio/estado-vacio';
 import {
   AMBAR_ANDINA,
   FUENTE_GRAFICOS,
@@ -39,7 +41,14 @@ const porcentaje = new Intl.NumberFormat('es-PE', {
 /** Dashboard: cuántos materiales tiene cada curso y cuáles no tienen ninguno */
 @Component({
   selector: 'app-materialcurso-dashboard',
-  imports: [MatButtonModule, MatTableModule, RouterLink, BaseChartDirective],
+  imports: [
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTableModule,
+    RouterLink,
+    BaseChartDirective,
+    EstadoVacio,
+  ],
   providers: [
     provideCharts({
       registerables: [
@@ -178,6 +187,7 @@ export class MaterialcursoDashboard {
   }
 
   protected cargar(): void {
+    if (this.cargando() > 0) return;
     ejecutarConsulta(
       this.mcS.reporteCompletoMaterialesPorCurso(),
       this.resultado,
