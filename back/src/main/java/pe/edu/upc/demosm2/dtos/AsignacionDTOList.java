@@ -1,32 +1,20 @@
 package pe.edu.upc.demosm2.dtos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
 public class AsignacionDTOList {
     private Long id_asignacion;
-    public Long getId_asignacion() { return id_asignacion; }
-    public void setId_asignacion(Long value) { this.id_asignacion=value; }
-    private Long id_periodo;
-    public Long getId_periodo() { return id_periodo; }
-    public void setId_periodo(Long value) { this.id_periodo=value; }
-    private Long id_persona;
-    public Long getId_persona() { return id_persona; }
-    public void setId_persona(Long value) { this.id_persona=value; }
-    private Long id_colegio;
-    public Long getId_colegio() { return id_colegio; }
-    public void setId_colegio(Long value) { this.id_colegio=value; }
-
-    private String id_aula;
+    private Long id_aula;
     private Long id_curso;
     private String modalidad;
     private Long horassemanales;
+    private Long id_persona;
+    private Long id_periodo;
+    private Long id_colegio;
 
-    public String getId_aula() {
+    public Long getId_aula() {
         return id_aula;
     }
 
-    public void setId_aula(String id_aula) {
+    public void setId_aula(Long id_aula) {
         this.id_aula = id_aula;
     }
 
@@ -52,5 +40,37 @@ public class AsignacionDTOList {
 
     public void setHorassemanales(Long horassemanales) {
         this.horassemanales = horassemanales;
+    }
+
+    public Long getId_asignacion() {
+        return id_asignacion;
+    }
+
+    public void setId_asignacion(Long id_asignacion) {
+        this.id_asignacion = id_asignacion;
+    }
+
+    public Long getId_persona() {
+        return id_persona;
+    }
+
+    public void setId_persona(Long id_persona) {
+        this.id_persona = id_persona;
+    }
+
+    public Long getId_periodo() {
+        return id_periodo;
+    }
+
+    public void setId_periodo(Long id_periodo) {
+        this.id_periodo = id_periodo;
+    }
+
+    public Long getId_colegio() {
+        return id_colegio;
+    }
+
+    public void setId_colegio(Long id_colegio) {
+        this.id_colegio = id_colegio;
     }
 }
