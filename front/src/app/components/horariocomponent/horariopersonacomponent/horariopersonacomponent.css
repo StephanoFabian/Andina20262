@@ -1,0 +1,57 @@
+.contenedor-horarios {
+  padding: 16px;
+}
+
+.titulo-seccion {
+  margin: 0 0 16px;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.dia-card {
+  border-radius: 12px;
+}
+
+.lista-bloques {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.bloque-horario {
+  border-left: 4px solid #3f51b5;
+  background-color: rgba(63, 81, 181, 0.06);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 12px;
+}
+
+.rango-horas {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3f51b5;
+  margin-bottom: 4px;
+}
+
+.detalle-principal {
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.detalle-secundario {
+  font-size: 0.85rem;
+  opacity: 0.78;
+  margin-top: 2px;
+}
+
+.mensaje-vacio {
+  margin: 0;
+  opacity: 0.8;
+}
