@@ -1,0 +1,36 @@
+<div class="contenedor-horarios">
+  @if (horariosPorDia.length > 0) {
+    <h2 class="titulo-seccion">
+      Horarios de {{ horariosPorDia[0].items[0].nombrePersona }}
+    </h2>
+
+    <div class="dias-grid">
+      @for (grupo of horariosPorDia; track grupo.dia) {
+        <mat-card class="dia-card" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ grupo.dia }}</mat-card-title>
+            <mat-card-subtitle>{{ grupo.items.length }} clase(s)</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content class="lista-bloques">
+            @for (item of grupo.items; track item.id_horario) {
+              <div class="bloque-horario">
+                <div class="rango-horas">
+                  {{ item.horaInicio }} - {{ item.horaFin }}
+                </div>
+                <div class="curso">{{ item.nombreCurso }}</div>
+                <div class="aula">Aula: {{ item.nombreAula }}</div>
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <p class="mensaje-vacio">No hay horarios registrados para esta persona.</p>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

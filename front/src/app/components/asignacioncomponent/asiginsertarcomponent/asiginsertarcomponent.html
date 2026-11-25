@@ -1,0 +1,28 @@
+<div class="container">
+    <div>
+        <h2>Registro de Curso</h2>
+    </div>
+    <div>
+        <form [formGroup]="formAsignacion" (ngSubmit)="insertarasignacion()">
+            <mat-form-field class="example-full-width">
+                <mat-label>Nombre de Curso</mat-label>
+                <input matInput placeholder="Historia" formControlName="nombre">
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <mat-label>Descripción Breve</mat-label>
+                <textarea matInput placeholder="En tiempos antiguos..." formControlName="descripcion"></textarea>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <mat-label>Area o Campo relacionado</mat-label>
+                <input matInput placeholder="Sociales" formControlName="area">
+            </mat-form-field>
+            <br>                                  
+            <button matButton type="submit">Registrar</button>
+
+        </form>
+        <p>{{ mensaje }}</p>
+    </div>
+</div>
+

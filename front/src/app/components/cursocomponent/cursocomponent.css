@@ -1,0 +1,215 @@
+/* Contenedor del componente */
+
+:host {
+
+ display: block;
+
+ padding: 25px;
+
+ font-family: Arial, sans-serif;
+
+ background-color: #f5f7f5;
+
+ min-height: 80vh;
+
+ box-sizing: border-box;
+
+}
+
+
+
+/* Título */
+
+h2 {
+
+ text-align: center;
+
+ color: #1b3a9d;
+
+ font-size: 28px;
+
+ font-weight: bold;
+
+ margin: 10px 0 25px;
+
+}
+
+
+
+/* Contenedor de la tabla */
+
+table {
+
+ width: 100%;
+
+ border-collapse: collapse;
+
+ background-color: white;
+
+ border-radius: 10px;
+
+ overflow: hidden;
+
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+}
+
+
+
+/* Encabezados */
+
+
+
+/* Encabezados de la tabla */
+
+
+
+/* Encabezados de la tabla */
+
+th[mat-header-cell] {
+
+ background-color: #d6dbf8;
+
+ color: #212320;
+
+ font-size: 14px;
+
+ font-weight: 700;
+
+ padding: 14px 16px;
+
+ text-align: center;
+
+ text-transform: uppercase;
+
+ letter-spacing: 0.5px;
+
+ border-bottom: 3px solid #3e4586;
+
+ white-space: nowrap;
+
+}
+
+
+
+
+
+/* Celdas */
+
+td[mat-cell] {
+
+ color: #333333;
+
+ font-size: 14px;
+
+ padding: 14px 16px;
+
+ text-align: center;
+
+ border-bottom: 1px solid #e0e0e0;
+
+}
+
+
+
+/* Filas alternadas */
+
+tr[mat-row]:nth-child(even) {
+
+ background-color: #f1f2f8;
+
+}
+
+
+
+/* Efecto al pasar el cursor */
+
+tr[mat-row]:hover {
+
+ background-color: #c9d6f3;
+
+ transition: background-color 0.2s ease;
+
+}
+
+
+
+/* Mensajes: cargando, lista vacía o error */
+
+p {
+
+ text-align: center;
+
+ margin: 30px auto;
+
+ padding: 18px;
+
+ max-width: 500px;
+
+ background-color: white;
+
+ color: #3044c8;
+
+ font-size: 16px;
+
+ font-weight: 600;
+
+ border-radius: 8px;
+
+ box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+
+}
+
+
+
+/* Adaptación a celulares */
+
+@media (max-width: 600px) {
+
+ :host {
+
+  padding: 12px;
+
+ }
+
+
+
+ h2 {
+
+  font-size: 23px;
+
+ }
+
+
+
+ th[mat-header-cell],
+
+ td[mat-cell] {
+
+  padding: 10px 6px;
+
+  font-size: 12px;
+
+ }
+
+}
+
+.btn-eliminar {
+
+  color: rgb(21, 29, 190);
+
+  border: none;
+
+  box-shadow: none;
+
+  background: transparent;
+
+}
+
+
+
+.btn-eliminar:hover {
+
+  background-color: #b8b9f3;
+
+}
