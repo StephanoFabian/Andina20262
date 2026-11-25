@@ -1,15 +1,13 @@
 package pe.edu.upc.demosm2.dtos;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import pe.edu.upc.demosm2.entities.Curso;
 
 public class AsignacionDTOInsert {
 private Long id_asignacion;
     @NotBlank(message = "Esto no puede estar vacio")
-    private String id_aula;
+    private Long id_aula;
     @Positive(message = "Indique el curso a dictar")
     private Long id_curso;
     @Positive(message = "Indique el periodo de estudio")
@@ -34,11 +32,11 @@ private Long id_asignacion;
         this.id_asignacion = id_asignacion;
     }
 
-    public String getId_aula() {
+    public Long getId_aula() {
         return id_aula;
     }
 
-    public void setId_aula(String id_aula) {
+    public void setId_aula(Long id_aula) {
         this.id_aula = id_aula;
     }
 
@@ -90,3 +88,4 @@ private Long id_asignacion;
         this.id_colegio = id_colegio;
     }
 }
+
