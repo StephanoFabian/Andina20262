@@ -232,3 +232,107 @@
 .pagina .filtros mat-form-field {
   min-width: min(280px, 100%);
 }
+
+/* Dashboards (Materiales, Materiales por curso y Convenios) --------------- */
+.pagina.dashboard .kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--espacio-2);
+  margin: var(--espacio-3) 0;
+}
+.pagina.dashboard .kpi {
+  padding: var(--espacio-2) 20px;
+  background: var(--andina-superficie);
+  border: 1px solid var(--andina-borde);
+  border-radius: 12px;
+}
+.pagina.dashboard .kpi p {
+  margin: 0;
+}
+.pagina.dashboard .kpi-etiqueta {
+  font-size: 0.875rem;
+  color: var(--andina-texto-secundario);
+}
+.pagina.dashboard .kpi-valor {
+  margin: 6px 0 4px;
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--andina-texto);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.pagina.dashboard .kpi-detalle {
+  font-size: 0.8125rem;
+  color: var(--andina-texto-secundario);
+}
+.pagina.dashboard .kpi--alerta {
+  border-left: 4px solid var(--andina-error);
+}
+.pagina.dashboard .kpi--alerta .kpi-valor {
+  color: var(--andina-error);
+}
+.pagina.dashboard .paneles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+}
+.pagina.dashboard .panel {
+  min-width: 0;
+  margin: 0;
+  padding: var(--espacio-2) 20px 20px;
+  background: var(--andina-superficie);
+  border: 1px solid var(--andina-borde);
+  border-radius: 12px;
+}
+.pagina.dashboard .panel h2 {
+  margin: 0 0 var(--espacio-2);
+  font-family: Manrope, "DM Sans", sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+.pagina.dashboard .grafico-lienzo {
+  position: relative;
+  height: 300px;
+}
+@media (max-width: 480px) {
+  .pagina.dashboard .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--espacio-1);
+  }
+  .pagina.dashboard .kpi {
+    padding: 12px;
+  }
+  .pagina.dashboard .kpi-valor {
+    font-size: 1.25rem;
+  }
+  .pagina.dashboard .panel {
+    padding: 12px;
+  }
+  /* La leyenda pasa debajo del gráfico: necesita más alto */
+  .pagina.dashboard .grafico-lienzo {
+    height: 340px;
+  }
+  .pagina.dashboard .acciones {
+    flex-wrap: wrap;
+  }
+}
+/* Tablas de detalle largas: se desplazan dentro del panel con el encabezado fijo */
+.pagina.dashboard .tabla-dashboard {
+  max-height: 420px;
+}
+/* Panel que ocupa todo el ancho (tabla de próximos vencimientos) */
+.pagina.dashboard .panel-ancho {
+  margin-bottom: var(--espacio-3);
+}
+@media (max-width: 480px) {
+  /* Tabla de próximos vencimientos: en celular se oculta la entidad (sigue en el reporte por vencer) */
+  .pagina.dashboard .panel-ancho .mat-column-entidad {
+    display: none;
+  }
+  .pagina.dashboard .tabla-dashboard {
+    max-height: 360px;
+  }
+}

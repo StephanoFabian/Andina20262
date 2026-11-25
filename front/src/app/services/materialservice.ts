@@ -40,6 +40,10 @@ export class Materialservice {
       params: { page, size, q, ...(idCurso ? { idCurso } : {}) },
     });
   }
+  /** Reporte completo (sin paginar) para el dashboard. Responde 404 con un texto si no hay materiales. */
+  reporteCompletoPorTipo() {
+    return this.http.get<MaterialPorTipoDTO[]>(`${this.url}/reporte-por-tipo`);
+  }
   reportePorTipo(page = 0, size = 10) {
     return this.http.get<Pagina<MaterialPorTipoDTO>>(
       `${this.url}/reporte-por-tipo/pagina`,

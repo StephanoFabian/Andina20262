@@ -1,0 +1,88 @@
+<section class="pagina dashboard">
+  <h1>Dashboard de materiales por curso</h1>
+  <p class="nota">
+    Cuántos materiales tiene cada curso, para decidir a qué cursos subir
+    materiales primero.
+  </p>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando dashboard" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">
+    {{ error() }}
+    <button mat-button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+  } @if (resultado().datos?.length === 0) {
+  <app-estado-vacio
+    entidad="cursos"
+    icono="menu_book"
+    titulo="Todavía no hay cursos para el dashboard"
+    [mensaje]="
+      (resultado().aviso ?? '') +
+      ' Cuando se registren cursos, aquí verás cuántos materiales tiene cada uno.'
+    "
+  >
+    <a mat-stroked-button routerLink="/materiales-cursos">Ir a materiales por curso</a>
+  </app-estado-vacio>
+  }
+
+  @if (cursos().length > 0) {
+  <app-tarjetas-kpi titulo="Indicadores de materiales por curso" [kpis]="kpis()" />
+
+  <div class="paneles">
+    <figure class="panel">
+      <h2>Cursos con menos materiales</h2>
+      @if (cursos().length > limite) {
+      <p class="nota">
+        Se muestran los {{ limite }} cursos con menos materiales de
+        {{ cursos().length }}; la tabla tiene todos.
+      </p>
+      }
+      <div class="grafico-lienzo" [style.height]="altoGrafico()">
+        <canvas
+          baseChart
+          type="bar"
+          [data]="datosBarras()"
+          [options]="opcionesBarras"
+          role="img"
+          [attr.aria-label]="
+            'Gráfico de barras: materiales de los ' + visibles().length + ' cursos con menos materiales. ' + sinMateriales() + ' curso(s) sin materiales. El detalle está en la tabla.'
+          "
+        ></canvas>
+      </div>
+    </figure>
+
+    <section class="panel" aria-labelledby="detalle-cursos">
+      <h2 id="detalle-cursos">Detalle por curso</h2>
+      <div class="tabla-contenedor tabla-dashboard">
+        <table mat-table [dataSource]="cursos()">
+          <caption class="solo-lector">
+            Cantidad de materiales de cada curso, de menos a más
+          </caption>
+          <ng-container matColumnDef="curso">
+            <th mat-header-cell *matHeaderCellDef>Curso</th>
+            <td mat-cell *matCellDef="let r">{{ r.curso }}</td>
+          </ng-container>
+          <ng-container matColumnDef="cantidadMateriales">
+            <th mat-header-cell *matHeaderCellDef class="numero">Materiales</th>
+            <td mat-cell *matCellDef="let r" class="numero">
+              @if (r.cantidadMateriales === 0) {
+              <span class="estado estado-alerta">Sin materiales</span>
+              } @else {
+              {{ r.cantidadMateriales }}
+              }
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        </table>
+      </div>
+    </section>
+  </div>
+  }
+
+  <div class="acciones">
+    <a mat-button routerLink="/materiales-cursos/reporte">Ver reporte por curso</a>
+    <a mat-button routerLink="/materiales-cursos">Volver</a>
+  </div>
+</section>
