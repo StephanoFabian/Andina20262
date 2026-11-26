@@ -45,21 +45,21 @@ export class AuthService {
     const c = this.claims();
     return !!c && c.exp * 1000 > Date.now();
   }
-  login(idPersona: number, passwordPersona: string) {
-    return this.http
-      .post<{ token: string }>(`${environment.base}/login`, {
-        idPersona,
-        passwordPersona,
-      })
-      .pipe(
-        tap((result) => {
-          const claims = this.decode(result.token);
-          if (!claims || claims.exp * 1000 <= Date.now())
-            throw new Error('La API devolvió un token inválido');
-          sessionStorage.setItem('andina.token', result.token);
-          this.tokenState.set(result.token);
-        }),
-      );
+  login(emailPersona: string, passwordPersona: string) {
+  return this.http
+    .post<{ token: string }>(`${environment.base}/login`, {
+      emailPersona,
+      passwordPersona,
+    })
+    .pipe(
+      tap((result) => {
+        const claims = this.decode(result.token);
+        if (!claims || claims.exp * 1000 <= Date.now())
+          throw new Error('La API devolvió un token inválido');
+        sessionStorage.setItem('andina.token', result.token);
+        this.tokenState.set(result.token);
+      }),
+    );
   }
   logout(): void {
     try {

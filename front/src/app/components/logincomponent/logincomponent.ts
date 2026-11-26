@@ -27,39 +27,36 @@ export class LoginComponent {
   readonly error = signal('');
   readonly ocultar = signal(true);
   readonly form = inject(FormBuilder).nonNullable.group({
-    idPersona: [
-      null as number | null,
-      [Validators.required, Validators.min(1)],
-    ],
-    passwordPersona: ['', Validators.required],
-  });
-  constructor() {
-    if (this.auth.valid()) void this.router.navigate(['/inicio']);
-    // Tras registrarse se llega con ?id=..., así el ID ya viene escrito.
-    const id = Number(inject(ActivatedRoute).snapshot.queryParamMap.get('id'));
-    if (Number.isInteger(id) && id > 0) this.form.patchValue({ idPersona: id });
+  emailPersona: ['', [Validators.required, Validators.email]],
+  passwordPersona: ['', Validators.required],
+});
+
+constructor() {
+  if (this.auth.valid()) void this.router.navigate(['/inicio']);
+  const email = inject(ActivatedRoute).snapshot.queryParamMap.get('email');
+  if (email) this.form.patchValue({ emailPersona: email });
+}
+
+ingresar(): void {
+  if (this.cargando()) return;
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
-  ingresar(): void {
-    if (this.cargando()) return;
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    this.cargando.set(true);
-    this.error.set('');
-    const value = this.form.getRawValue();
-    this.auth
-      .login(value.idPersona!, value.passwordPersona)
-      .pipe(finalize(() => this.cargando.set(false)))
-      .subscribe({
-        next: () => void this.router.navigate(['/inicio']),
-        // En el login un 401 significa credenciales incorrectas, no sesión vencida.
-        error: (err) =>
-          this.error.set(
-            err?.status === 401
-              ? 'ID de persona o contraseña incorrectos.'
-              : mensajeError(err),
-          ),
-      });
+  this.cargando.set(true);
+  this.error.set('');
+  const value = this.form.getRawValue();
+  this.auth
+    .login(value.emailPersona.trim(), value.passwordPersona)
+    .pipe(finalize(() => this.cargando.set(false)))
+    .subscribe({
+      next: () => void this.router.navigate(['/inicio']),
+      error: (err) =>
+        this.error.set(
+          err?.status === 401
+            ? 'Correo o contraseña incorrectos.'
+            : mensajeError(err),
+        ),
+    });
   }
 }
