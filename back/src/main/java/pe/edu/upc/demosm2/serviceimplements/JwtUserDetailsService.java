@@ -1,5 +1,6 @@
 package pe.edu.upc.demosm2.serviceimplements;
 
+import org.springframework.security.core.userdetails.User;
 import pe.edu.upc.demosm2.entities.Persona;
 import pe.edu.upc.demosm2.repositories.IPersonaRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,31 +25,26 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Long idPersona;
-        try {
-            idPersona = Long.parseLong(username.trim());
-        } catch (NumberFormatException e) {
-            throw new UsernameNotFoundException("ID de persona inválido: " + username);
-        }
-        Persona persona = repo.findById(idPersona)
+        Persona persona = this.repo.findByEmailPersonaIgnoreCase(username.trim())
                 .orElseThrow(() -> new UsernameNotFoundException("Persona no encontrada: " + username));
+
         if (persona.getPasswordPersona() == null || persona.getPasswordPersona().isBlank()) {
             throw new UsernameNotFoundException("La persona " + username + " no tiene contraseña registrada");
         }
+
         List<GrantedAuthority> roles = new ArrayList<>();
         if (persona.getRol() != null && persona.getRol().getDetalle() != null) {
             String rol = persona.getRol().getDetalle().trim().toUpperCase().replace(' ', '_');
             roles.add(new SimpleGrantedAuthority(rol.startsWith("ROLE_") ? rol : "ROLE_" + rol));
         }
-        boolean isEnabled = persona.getEstadoPersona() != null && persona.getEstadoPersona().equalsIgnoreCase("ACTIVO");
-        return new org.springframework.security.core.userdetails.User(
-                String.valueOf(persona.getIdPersona()),
+
+        boolean isEnabled = persona.getEstadoPersona() != null
+                && persona.getEstadoPersona().equalsIgnoreCase("ACTIVO");
+
+        return new User(
+                persona.getEmailPersona(),
                 persona.getPasswordPersona(),
-                isEnabled,
-                true,
-                true,
-                true,
-                roles
+                isEnabled, true, true, true, roles
         );
     }
 }
