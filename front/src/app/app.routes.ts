@@ -198,6 +198,80 @@ export const routes: Routes = [
       },
     ],
   },
+
+  {
+    path: 'colegios',
+    canActivate: [authGuard, lecturaGuard],
+    loadComponent: () =>
+      import('./components/colegioscomponent/colegioscomponent').then(
+        (m) => m.ColegioComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'listar' },
+      {
+        path: 'listar',
+        loadComponent: () =>
+          import('./components/colegioscomponent/listarcomponent/listarcomponent').then(
+            (m) => m.ColegioListarComponent,
+          ),
+      },
+      {
+        path: 'insertar',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'colegios' },
+        loadComponent: () =>
+          import('./components/colegioscomponent/insertarcomponent/insertarcomponent').then(
+            (m) => m.ColegioInsertarComponent,
+          ),
+      },
+      {
+        path: 'editar/:id',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'colegios' },
+        loadComponent: () =>
+          import('./components/colegioscomponent/actualizarcomponent/actualizarcomponent').then(
+            (m) => m.ColegioActualizarComponent,
+          ),
+      },
+    ],
+  },
+  {
+    path: 'aulas',
+    canActivate: [authGuard, lecturaGuard],
+    loadComponent: () =>
+      import('./components/aulascomponent/aulascomponent').then(
+        (m) => m.AulaComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'listar' },
+      {
+        path: 'listar',
+        loadComponent: () =>
+          import('./components/aulascomponent/listarcomponent/listarcomponent').then(
+            (m) => m.AulaListarComponent,
+          ),
+      },
+      {
+        path: 'insertar',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'aulas' },
+        loadComponent: () =>
+          import('./components/aulascomponent/insertarcomponent/insertarcomponent').then(
+            (m) => m.AulaInsertarComponent,
+          ),
+      },
+      {
+        path: 'editar/:id',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'aulas' },
+        loadComponent: () =>
+          import('./components/aulascomponent/actualizarcomponent/actualizarcomponent').then(
+            (m) => m.AulaActualizarComponent,
+          ),
+      },
+    ],
+  },
+
   {
     path: 'sesiones-virtuales',
     canActivate: [authGuard, lecturaGuard],

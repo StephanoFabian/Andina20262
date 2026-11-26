@@ -90,6 +90,26 @@ export const MODULOS: Modulo[] = [
     roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
     editable: true,
   },
+  {
+    key: 'colegios',
+    name: 'Colegio',
+    label: 'Colegios',
+    owner: 'Samir',
+    path: '/api/colegios',
+    id: 'idColegio',
+    roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
+    editable: true,
+  },
+  {
+    key: 'aulas',
+    name: 'Aula',
+    label: 'Aulas',
+    owner: 'Samir',
+    path: '/api/aula',
+    id: 'idAula',
+    roles: ['ADMIN', 'ADMIN_ESCUELA', 'ESPECIALISTA', 'LOCAL'],
+    editable: true,
+  },
 ];
 export const modulo = (key: string): Modulo => {
   const m = MODULOS.find((x) => x.key === key);
