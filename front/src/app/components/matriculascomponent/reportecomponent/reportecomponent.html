@@ -1,0 +1,120 @@
+<section class="pagina">
+  <h1>Reportes de matrículas</h1>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando reportes" />
+  }
+
+  <h2>Matrículas por colegio</h2>
+  <p class="nota">
+    Cuántas matrículas tiene cada colegio y su peso en el total.
+  </p>
+  @if (errorColegio()) {
+  <div class="mensaje-error" role="alert">{{ errorColegio() }}</div>
+  } @if (porColegio().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Matrículas por colegio"
+    [datos]="barrasColegio()"
+    digitos="1.0-0"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Matrículas por colegio
+      </caption>
+      <ng-container matColumnDef="colegio">
+        <th mat-header-cell *matHeaderCellDef>Colegio</th>
+        <td mat-cell *matCellDef="let r">{{ r.colegio }}</td>
+      </ng-container>
+      <ng-container matColumnDef="departamento">
+        <th mat-header-cell *matHeaderCellDef>Departamento</th>
+        <td mat-cell *matCellDef="let r">{{ r.departamento }}</td>
+      </ng-container>
+      <ng-container matColumnDef="tipoZona">
+        <th mat-header-cell *matHeaderCellDef>Tipo de zona</th>
+        <td mat-cell *matCellDef="let r">{{ r.tipoZona }}</td>
+      </ng-container>
+      <ng-container matColumnDef="totalMatriculas">
+        <th mat-header-cell *matHeaderCellDef class="numero">Matrículas</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.totalMatriculas }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="porcentajeDelTotal">
+        <th mat-header-cell *matHeaderCellDef class="numero">% del total</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          @if (r.porcentajeDelTotal === null) { — } @else { {{
+          r.porcentajeDelTotal | number: '1.0-2' }} % }
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasColegio"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasColegio"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasColegio.length"
+        >
+          {{ porColegio().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <h2>Estudiantes con varias matrículas</h2>
+  <p class="nota">
+    Estudiantes con más de una matrícula: posibles duplicados o traslados.
+  </p>
+  @if (errorVarias()) {
+  <div class="mensaje-error" role="alert">{{ errorVarias() }}</div>
+  } @if (variasMatriculas().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Matrículas por estudiante"
+    [datos]="barrasVarias()"
+    digitos="1.0-0"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Estudiantes con varias matrículas
+      </caption>
+      <ng-container matColumnDef="idPersona">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let r">{{ r.idPersona }}</td>
+      </ng-container>
+      <ng-container matColumnDef="nombres">
+        <th mat-header-cell *matHeaderCellDef>Nombres</th>
+        <td mat-cell *matCellDef="let r">{{ r.nombres }}</td>
+      </ng-container>
+      <ng-container matColumnDef="apellidos">
+        <th mat-header-cell *matHeaderCellDef>Apellidos</th>
+        <td mat-cell *matCellDef="let r">{{ r.apellidos }}</td>
+      </ng-container>
+      <ng-container matColumnDef="matriculas">
+        <th mat-header-cell *matHeaderCellDef class="numero">Matrículas</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.matriculas }}</td>
+      </ng-container>
+      <ng-container matColumnDef="colegios">
+        <th mat-header-cell *matHeaderCellDef class="numero">Colegios</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.colegios }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasVarias"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVarias"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasVarias.length"
+        >
+          {{ variasMatriculas().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <div class="acciones">
+    <a mat-button routerLink="/matriculas">Volver a matrículas</a>
+  </div>
+</section>

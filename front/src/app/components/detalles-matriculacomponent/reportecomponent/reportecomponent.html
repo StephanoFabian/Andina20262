@@ -1,0 +1,257 @@
+<section class="pagina">
+  <h1>Reportes de detalles de matrícula</h1>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando reportes" />
+  } @if (errorPeriodos()) {
+  <div class="mensaje-error" role="alert">{{ errorPeriodos() }}</div>
+  }
+
+  <h2>Retiro por curso</h2>
+  <p class="nota">
+    Cursos que más alumnos pierden (retirados y trasladados), para decidir dónde
+    reforzar.
+  </p>
+  @if (errorRetiro()) {
+  <div class="mensaje-error" role="alert">{{ errorRetiro() }}</div>
+  } @if (retiro().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Porcentaje de pérdida por curso"
+    [datos]="barrasRetiro()"
+    [maximo]="100"
+    sufijo=" %"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Retiro por curso
+      </caption>
+      <ng-container matColumnDef="curso">
+        <th mat-header-cell *matHeaderCellDef>Curso</th>
+        <td mat-cell *matCellDef="let r">{{ r.curso }}</td>
+      </ng-container>
+      <ng-container matColumnDef="area">
+        <th mat-header-cell *matHeaderCellDef>Área</th>
+        <td mat-cell *matCellDef="let r">{{ r.area }}</td>
+      </ng-container>
+      <ng-container matColumnDef="totalMatriculados">
+        <th mat-header-cell *matHeaderCellDef class="numero">Matriculados</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.totalMatriculados }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="retirados">
+        <th mat-header-cell *matHeaderCellDef class="numero">Retirados</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.retirados }}</td>
+      </ng-container>
+      <ng-container matColumnDef="trasladados">
+        <th mat-header-cell *matHeaderCellDef class="numero">Trasladados</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.trasladados }}</td>
+      </ng-container>
+      <ng-container matColumnDef="porcentajePerdida">
+        <th mat-header-cell *matHeaderCellDef class="numero">% de pérdida</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          @if (r.porcentajePerdida === null) { — } @else { {{
+          r.porcentajePerdida | number: '1.0-2' }} % }
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasRetiro"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasRetiro"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasRetiro.length"
+        >
+          {{ retiro().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <h2>Aulas necesarias por grado</h2>
+  <p class="nota">
+    Alumnos vigentes de cada grado en el periodo elegido y cuántas aulas hacen
+    falta (40 alumnos por aula).
+  </p>
+  <form class="filtros" (ngSubmit)="consultarAulas()" novalidate>
+    <mat-form-field class="campo-ancho">
+      <mat-label>Periodo académico</mat-label>
+      <mat-select [formControl]="periodoAulas" required>
+        @for (p of periodos(); track p.idPeriodo) {
+        <mat-option [value]="p.idPeriodo">{{ p.nombre }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ errorCampo(periodoAulas) }}</mat-error>
+    </mat-form-field>
+    <button
+      mat-flat-button
+      type="submit"
+      class="boton-consultar"
+      [disabled]="cargando() > 0"
+    >
+      Consultar
+    </button>
+  </form>
+  @if (errorAulas()) {
+  <div class="mensaje-error" role="alert">{{ errorAulas() }}</div>
+  } @if (aulas().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Aulas necesarias por grado"
+    [datos]="barrasAulas()"
+    digitos="1.0-0"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Aulas necesarias por grado
+      </caption>
+      <ng-container matColumnDef="grado">
+        <th mat-header-cell *matHeaderCellDef>Grado</th>
+        <td mat-cell *matCellDef="let r">{{ r.grado }}</td>
+      </ng-container>
+      <ng-container matColumnDef="nivel">
+        <th mat-header-cell *matHeaderCellDef>Nivel</th>
+        <td mat-cell *matCellDef="let r">{{ r.nivel }}</td>
+      </ng-container>
+      <ng-container matColumnDef="vigentes">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Alumnos vigentes
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.vigentes }}</td>
+      </ng-container>
+      <ng-container matColumnDef="aulasNecesarias">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Aulas necesarias
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.aulasNecesarias }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasAulas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasAulas"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasAulas.length"
+        >
+          {{ aulas().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <h2>Retención por colegio</h2>
+  <p class="nota">
+    Por colegio: cuántos alumnos siguieron del periodo anterior al actual,
+    cuántos se fueron y cuántos son nuevos.
+  </p>
+  <form class="filtros" (ngSubmit)="consultarRetencion()" novalidate>
+    <mat-form-field class="campo-ancho">
+      <mat-label>Periodo anterior</mat-label>
+      <mat-select [formControl]="periodoAnterior" required>
+        @for (p of periodos(); track p.idPeriodo) {
+        <mat-option [value]="p.idPeriodo">{{ p.nombre }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ errorCampo(periodoAnterior) }}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="campo-ancho">
+      <mat-label>Periodo actual</mat-label>
+      <mat-select [formControl]="periodoActual" required>
+        @for (p of periodos(); track p.idPeriodo) {
+        <mat-option [value]="p.idPeriodo">{{ p.nombre }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ errorCampo(periodoActual) }}</mat-error>
+    </mat-form-field>
+    <button
+      mat-flat-button
+      type="submit"
+      class="boton-consultar"
+      [disabled]="cargando() > 0"
+    >
+      Consultar
+    </button>
+  </form>
+  @if (avisoPeriodos()) {
+  <div class="mensaje-error" role="alert">{{ avisoPeriodos() }}</div>
+  } @if (errorRetencion()) {
+  <div class="mensaje-error" role="alert">{{ errorRetencion() }}</div>
+  } @if (retencion().datos; as datos) { @if (datos.length > 0) {
+  <app-grafico-barras
+    titulo="Alumnos que se fueron, por colegio"
+    [datos]="barrasRetencion()"
+    digitos="1.0-0"
+  />
+  }
+  <div class="tabla-contenedor">
+    <table mat-table [dataSource]="datos">
+      <caption class="solo-lector">
+        Retención de alumnos por colegio
+      </caption>
+      <ng-container matColumnDef="colegio">
+        <th mat-header-cell *matHeaderCellDef>Colegio</th>
+        <td mat-cell *matCellDef="let r">{{ r.colegio }}</td>
+      </ng-container>
+      <ng-container matColumnDef="alumnosAnterior">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Alumnos (anterior)
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.alumnosAnterior }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="alumnosActual">
+        <th mat-header-cell *matHeaderCellDef class="numero">
+          Alumnos (actual)
+        </th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          {{ r.alumnosActual }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="siguieron">
+        <th mat-header-cell *matHeaderCellDef class="numero">Siguieron</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.siguieron }}</td>
+      </ng-container>
+      <ng-container matColumnDef="seFueron">
+        <th mat-header-cell *matHeaderCellDef class="numero">Se fueron</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.seFueron }}</td>
+      </ng-container>
+      <ng-container matColumnDef="nuevos">
+        <th mat-header-cell *matHeaderCellDef class="numero">Nuevos</th>
+        <td mat-cell *matCellDef="let r" class="numero">{{ r.nuevos }}</td>
+      </ng-container>
+      <ng-container matColumnDef="variacion">
+        <th mat-header-cell *matHeaderCellDef class="numero">Variación</th>
+        <td mat-cell *matCellDef="let r" class="numero">
+          <span
+            class="estado"
+            [class]="r.variacion < 0 ? 'estado-alerta' : 'estado-ok'"
+            >{{ r.variacion > 0 ? '+' : '' }}{{ r.variacion }}</span
+          >
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasRetencion"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasRetencion"></tr>
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td
+          class="mat-mdc-cell sin-datos"
+          [attr.colspan]="columnasRetencion.length"
+        >
+          {{ retencion().aviso }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  }
+
+  <div class="acciones">
+    <a mat-button routerLink="/detalles-matricula"
+      >Volver a detalles de matrícula</a
+    >
+  </div>
+</section>

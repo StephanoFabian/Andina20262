@@ -1,0 +1,22 @@
+{
+  "asr": {
+    "repo": "facebook/mms-1b-all",
+    "revision": "3d33597edbdaaba14a8e858e2c8caa76e3cec0cd",
+    "licencia": "cc-by-nc-4.0"
+  },
+  "traduccion": {
+    "repo": "facebook/nllb-200-distilled-600M",
+    "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+    "licencia": "cc-by-nc-4.0"
+  },
+  "voz_es": {
+    "repo": "facebook/mms-tts-spa",
+    "revision": "833b96c0278c85cf09776d565ba8f1cb2819f7ec",
+    "licencia": "cc-by-nc-4.0"
+  },
+  "voz_quy": {
+    "repo": "facebook/mms-tts-quy",
+    "revision": "3fa7ac3f7bd06cd5ca8f33267a2744f0f397dc19",
+    "licencia": "cc-by-nc-4.0"
+  }
+}

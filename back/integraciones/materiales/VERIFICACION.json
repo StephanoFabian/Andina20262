@@ -1,0 +1,156 @@
+{
+  "fecha": "2026-11-07",
+  "rama": "stephano_01",
+  "equipo": {
+    "gpu": "AMD Radeon RX 9060 XT, 16 GB VRAM",
+    "ram": "59 GiB",
+    "alcance": "Prueba funcional local; no certifica capacidad de aula ni precisión general"
+  },
+  "modelos_instalados": {
+    "llama3.3:70b-1bit": {
+      "digest": "de7e55c760e14afb9274377c4736dfffd43e0c18d239bba7d6dbdff1838ddd4f",
+      "size_bytes": 15343490522,
+      "details": {
+        "parent_model": "hf.co/mradermacher/Llama-3.3-70B-Instruct-i1-GGUF:IQ1_S",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "70.6B",
+        "quantization_level": "IQ1_S",
+        "context_length": 131072,
+        "embedding_length": 8192
+      }
+    },
+    "qwen3:14b": {
+      "digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "size_bytes": 9276198565,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen3",
+        "families": [
+          "qwen3"
+        ],
+        "parameter_size": "14.8B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 40960,
+        "embedding_length": 5120
+      }
+    }
+  },
+  "dependencias_render": {
+    "Pillow": "12.3.0",
+    "reportlab": "5.0.1"
+  },
+  "generacion_real": {
+    "tema": "Triángulos rectángulos y teorema de Pitágoras",
+    "texto_70b_segundos_aproximados": 180,
+    "revision_final_14b": {
+      "carga_ms": 2576,
+      "evaluacion_ms": 40913,
+      "tokens_salida": 253
+    },
+    "contexto": 2048,
+    "tokens_salida_maximos_por_etapa": 512,
+    "cpu_hilos": 4,
+    "capas_gpu_solicitadas": 16,
+    "observacion_tiempos": "La primera etapa se ejecutó una vez. Se repitió la segunda al corregir exportación Word y revisión de ejercicios. No es un benchmark del tiempo total continuo.",
+    "hallazgo": "El 70B IQ1_S confundió hipotenusa y dio 5 o 6 para catetos 3 y 4. La primera revisión del 14B todavía incluyó un ejercicio imposible. Tras exigir resolver y sustituir ejercicios inválidos, la muestra revisada dio 5 para 3 y 4, sqrt(20) para 2 y 4, y 4 para hipotenusa 5 y cateto 3.",
+    "limite_calidad": "Un solo ejemplo inspeccionado. La revisión con otro modelo no garantiza corrección matemática general; se conserva el original y se pide revisión docente.",
+    "figura_final": {
+      "tipo": "triangulo_rectangulo",
+      "catetos": [
+        2,
+        4
+      ],
+      "hipotenusa": 4.47213595499958,
+      "area": 4,
+      "perimetro": 10.47213595499958
+    },
+    "exportaciones": [
+      "texto original UTF-8",
+      "texto revisado UTF-8",
+      "PNG 1100x700",
+      "SVG",
+      "PDF con figura",
+      "DOCX con PNG incrustado sin enlaces a archivos locales"
+    ],
+    "reinicio": "Se comprobó conservación de estado listo, ambos textos y los seis archivos después de reiniciar el servicio."
+  },
+  "pruebas": {
+    "python_materiales": {
+      "pruebas": 9,
+      "fallos": 0,
+      "alcance": "Idempotencia, límites de cola y usuario, reinicios por etapa, entradas, geometría y exportación con imágenes incrustadas"
+    },
+    "java": [
+      {
+        "clase": "MaterialIAServiceTests",
+        "pruebas": 3,
+        "fallos": 0,
+        "errores": 0
+      },
+      {
+        "clase": "VideollamadaServiceTests",
+        "pruebas": 4,
+        "fallos": 0,
+        "errores": 0
+      },
+      {
+        "clase": "CorsIntegrationTests",
+        "pruebas": 5,
+        "fallos": 0,
+        "errores": 0
+      }
+    ],
+    "http_backend_real": {
+      "checks": [
+        "JWT obligatorio",
+        "El autor recupera el material",
+        "Otro usuario no accede al trabajo",
+        "Otro usuario no descarga el PDF",
+        "No expone HTML interno",
+        "UUID válido obligatorio",
+        "Repetir solicitud devuelve el mismo material",
+        "Cambiar contenido con el mismo UUID responde 409",
+        "Tema limitado a 200 caracteres",
+        "Cuerpo limitado antes de deserializar",
+        "Las comprobaciones no crean trabajos adicionales"
+      ],
+      "passed": 11,
+      "consulta_concurrente": {
+        "peticiones": 40,
+        "clientes": 4,
+        "errores": 0,
+        "p50_ms": 8.03,
+        "p95_ms": 11.64,
+        "max_ms": 12.2
+      },
+      "limite": "Solo consultas de un material ya generado; no mide generación simultánea ni latencia de videollamadas"
+    },
+    "navegador_brave_headless": {
+      "comprobaciones": [
+        "Materiales ofrece el acceso Crear con IA a un usuario autorizado",
+        "Muestra por separado el texto original del 70B y la revisión usada para el PDF",
+        "Las imágenes geométricas autenticadas se muestran correctamente",
+        "PDF, Word, texto original, texto revisado, PNG y SVG se descargan con contenido válido",
+        "Recargar recupera el mismo trabajo sin generar otro material",
+        "La vista de 390 píxeles permite leer el material sin desbordamiento horizontal"
+      ],
+      "errores_navegador": []
+    },
+    "compilacion_angular": {
+      "resultado": "correcto",
+      "inicial_kb": 707.6,
+      "aviso": "Supera presupuesto de aviso de 700 KB por 7.60 KB; dentro del umbral de error"
+    }
+  },
+  "pendiente_de_medir": [
+    "Precisión sobre un conjunto amplio de materiales y evaluación docente",
+    "Latencia de traducción durante generación de documentos",
+    "Capacidad con una clase real o servicios publicados fuera de localhost"
+  ],
+  "investigacion_traduccion": "Los candidatos de MODELOS_CANDIDATOS.md no se instalaron ni se midieron; se conserva la integración de voz existente."
+}

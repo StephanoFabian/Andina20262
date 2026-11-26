@@ -1,0 +1,93 @@
+<section class="pagina">
+  <h1>{{ edicion() ? 'Editar material' : 'Nuevo material' }}</h1>
+
+  <form class="formulario" [formGroup]="form" (ngSubmit)="aceptar()" novalidate>
+    <mat-form-field>
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="titulo" required />
+      <mat-hint align="end"
+        >{{ form.controls.titulo.value?.length ?? 0 }}/200</mat-hint
+      >
+      <mat-error>{{ error('titulo') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="descripcion" rows="3"></textarea>
+      <mat-hint>Opcional</mat-hint>
+    </mat-form-field>
+
+    <div class="fila">
+      <mat-form-field>
+        <mat-label>Tipo</mat-label>
+        <input matInput formControlName="tipo" [matAutocomplete]="tipos" />
+        <mat-autocomplete #tipos="matAutocomplete">
+          @for (t of sugerenciasTipo(); track t) {
+          <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-autocomplete>
+        <mat-hint>Por ejemplo: PDF, Video, Guía</mat-hint>
+        <mat-hint align="end"
+          >{{ form.controls.tipo.value?.length ?? 0 }}/50</mat-hint
+        >
+        <mat-error>{{ error('tipo') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fecha de publicación</mat-label>
+        <input matInput type="date" formControlName="fechaPublicacion" />
+        <mat-hint>Opcional</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Enlace del archivo</mat-label>
+      <input
+        matInput
+        type="url"
+        formControlName="urlArchivo"
+        placeholder="https://"
+      />
+      <mat-hint>Opcional. Enlace http:// o https:// al archivo.</mat-hint>
+      <mat-error>{{ error('urlArchivo') }}</mat-error>
+    </mat-form-field>
+
+    <div class="reference-search">
+      <mat-form-field
+        ><mat-label>Buscar autor</mat-label
+        ><input
+          matInput
+          [formControl]="buscarIdPersona"
+          maxlength="100"
+          (keydown.enter)="$event.preventDefault();cargarIdPersona()" /></mat-form-field
+      ><button mat-button type="button" (click)="cargarIdPersona()">
+        Buscar
+      </button>
+    </div>
+    <mat-form-field
+      ><mat-label>Autor</mat-label
+      ><mat-select [formControl]="form.controls.idPersona"
+        >@for(r of listaIdPersona();track r.idPersona){<mat-option
+          [value]="r.idPersona"
+          >{{r.nombresPersona}} · #{{r.idPersona}}</mat-option
+        >}</mat-select
+      ><mat-hint>Hasta 20 coincidencias.</mat-hint
+      ><mat-error>Selecciona un registro.</mat-error></mat-form-field
+    >
+
+    @if (mensaje()) {
+    <div class="mensaje-error" role="alert">{{ mensaje() }}</div>
+    }
+
+    <div class="acciones">
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="guardando() || cargando() || cargaFallida()"
+      >
+        {{ edicion() ? 'Guardar cambios' : 'Registrar' }}
+      </button>
+      <a mat-button routerLink="/materiales">Cancelar</a>
+    </div>
+  </form>
+</section>
