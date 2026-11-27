@@ -5,11 +5,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HorarioInsertDTO } from '../../../models/HorarioInsertDTO';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import {MatTimepickerModule} from '@angular/material/timepicker';
 
 @Component({
   selector: 'app-horainsertarcomponent',
   providers: [provideNativeDateAdapter()],
-  imports: [MatInputModule, MatButtonModule, ReactiveFormsModule],
+  imports: [MatInputModule, MatButtonModule, ReactiveFormsModule, MatTimepickerModule],
   templateUrl: './horainsertarcomponent.html',
   styleUrl: './horainsertarcomponent.css',
 })
