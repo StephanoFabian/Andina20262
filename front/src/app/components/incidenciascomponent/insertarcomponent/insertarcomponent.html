@@ -1,0 +1,88 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/incidencias">← Volver a incidencias</a>
+  <h1>Incidencias</h1>
+  <div class="panel form-panel">
+    @if (mensaje()) {
+      <p class="notice error" role="alert">{{ mensaje() }}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="titulo" maxlength="150" />
+        <mat-error>{{ error('titulo') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha</mat-label>
+        <input matInput type="date" formControlName="fecha" />
+        <mat-error>{{ error('fecha') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="estado">
+          <mat-option value="ABIERTA">Abierta</mat-option>
+          <mat-option value="EN_PROCESO">En proceso</mat-option>
+          <mat-option value="RESUELTA">Resuelta</mat-option>
+          <mat-option value="CERRADA">Cerrada</mat-option>
+        </mat-select>
+        <mat-error>{{ error('estado') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="prioridad">
+          <mat-option value="BAJA">Baja</mat-option>
+          <mat-option value="MEDIA">Media</mat-option>
+          <mat-option value="ALTA">Alta</mat-option>
+          <mat-option value="CRITICA">Crítica</mat-option>
+        </mat-select>
+        <mat-error>{{ error('prioridad') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Persona</mat-label>
+        <mat-select formControlName="idPersona">
+          @for (p of personas(); track p.idPersona) {
+            <mat-option [value]="p.idPersona">
+              {{ etiquetaPersona(p) }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ error('idPersona') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Colegio</mat-label>
+        <mat-select formControlName="idColegio">
+          @for (c of colegios(); track c.idColegio) {
+            <mat-option [value]="c.idColegio">{{ c.nombre }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ error('idColegio') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea
+          matInput
+          formControlName="descripcion"
+          maxlength="2000"
+          rows="4"
+        ></textarea>
+        <mat-error>{{ error('descripcion') }}</mat-error>
+      </mat-form-field>
+
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro
+        </button>
+        <a mat-stroked-button routerLink="/incidencias">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
