@@ -7,7 +7,6 @@ import { environment } from '../../environments/environment';
 export class RegistroService {
   private readonly http = inject(HttpClient);
   private readonly url = environment.base + '/registro';
-  /** Crea la cuenta y devuelve la persona con su idPersona (el dato para iniciar sesión). */
   registrar(dto: Registro) {
     return this.http.post<Persona>(this.url, dto);
   }

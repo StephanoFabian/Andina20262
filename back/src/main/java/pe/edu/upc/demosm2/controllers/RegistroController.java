@@ -59,7 +59,6 @@ public class RegistroController {
         // insert() guarda solo el hash BCrypt de la contraseña
         Persona srv = pS.insert(p);
 
-        // La respuesta lleva el idPersona: es el dato con el que se inicia sesión
         ModelMapper m = new ModelMapper();
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(srv, PersonaDTO.class));
     }

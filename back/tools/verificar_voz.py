@@ -26,7 +26,7 @@ def main():
                                      {"Content-Type": "application/json", **({"Authorization": "Bearer " + token} if token else {})})
         with urllib.request.urlopen(req, timeout=12) as response:
             return response.status, json.load(response)
-    token = call("/login", {"idPersona": int(os.environ.get("ANDINA_TEST_PERSONA", "1")), "passwordPersona": os.environ["ANDINA_TEST_PASSWORD"]})[1]["token"]
+    token = call("/login", {"emailPersona": os.environ.get("ANDINA_TEST_EMAIL", "admin@andina.example"), "passwordPersona": os.environ["ANDINA_TEST_PASSWORD"]})[1]["token"]
     sesiones = call("/api/sesiones-virtuales/pagina?size=1")[1]["content"]
     if not sesiones:
         raise SystemExit("La BD de prueba necesita una sesión virtual")

@@ -23,8 +23,8 @@ def main():
     if not audio.is_file():
         raise SystemExit("Falta el audio sintético de prueba")
     tokens = []
-    for index in [1, 2]:
-        payload = {"idPersona": int(os.environ.get(f"ANDINA_VIDEO_TEST_PERSONA_{index}", str(index))),
+    for index, email in enumerate(["admin@andina.example", "direccion@andina.example"], start=1):
+        payload = {"emailPersona": os.environ.get(f"ANDINA_VIDEO_TEST_EMAIL_{index}", email),
                    "passwordPersona": os.environ[f"ANDINA_VIDEO_TEST_PASSWORD_{index}"]}
         request = urllib.request.Request(base + "/login", json.dumps(payload).encode(), {"Content-Type": "application/json"})
         with urllib.request.urlopen(request, timeout=8) as response:

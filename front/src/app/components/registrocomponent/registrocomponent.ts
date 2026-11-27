@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
 import { RegistroService } from '../../services/registro.service';
+import { Persona } from '../../models/Persona';
 import { mensajeError } from '../../services/errores';
 import {
   correo,
@@ -58,8 +59,7 @@ export class RegistroComponent {
   readonly guardando = signal(false);
   readonly error = signal('');
   readonly ocultar = signal(true);
-  /** ID de la cuenta creada; mientras sea null se muestra el formulario. */
-  readonly idCreado = signal<number | null>(null);
+  readonly personaCreada = signal<Persona | null>(null);
   readonly form = inject(FormBuilder).nonNullable.group(
     {
       nombresPersona: [
@@ -107,7 +107,7 @@ export class RegistroComponent {
       })
       .pipe(finalize(() => this.guardando.set(false)))
       .subscribe({
-        next: (persona) => this.idCreado.set(persona.idPersona ?? null),
+        next: (persona) => this.personaCreada.set(persona),
         error: (err) => this.error.set(mensajeError(err)),
       });
   }

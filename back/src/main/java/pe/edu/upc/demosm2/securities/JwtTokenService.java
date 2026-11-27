@@ -1,7 +1,7 @@
 package pe.edu.upc.demosm2.securities;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -17,11 +17,11 @@ import java.util.List;
  * Fabrica el token JWT que el usuario usará como "pase" en cada petición.
  *
  * ¿Quién lo llama? LoginController, DESPUÉS de que AuthenticationManager haya comprobado
- * el DNI y la contraseña. Es decir, aquí el usuario ya está verificado: solo se le entrega
+ * el correo y la contraseña. Es decir, aquí el usuario ya está verificado: solo se le entrega
  * el token firmado con sus datos y sus roles.
  *
  * Dentro del token se guardan:
- *   - subject : el username del usuario.
+ *   - subject : el ID de la persona autenticada.
  *   - roles   : la LISTA de roles (p.ej. ["ROLE_ADMIN"]). Se guarda como lista, no como
  *               texto con comas, para que un rol no se rompa si algún día lleva una coma.
  *   - expiresAt: cuándo caduca (jwt.expiration-hours, por defecto 8 h).
@@ -38,19 +38,20 @@ public class JwtTokenService {
         this.jwtProperties = jwtProperties;
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(Authentication autenticacion) {
 
         Instant now = Instant.now();
         Duration validity = Duration.ofHours(jwtProperties.getExpirationHours());
 
         // Roles del usuario ya autenticado -> lista de textos (p.ej. "ROLE_ADMIN")
-        List<String> roles = userDetails.getAuthorities()
+        List<String> roles = autenticacion.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
+                .filter(a -> a.startsWith("ROLE_"))   // solo roles (Spring agrega FACTOR_PASSWORD)
                 .toList();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .subject(userDetails.getUsername())
+                .subject(autenticacion.getName())
                 .issuedAt(now)
                 .expiresAt(now.plus(validity))
                 .claim("roles", roles)          // lista, la lee CustomJwtAuthenticationConverter
