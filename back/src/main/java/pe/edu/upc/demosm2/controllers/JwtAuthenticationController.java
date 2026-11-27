@@ -25,19 +25,19 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    // Login: ID de la persona + contraseña -> token JWT
+    // Login: Correo de la persona + contraseña -> token JWT
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody JwtRequestDTO req) {
-        if (req.getIdPersona() == null || req.getPasswordPersona() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Envía idPersona y passwordPersona");
+        if (req.getEmailPersona() == null || req.getEmailPersona().isBlank() || req.getPasswordPersona() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Envía emailPersona y passwordPersona");
         }
-        String username = String.valueOf(req.getIdPersona());
+        String username = req.getEmailPersona().trim();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, req.getPasswordPersona()));
         } catch (DisabledException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("La persona no está ACTIVA");
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ID de persona o contraseña incorrectos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String token = jwtTokenService.generateToken(userDetails);
