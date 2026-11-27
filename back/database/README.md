@@ -25,8 +25,16 @@ Conserva tu contraseña local. El frontend sigue en `http://localhost:4200` y la
 
 ## Acceso de demostración
 
-- Administrador: **ID 1**, contraseña **AdminAndina2026!**.
-- Director, especialista, local, docentes y estudiantes: **ID 2 a 10**, contraseña **AndinaDemo2026!**.
+Se inicia sesión con el **correo** y la contraseña.
+
+| Correo | Rol | Contraseña |
+|---|---|---|
+| admin@andina.example | ADMIN | AdminAndina2026! |
+| direccion@andina.example | ADMIN_ESCUELA | AndinaDemo2026! |
+| especialista@andina.example | ESPECIALISTA | AndinaDemo2026! |
+| local@andina.example | LOCAL | AndinaDemo2026! |
+| docente1@andina.example, docente2@andina.example | DOCENTE | AndinaDemo2026! |
+| estudiante1@andina.example … estudiante4@andina.example | ESTUDIANTE | AndinaDemo2026! |
 
 Las contraseñas de la tabla Persona son hashes BCrypt. Los correos, nombres, enlaces y demás datos son ficticios; los enlaces de clases y materiales son ejemplos.
 
