@@ -26,7 +26,7 @@ public class Persona {
     @Column(name = "estadoPersona", length = 100, nullable = false)
     private String estadoPersona;
 
-    // Contraseña del login (se entra con el ID de la persona + esta contraseña).
+    // Para iniciar sesión se usa el correo de la persona y esta contraseña.
     // Se guarda SOLO el hash BCrypt, nunca la contraseña en claro. Sin nullable=false para no romper
     // tablas que ya tienen personas al agregar la columna (ddl-auto=update); el registro la exige.
     @Column(name = "passwordPersona", length = 200)

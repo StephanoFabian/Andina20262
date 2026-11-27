@@ -19,7 +19,7 @@ def main():
     job = os.environ['ANDINA_MATERIAL_TEST_ID']
     out = Path(os.environ.get('ANDINA_MATERIAL_TEST_OUT', '/tmp/andina-material-verificacion'))
     out.mkdir(parents=True, exist_ok=True)
-    payload = {'idPersona': int(os.environ.get('ANDINA_MATERIAL_TEST_PERSONA', '1')),
+    payload = {'emailPersona': os.environ.get('ANDINA_MATERIAL_TEST_EMAIL', 'admin@andina.example'),
                'passwordPersona': os.environ['ANDINA_MATERIAL_TEST_PASSWORD']}
     request = urllib.request.Request(api + '/login', json.dumps(payload).encode(), {'Content-Type': 'application/json'})
     with urllib.request.urlopen(request, timeout=10) as response:

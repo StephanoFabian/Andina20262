@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
 
@@ -31,8 +32,9 @@ public interface IPersonaRepositories extends JpaRepository<Persona, Long> {
     long contarPagina(@Param("texto") String texto);
 
     // Registro público: evita dos cuentas con el mismo correo
-    @Query(value="SELECT COUNT(*) FROM persona t WHERE LOWER(t.email_persona) = LOWER(:email)",nativeQuery=true)
+    @Query(value="SELECT COUNT(*) FROM persona t WHERE LOWER(TRIM(t.email_persona)) = LOWER(:email)",nativeQuery=true)
     long contarPorEmail(@Param("email") String email);
 
-    Optional<Persona> findByEmailPersonaIgnoreCase(String emailPersona);
+    @Query("SELECT p FROM Persona p WHERE LOWER(TRIM(p.emailPersona)) = LOWER(:email)")
+    Optional<Persona> buscarPorEmail(@Param("email") String email);
 }

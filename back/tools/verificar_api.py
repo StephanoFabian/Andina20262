@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Prueba destructiva solo sobre una BD de verificación; nunca usar contra producción.
 API_BASE=http://127.0.0.1:18081 ANDINA_TEST_PASSWORD=... python3 tools/verificar_api.py
-El administrador de prueba debe existir (ANDINA_TEST_PERSONA, por defecto 1).
+El administrador de prueba debe existir (ANDINA_TEST_EMAIL, por defecto admin@andina.example).
 """
 import json, os, urllib.request, urllib.error, time, statistics, concurrent.futures
 from pathlib import Path
@@ -20,7 +20,7 @@ def call(method,path,data=None,expect=200,token=None):
  try:result=json.loads(body) if body else None
  except json.JSONDecodeError:result=body
  return result,location
-TOKEN=call('POST','/login',{'idPersona':int(os.environ.get('ANDINA_TEST_PERSONA','1')),'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']},token='')[0]['token']
+TOKEN=call('POST','/login',{'emailPersona':os.environ.get('ANDINA_TEST_EMAIL','admin@andina.example'),'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']},token='')[0]['token']
 call('GET','/api/grados/pagina',expect=401,token='');checks.append('API exige autenticación')
 mods=json.loads((Path(__file__).resolve().parents[1]/'tools/modulos_prueba.json').read_text())
 configs={m['key']:m for m in mods};ids={};created={};stamp=str(time.time_ns())[-8:]
@@ -72,7 +72,7 @@ wrong=dict(created['convenios'],fechaFin='2025-01-01');call('POST','/api/conveni
 wrong=dict(created['incidencias'],idPersona=999999999);call('POST','/api/incidencias',wrong,404)
 for query in ['size=101','size=0','page=-1','page=10001']:call('GET','/api/grados/pagina?'+query,expect=400)
 checks.append('Límites, referencias, duplicados y rangos inválidos rechazados')
-docente=call('POST','/login',{'idPersona':ids['personas'],'passwordPersona':values['personas']['passwordPersona']},token='')[0]['token']
+docente=call('POST','/login',{'emailPersona':values['personas']['emailPersona'],'passwordPersona':values['personas']['passwordPersona']},token='')[0]['token']
 call('POST','/api/grados',dict(nombre='No permitido',nivel='Primaria'),403,docente)
 call('POST','/api/convenios',created['convenios'],403,docente)
 checks.append('Permisos docentes: grados y convenios bloqueados')

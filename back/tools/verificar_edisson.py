@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """CRUD y compatibilidad de Edisson. Requiere API y BD aisladas de prueba."""
-import json,os,urllib.request,urllib.error,time
+import base64,json,os,urllib.request,urllib.error,time
 from pathlib import Path
 if os.environ.get('ANDINA_TEST_WRITES')!='1':raise SystemExit('Requiere ANDINA_TEST_WRITES=1 y una base de pruebas aislada')
 BASE=os.environ.get('API_BASE','http://127.0.0.1:18081');token='';checks=[]
@@ -12,11 +12,13 @@ def call(method,path,data=None,status=200):
  assert code==status,(path,code,text[:500])
  try:return json.loads(text) if text else None
  except json.JSONDecodeError:return text
-who=int(os.environ.get('ANDINA_TEST_PERSONA','1'))
+email=os.environ.get('ANDINA_TEST_EMAIL','admin@andina.example')
 for i in range(20):
- try:token=call('POST','/login',{'idPersona':who,'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']})['token'];break
+ try:token=call('POST','/login',{'emailPersona':email,'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']})['token'];break
  except OSError:time.sleep(1)
 else:raise RuntimeError('La API no está disponible')
+claims=token.split('.')[1]
+autor=int(json.loads(base64.urlsafe_b64decode(claims + '=' * (-len(claims) % 4)))['sub'])
 convenio=dict(nombre='QA Edisson convenio',entidad='Gobierno de prueba',tipoEntidad='GOBIERNO_REGIONAL',region='Cusco',fechaInicio='2026-01-01',fechaFin='2026-11-15',presupuesto=12345.67,estado='EN_RENOVACION')
 c=call('POST','/api/convenios',convenio,201);cid=c['idConvenio'];assert c['idColegio'] is None and c['presupuesto']==12345.67
 page=call('GET','/api/convenios/pagina?q=QA%20Edisson');assert any(x['idConvenio']==cid for x in page['content'])
@@ -29,7 +31,7 @@ colegio=call('POST','/api/colegios',dict(nombre='QA Colegio legado',departamento
 legacy=call('POST','/api/convenios',dict(nombre='QA Convenio legado',institucion='Institución anterior',idColegio=colegio['idColegio'],fechaInicio='2026-01-01',fechaFin='2026-12-31',estado='VIGENTE'),201)
 updated=call('PUT','/api/convenios/'+str(legacy['idConvenio']),convenio);assert updated['idColegio']==colegio['idColegio'];checks.append('Contrato anterior compatible y colegio conservado al editar con el nuevo formulario')
 course=call('POST','/curso',dict(nombre_curso='QA Edisson curso',descripcion='Prueba',area='Ciencias'),201)
-m=call('POST','/materiales/nuevo',dict(titulo='QA Edisson material',tipo='GUIA_QA',idPersona=who,urlArchivo='https://example.test/qa',fechaPublicacion='2026-11-06'),201);mid=m['idMaterial']
+m=call('POST','/materiales/nuevo',dict(titulo='QA Edisson material',tipo='GUIA_QA',idPersona=autor,urlArchivo='https://example.test/qa',fechaPublicacion='2026-11-06'),201);mid=m['idMaterial']
 call('POST','/materiales-cursos/nuevo',dict(idMaterial=mid,idCurso=course['id_curso']),201)
 p=call('GET','/materiales-cursos/pagina?idMaterial='+str(mid));assert p['totalElements']==1 and p['content'][0]['curso']=='QA Edisson curso';checks.append('Asociación material-curso y nombres obtenidos en la misma página')
 p=call('GET','/materiales/consulta/pagina?q=QA%20Edisson');assert any(x['idMaterial']==mid for x in p['content'])

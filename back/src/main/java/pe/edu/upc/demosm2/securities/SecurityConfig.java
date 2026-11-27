@@ -22,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * ================= CÓMO SE LLAMA A LA SEGURIDAD (el recorrido de una petición) =================
  *
  *  1) LOGIN (una sola vez):
- *     POST /login  ->  LoginController pide a AuthenticationManager que verifique DNI + contraseña.
+ *     POST /login  ->  LoginController pide a AuthenticationManager que verifique correo y contraseña.
  *                      AuthenticationManager usa el authenticationProvider() de abajo, que:
  *                        - busca al usuario con JwtUserDetailsService (UserDetailsService), y
  *                        - compara la contraseña con BCrypt (ver "HASHEO" más abajo).
@@ -78,7 +78,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    /** El AuthenticationManager es a quien LoginController le pide "verifica este DNI y clave". */
+    /** El AuthenticationManager comprueba el correo y la contraseña del login. */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
             throws Exception {

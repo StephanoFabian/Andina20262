@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Medición de lectura en una API de prueba con 10.000 grados Carga 000001–010000.
-No inserta ni elimina datos. Credenciales: ANDINA_TEST_PERSONA y ANDINA_TEST_PASSWORD.
+No inserta ni elimina datos. Credenciales: ANDINA_TEST_EMAIL y ANDINA_TEST_PASSWORD.
 """
 import json,os,time,statistics,concurrent.futures,urllib.request,urllib.parse
 from pathlib import Path
@@ -8,7 +8,7 @@ BASE=os.environ.get('API_BASE','http://127.0.0.1:18081')
 def request(path,token='',data=None):
  req=urllib.request.Request(BASE+path,data=json.dumps(data).encode() if data else None,headers={'Content-Type':'application/json',**({'Authorization':'Bearer '+token} if token else {})})
  with urllib.request.urlopen(req,timeout=20) as response:return json.loads(response.read())
-token=request('/login',data={'idPersona':int(os.environ.get('ANDINA_TEST_PERSONA','1')),'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']})['token']
+token=request('/login',data={'emailPersona':os.environ.get('ANDINA_TEST_EMAIL','admin@andina.example'),'passwordPersona':os.environ['ANDINA_TEST_PASSWORD']})['token']
 def read(i):
  params={'size':50,'page':i%200,'q':'Carga'} if i%2 else {'size':50,'page':i%200}
  started=time.perf_counter();result=request('/api/grados/pagina?'+urllib.parse.urlencode(params),token)

@@ -17,22 +17,19 @@
     <p class="story-footer">Comunidades conectadas. Futuros compartidos.</p>
   </section>
   <section class="login-form-section">
-    @if(idCreado(); as id){
+    @if(personaCreada(); as persona){
     <div class="login-form registro-listo" role="status">
       <span class="login-badge"
         ><mat-icon>check_circle</mat-icon>REGISTRO COMPLETADO</span
       >
       <h2>Este es tu ID de persona</h2>
-      <p class="registro-id">{{id}}</p>
-      <p>
-        Guárdalo. En Andina inicias sesión con este número y tu contraseña, no
-        con tu correo.
-      </p>
+      <p class="registro-id">{{persona.idPersona}}</p>
+      <p>Inicia sesión con <strong>{{persona.emailPersona}}</strong> y tu contraseña.</p>
       <a
         mat-flat-button
         class="login-submit"
         routerLink="/login"
-        [queryParams]="{id: id}"
+        [queryParams]="{email: persona.emailPersona}"
         >Iniciar sesión</a
       >
     </div>

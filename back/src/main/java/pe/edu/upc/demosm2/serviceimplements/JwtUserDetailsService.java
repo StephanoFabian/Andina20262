@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Login de Persona: el "username" es el ID de la persona (idPersona) y la clave es su passwordPersona (BCrypt).
- * SecurityConfig lo usa en su authenticationProvider para validar el login.
+ * Busca la cuenta por correo. El principal autenticado usa el ID estable de la persona.
  */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -24,12 +23,12 @@ public class JwtUserDetailsService implements UserDetailsService {
     private IPersonaRepositories repo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Persona persona = this.repo.findByEmailPersonaIgnoreCase(username.trim())
-                .orElseThrow(() -> new UsernameNotFoundException("Persona no encontrada: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Persona persona = repo.buscarPorEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Persona no encontrada: " + email));
 
         if (persona.getPasswordPersona() == null || persona.getPasswordPersona().isBlank()) {
-            throw new UsernameNotFoundException("La persona " + username + " no tiene contraseña registrada");
+            throw new UsernameNotFoundException("La persona " + email + " no tiene contraseña registrada");
         }
 
         List<GrantedAuthority> roles = new ArrayList<>();
@@ -42,7 +41,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                 && persona.getEstadoPersona().equalsIgnoreCase("ACTIVO");
 
         return new User(
-                persona.getEmailPersona(),
+                persona.getIdPersona().toString(),
                 persona.getPasswordPersona(),
                 isEnabled, true, true, true, roles
         );
