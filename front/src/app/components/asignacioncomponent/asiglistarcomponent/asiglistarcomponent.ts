@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './asiglistarcomponent.css',
 })
 export class Asiglistarcomponent implements OnInit {
-  displayedColumns: string[] = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6'];
+  displayedColumns: string[] = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10'];
   dataSource: AsignacionDTOList[] = [];
   constructor(
     private cdr: ChangeDetectorRef,
@@ -48,3 +48,4 @@ export class Asiglistarcomponent implements OnInit {
     });
   }
 }
+
