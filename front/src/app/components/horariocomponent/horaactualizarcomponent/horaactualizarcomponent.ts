@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
+import {MatTimepickerModule} from '@angular/material/timepicker';
 
 @Component({
   selector: 'app-horaactualizarcomponent',
@@ -18,7 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatDatepickerModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatCheckboxModule],
+    MatCheckboxModule,
+  MatTimepickerModule],
   templateUrl: './horaactualizarcomponent.html',
   styleUrl: './horaactualizarcomponent.css',
 })
