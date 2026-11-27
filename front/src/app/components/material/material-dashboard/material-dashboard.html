@@ -1,0 +1,84 @@
+<section class="pagina dashboard">
+  <h1>Dashboard de materiales</h1>
+  <p class="nota">
+    Cuántos materiales hay de cada tipo, para decidir qué tipo de material
+    conviene producir.
+  </p>
+
+  @if (cargando() > 0) {
+  <mat-progress-bar mode="indeterminate" aria-label="Cargando dashboard" />
+  } @if (error()) {
+  <div class="mensaje-error" role="alert">
+    {{ error() }}
+    <button mat-button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+  } @if (resultado().datos?.length === 0) {
+  <app-estado-vacio
+    entidad="materiales"
+    icono="donut_large"
+    titulo="Todavía no hay materiales para el dashboard"
+    [mensaje]="
+      (resultado().aviso ?? '') +
+      ' Cuando se registren materiales, aquí verás su distribución por tipo.'
+    "
+  >
+    <a mat-stroked-button routerLink="/materiales">Ir a materiales</a>
+  </app-estado-vacio>
+  }
+
+  @if (tipos().length > 0) {
+  <app-tarjetas-kpi titulo="Indicadores de materiales" [kpis]="kpis()" />
+
+  <div class="paneles">
+    <figure class="panel">
+      <h2>Materiales por tipo</h2>
+      <div class="grafico-lienzo">
+        <canvas
+          baseChart
+          type="doughnut"
+          [data]="datosDona()"
+          [options]="opcionesDona"
+          role="img"
+          [attr.aria-label]="
+            'Gráfico de dona: ' + total() + ' materiales en ' + tipos().length + ' tipos. El detalle está en la tabla.'
+          "
+        ></canvas>
+      </div>
+    </figure>
+
+    <section class="panel" aria-labelledby="detalle-tipos">
+      <h2 id="detalle-tipos">Detalle por tipo</h2>
+      <div class="tabla-contenedor">
+        <table mat-table [dataSource]="tipos()">
+          <caption class="solo-lector">
+            Cantidad y porcentaje de materiales por tipo
+          </caption>
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef>Tipo</th>
+            <td mat-cell *matCellDef="let r">{{ r.tipo }}</td>
+          </ng-container>
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef class="numero">Cantidad</th>
+            <td mat-cell *matCellDef="let r" class="numero">
+              {{ formatoNumero(r.cantidad) }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="participacion">
+            <th mat-header-cell *matHeaderCellDef class="numero">% del total</th>
+            <td mat-cell *matCellDef="let r" class="numero">
+              {{ formatoPorcentaje(r.participacion) }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        </table>
+      </div>
+    </section>
+  </div>
+  }
+
+  <div class="acciones">
+    <a mat-button routerLink="/materiales/reporte-tipo">Ver reporte por tipo</a>
+    <a mat-button routerLink="/materiales">Volver a materiales</a>
+  </div>
+</section>

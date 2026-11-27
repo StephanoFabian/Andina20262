@@ -1,0 +1,25 @@
+{
+  "tablas": {
+    "rol": 6,
+    "persona": 10,
+    "colegios": 3,
+    "aulas": 4,
+    "grados": 3,
+    "curso": 4,
+    "periodos_academicos": 2,
+    "matriculas": 4,
+    "detalles_matricula": 6,
+    "asignacion_docente": 3,
+    "horarios": 3,
+    "sesiones_virtuales": 3,
+    "asistencias": 6,
+    "perfil_academico": 3,
+    "material": 4,
+    "material_curso": 5,
+    "convenios": 3,
+    "incidencias": 3
+  },
+  "totalRegistros": 75,
+  "importacionCorrecta": true,
+  "loginAdministradorCorrecto": true
+}

@@ -1,0 +1,35 @@
+<div class="container">
+  <div>
+    <h2>Registro de Horario</h2>
+  </div>
+  <div>
+    <form [formGroup]="formHorario" (ngSubmit)="insertarHorario()">
+      <mat-form-field class="example-full-width">
+        <mat-label>Dia de Semana</mat-label>
+        <input matInput placeholder="Jueves" formControlName="dia" />
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-label>Hora de Inicio</mat-label>
+        <input matInput [matTimepicker]="pickerInicio" formControlName="inicio" />
+        <mat-timepicker-toggle matIconSuffix [for]="pickerInicio" />
+        <mat-timepicker #pickerInicio />
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-label>Hora de Finalización</mat-label>
+        <input matInput [matTimepicker]="pickerFin" formControlName="fin" />
+        <mat-timepicker-toggle matIconSuffix [for]="pickerFin" />
+        <mat-timepicker #pickerFin />
+      </mat-form-field>
+      <br />
+      <mat-form-field class="example-full-width">
+        <mat-label>Relacionar Asignacion</mat-label>
+        <input matInput placeholder="Sociales" formControlName="asignacion" />
+      </mat-form-field>
+      <br />
+      <button matButton type="submit">Registrar</button>
+    </form>
+    <p>{{ mensaje }}</p>
+  </div>
+</div>

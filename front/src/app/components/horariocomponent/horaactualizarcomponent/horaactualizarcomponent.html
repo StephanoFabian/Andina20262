@@ -1,0 +1,42 @@
+<div class="container">
+    <div>
+        <h2>Formulario de Actualización de Curso</h2>
+    </div>
+    <div>
+        <mat-form-field class="example-full-width">
+                <mat-label>Código</mat-label>
+                <input matInput type="number" formControlName="codigo" readonly>
+            </mat-form-field>
+        <br/>
+        <form [formGroup]="formHorario" (ngSubmit)="actualizarHorario()">
+             <mat-form-field class="example-full-width">
+        <mat-label>Dia de Semana</mat-label>
+        <input matInput placeholder="Jueves" formControlName="dia" />
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-label>Hora de Inicio</mat-label>
+        <input matInput [matTimepicker]="pickerInicio" formControlName="inicio" />
+        <mat-timepicker-toggle matIconSuffix [for]="pickerInicio" />
+        <mat-timepicker #pickerInicio />
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-label>Hora de Finalización</mat-label>
+        <input matInput [matTimepicker]="pickerFin" formControlName="fin" />
+        <mat-timepicker-toggle matIconSuffix [for]="pickerFin" />
+        <mat-timepicker #pickerFin />
+      </mat-form-field>
+      <br />
+      <mat-form-field class="example-full-width">
+        <mat-label>Relacionar Asignacion</mat-label>
+        <input matInput placeholder="Sociales" formControlName="asignacion" />
+      </mat-form-field>
+      <br />         
+
+            <button matButton type="submit">Guardar</button>
+
+        </form>
+        <p>{{ mensaje }}</p>
+    </div>
+</div>

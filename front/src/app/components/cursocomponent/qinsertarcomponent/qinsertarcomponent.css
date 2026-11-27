@@ -1,0 +1,129 @@
+/* Contenedor general */
+
+:host {
+  display: block;
+
+  max-width: 650px;
+
+  margin: 35px auto;
+
+  padding: 25px 30px;
+
+  background-color: #ffffff;
+
+  border-radius: 14px;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+
+  font-family: Arial, sans-serif;
+
+  box-sizing: border-box;
+}
+
+/* Título */
+
+h2 {
+  text-align: center;
+
+  color: #2e2e7d;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  margin: 0 0 15px 0;
+}
+
+/* Formulario */
+
+form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+}
+
+/* Campos */
+
+mat-form-field {
+  width: 100%;
+
+  margin: 0;
+}
+
+/* Reduce el espacio inferior de los campos Material */
+
+mat-form-field br {
+  display: none;
+}
+
+/* Checkbox */
+
+mat-checkbox {
+  margin: 0;
+
+  padding: 0;
+
+  color: #333333;
+}
+
+/* Botón */
+
+button[type='submit'] {
+  width: 100%;
+
+  min-height: 42px;
+
+  margin: 5px 0 0 0;
+
+  background-color: #2e367d;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  border-radius: 8px;
+
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Efecto del botón */
+
+button[type='submit']:hover {
+  background-color: #1b2a5e;
+
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+}
+
+/* Mensaje */
+
+p {
+  margin: 10px 0 0 0;
+
+  text-align: center;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  color: #2d24a9;
+}
+
+/* Adaptación a celulares */
+
+@media (max-width: 600px) {
+  :host {
+    margin: 15px;
+
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+}

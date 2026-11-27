@@ -1,0 +1,77 @@
+<section class="page inicio">
+  <header class="inicio-hero">
+    <div>
+      <p class="eyebrow">TU COMUNIDAD EDUCATIVA</p>
+      <h1>{{ saludo() }}</h1>
+      <p>{{ textos().saludo }}</p>
+      @if (usuario.rol()) {
+      <span class="inicio-rol"
+        ><mat-icon aria-hidden="true">verified_user</mat-icon>{{ usuario.rol()
+        }}</span
+      >
+      }
+    </div>
+    <div class="banner-graphic" aria-hidden="true">
+      <span>✦</span><span>A</span><span>↗</span>
+    </div>
+  </header>
+
+  <div class="section-heading">
+    <h2>{{ textos().titulo }}</h2>
+  </div>
+  <div class="acceso-grid" [class.acceso-grid--compacto]="compacto()">
+    @for (a of accesos(); track a.ruta) {
+    <a [routerLink]="a.ruta" class="acceso">
+      <span class="acceso-icono" aria-hidden="true"
+        ><mat-icon>{{ a.icono }}</mat-icon></span
+      >
+      <strong>{{ a.titulo }}</strong>
+      <span class="acceso-detalle">{{ a.detalle }}</span>
+      <mat-icon class="acceso-flecha" aria-hidden="true"
+        >arrow_forward</mat-icon
+      >
+    </a>
+    }
+  </div>
+
+  @if (verSesiones() && sesiones().length) {
+  <div class="section-heading">
+    <h2>Próximas sesiones</h2>
+    <a mat-button routerLink="/sesiones-virtuales">Ver todas</a>
+  </div>
+  <div class="sesion-lista">
+    @for (s of sesiones(); track s.idSesionVirtual) {
+    <div class="sesion-item">
+      <span class="sesion-fecha"
+        ><b>{{ s.horaInicio | horaPe }}</b>{{ s.fecha | fechaPe }}</span
+      >
+      <span class="sesion-info">
+        <strong>{{ s.titulo }}</strong>
+        <span>Hasta las {{ s.horaFin | horaPe }}</span>
+      </span>
+      <app-chip [valor]="s.estado" />
+      <a
+        mat-flat-button
+        [routerLink]="['/sesiones-virtuales/sala', s.idSesionVirtual]"
+        ><mat-icon aria-hidden="true">videocam</mat-icon>Entrar</a
+      >
+    </div>
+    }
+  </div>
+  } @if (reportes().length) {
+  <div class="section-heading">
+    <h2>Reportes</h2>
+    <span>{{ reportes().length }} disponibles</span>
+  </div>
+  <div class="reporte-grid">
+    @for (r of reportes(); track r.ruta) {
+    <a [routerLink]="r.ruta" class="reporte-link"
+      ><mat-icon aria-hidden="true">bar_chart</mat-icon>{{ r.titulo }}<mat-icon
+        aria-hidden="true"
+        >chevron_right</mat-icon
+      ></a
+    >
+    }
+  </div>
+  }
+</section>

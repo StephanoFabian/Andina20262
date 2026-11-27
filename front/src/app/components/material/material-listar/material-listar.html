@@ -1,0 +1,162 @@
+@if (vistaEstudiante) {
+<app-materiales-estudiante modulo="materiales" />
+} @else {
+<section class="page">
+  <app-encabezado modulo="materiales" [total]="total()">
+    @if (puedeConsultar) {
+    <a mat-stroked-button routerLink="/materiales/consultas">
+      <mat-icon aria-hidden="true">manage_search</mat-icon>
+      Consultas
+    </a>
+    } @if (puedeVerReporte) {
+    <a mat-stroked-button routerLink="/materiales/dashboard">
+      <mat-icon aria-hidden="true">donut_large</mat-icon>
+      Dashboard
+    </a>
+    <a mat-stroked-button routerLink="/materiales/reporte-tipo">
+      <mat-icon aria-hidden="true">bar_chart</mat-icon>
+      Por tipo
+    </a>
+    } @if (puedeInsertar) {
+    <a mat-stroked-button routerLink="/materiales/crear-con-ia">
+      <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+      Crear con IA
+    </a>
+    <a mat-flat-button routerLink="/materiales/nuevo">
+      <mat-icon aria-hidden="true">add</mat-icon>
+      Nuevo material
+    </a>
+    }
+  </app-encabezado>
+
+  <div class="panel">
+    <form
+      class="table-tools"
+      (submit)="$event.preventDefault(); buscar(busqueda.value)"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar por título, tipo o autor</mat-label>
+        <input matInput maxlength="100" #busqueda />
+      </mat-form-field>
+      <button
+        mat-flat-button
+        class="boton-buscar"
+        type="submit"
+        [disabled]="cargando()"
+      >
+        <mat-icon aria-hidden="true">search</mat-icon>Buscar
+      </button>
+    </form>
+
+    @if (error()) {
+    <div class="notice error" role="alert">{{ error() }}</div>
+    } @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Cargando materiales" />
+    }
+
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" class="tabla-sin-id">
+        <caption class="solo-lector">
+          Lista de materiales
+        </caption>
+
+        <ng-container matColumnDef="titulo">
+          <th mat-header-cell *matHeaderCellDef>Título</th>
+          <td mat-cell *matCellDef="let m">
+            {{ m.titulo }} @if (m.descripcion) {
+            <span class="celda-detalle">{{ m.descripcion }}</span>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let m">
+            <app-tipo-material [tipo]="m.tipo" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="autor">
+          <th mat-header-cell *matHeaderCellDef>Autor</th>
+          <td mat-cell *matCellDef="let m">
+            <span class="persona-celda"
+              ><app-avatar
+                [nombres]="m.nombreAutor"
+                [apellidos]="m.apellidosAutor"
+              />{{ m.autor }}</span
+            >
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fechaPublicacion">
+          <th mat-header-cell *matHeaderCellDef>Publicado</th>
+          <td mat-cell *matCellDef="let m">{{ m.fechaPublicacion | fechaPe }}</td>
+        </ng-container>
+        <ng-container matColumnDef="urlArchivo">
+          <th mat-header-cell *matHeaderCellDef>Archivo</th>
+          <td mat-cell *matCellDef="let m">
+            @if (m.urlArchivo) {
+            <a
+              mat-stroked-button
+              class="boton-abrir"
+              [href]="m.urlArchivo"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><mat-icon aria-hidden="true">open_in_new</mat-icon>Abrir<span
+                class="solo-lector"
+              >
+                {{ m.titulo }} (se abre en una pestaña nueva)</span
+              ></a
+            >
+            } @else { — }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let m">
+            @if (puedeModificar) {
+            <a
+              mat-icon-button
+              [routerLink]="['/materiales/ediciones', m.idMaterial]"
+              [attr.aria-label]="'Editar ' + m.titulo"
+              matTooltip="Editar"
+            >
+              <mat-icon>edit</mat-icon>
+            </a>
+            } @if (puedeEliminar) {
+            <button
+              mat-icon-button
+              type="button"
+              (click)="eliminar(m)"
+              [attr.aria-label]="'Eliminar ' + m.titulo"
+              matTooltip="Eliminar"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        <tr class="mat-mdc-row" *matNoDataRow>
+          <td class="mat-mdc-cell celda-vacia" [attr.colspan]="columnas.length">
+            <app-estado-vacio
+              entidad="materiales"
+              icono="folder_open"
+              [cargando]="cargando()"
+              [busqueda]="q"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="total()"
+      [pageIndex]="page"
+      [pageSize]="size"
+      (page)="paginar($event)"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      aria-label="Paginación de materiales"
+    />
+  </div>
+</section>
+}

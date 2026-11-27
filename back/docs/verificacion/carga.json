@@ -1,0 +1,12 @@
+{
+  "records": 10000,
+  "requests": 200,
+  "concurrency": 20,
+  "pageSize": 50,
+  "elapsedSeconds": 0.262,
+  "p50Ms": 23.41,
+  "p95Ms": 40.74,
+  "maxMs": 50.37,
+  "errors": 0,
+  "scope": "Localhost; PostgreSQL 18.6; una instancia; lectura con paginación y prefijo. No es una garantía de capacidad de producción."
+}

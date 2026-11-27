@@ -1,0 +1,53 @@
+<div class="container">
+    <div>
+        <h2>Actualizar Asignacion</h2>
+    </div>
+    <div>
+        <form [formGroup]="formAsignacion" (ngSubmit)="actualizarAsignacion()">
+              <mat-form-field class="example-full-width">
+                <mat-label>Código</mat-label>
+                <input matInput type="number" formControlName="codigo" readonly>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <mat-label>Poner el aula</mat-label>
+                <input matInput placeholder="" formControlName="aula">
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <mat-label>Indicar el curso</mat-label>
+                <textarea matInput placeholder="" formControlName="curso"></textarea>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <mat-label>Periodo Academico</mat-label>
+                <input matInput placeholder="" formControlName="periodo">
+            </mat-form-field>
+            <br>
+             <mat-form-field class="example-full-width">
+                <mat-label>Especifique a quien se dirige</mat-label>
+                <input matInput placeholder="" formControlName="persona">
+            </mat-form-field>
+            <br>
+             <mat-form-field class="example-full-width">
+                <mat-label>Seleccione la modalidad</mat-label>
+                <input matInput placeholder="" formControlName="modalidad">
+            </mat-form-field>
+            <br>
+             <mat-form-field class="example-full-width">
+                <mat-label>Indique las horas</mat-label>
+                <input matInput placeholder="" formControlName="horas">
+            </mat-form-field>
+            <br>
+             <mat-form-field class="example-full-width">
+                <mat-label>Indique el colegio</mat-label>
+                <input matInput placeholder="" formControlName="colegio">
+            </mat-form-field>
+            <br>  
+
+            <button matButton type="submit">Guardar</button>
+
+        </form>
+        <p>{{ mensaje }}</p>
+    </div>
+</div>
