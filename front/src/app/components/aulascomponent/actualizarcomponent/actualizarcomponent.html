@@ -1,0 +1,69 @@
+<section class="page narrow">
+  <a class="back-link" routerLink="/aulas">← Volver a aulas</a>
+  <h1>Aulas</h1>
+  <div class="panel form-panel">
+    @if (mensaje()) {
+      <p class="notice error" role="alert">{{ mensaje() }}</p>
+    }
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="guardar()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" maxlength="30" />
+        <mat-error>{{ error('nombre') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Sección</mat-label>
+        <input matInput formControlName="seccion" maxlength="30" />
+        <mat-error>{{ error('seccion') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Capacidad</mat-label>
+        <input matInput type="number" min="1" formControlName="capacidad" />
+        <mat-error>{{ error('capacidad') }}</mat-error>
+      </mat-form-field>
+
+      <div>
+        <div class="reference-search">
+          <mat-form-field appearance="outline">
+            <mat-label>Buscar colegio</mat-label>
+            <input
+              matInput
+              [formControl]="busquedaIdColegio"
+              maxlength="100"
+              (keydown.enter)="$event.preventDefault(); cargarIdColegio()"
+            />
+          </mat-form-field>
+          <button mat-button type="button" (click)="cargarIdColegio()">
+            Buscar
+          </button>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Colegio</mat-label>
+          <mat-select formControlName="idColegio">
+            @for (r of opcionesIdColegio(); track r.idColegio) {
+              <mat-option [value]="r.idColegio">
+                {{ r.nombre }} · #{{ r.idColegio }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-hint>Hasta 20 coincidencias; busca por el comienzo del nombre.</mat-hint>
+          <mat-error>{{ error('idColegio') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions full-width">
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="guardando() || cargando() || cargaFallida()"
+        >
+          Guardar registro
+        </button>
+        <a mat-stroked-button routerLink="/aulas">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
