@@ -316,6 +316,42 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'incidencias',
+    canActivate: [authGuard, lecturaGuard],
+    loadComponent: () =>
+      import('./components/incidenciascomponent/incidenciascomponent').then(
+        (m) => m.IncidenciaComponent,
+      ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'listar' },
+      {
+        path: 'listar',
+        loadComponent: () =>
+          import('./components/incidenciascomponent/listarcomponent/listarcomponent').then(
+            (m) => m.IncidenciaListarComponent,
+          ),
+      },
+      {
+        path: 'insertar',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'incidencias' },
+        loadComponent: () =>
+          import('./components/incidenciascomponent/insertarcomponent/insertarcomponent').then(
+            (m) => m.IncidenciaInsertarComponent,
+          ),
+      },
+      {
+        path: 'editar/:id',
+        canActivate: [escrituraGuard],
+        data: { modulo: 'incidencias' },
+        loadComponent: () =>
+          import('./components/incidenciascomponent/actualizarcomponent/actualizarcomponent').then(
+            (m) => m.IncidenciaActualizarComponent,
+          ),
+      },
+    ],
+  },
+  {
     path: 'asistencias',
     canActivate: [authGuard, lecturaGuard],
     loadComponent: () =>
